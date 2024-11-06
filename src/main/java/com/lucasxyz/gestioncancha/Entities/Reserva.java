@@ -1,54 +1,77 @@
 package com.lucasxyz.gestioncancha.Entities;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import java.util.Date;
+import java.util.UUID;
 
 @Entity
+@Table(name = "reserva")
 public class Reserva {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idReserva;
+    @GeneratedValue
+    @Column(name = "id_reserva", nullable = false, unique = true)
+    private UUID idReserva;
+
+    @Column(name = "fecha", nullable = false)
+    private Date fecha;
+
+    @Column(name = "hora_inicio", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date horaInicio;
+
+    @Column(name = "hora_fin", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date horaFin;
 
     @ManyToOne
-    @JoinColumn(name = "id_cliente")
+    @JoinColumn(name = "cancha_id", nullable = false)
+    private Cancha cancha;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
     @ManyToOne
-    @JoinColumn(name = "id_cancha")
-    private Cancha cancha;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario; // Usuario que registró la reserva
 
-    private LocalDate fecha;
-    private LocalTime horaInicio;
-    private LocalTime horaFin;
-    private BigDecimal precioTotal;
+    @ManyToOne
+    @JoinColumn(name = "empresa_id", nullable = false)
+    private Empresa empresa; // Relación con Empresa a través del Usuario
 
-    @OneToMany(mappedBy = "reserva")
-    private List<Pedido> pedidos;
+    // Getters y Setters
 
-    public Integer getIdReserva() {
+    public UUID getIdReserva() {
         return idReserva;
     }
 
-    public void setIdReserva(Integer idReserva) {
+    public void setIdReserva(UUID idReserva) {
         this.idReserva = idReserva;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public Date getFecha() {
+        return fecha;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public Date getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(Date horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public Date getHoraFin() {
+        return horaFin;
+    }
+
+    public void setHoraFin(Date horaFin) {
+        this.horaFin = horaFin;
     }
 
     public Cancha getCancha() {
@@ -59,48 +82,29 @@ public class Reserva {
         this.cancha = cancha;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
-    public LocalTime getHoraInicio() {
-        return horaInicio;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setHoraInicio(LocalTime horaInicio) {
-        this.horaInicio = horaInicio;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public LocalTime getHoraFin() {
-        return horaFin;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setHoraFin(LocalTime horaFin) {
-        this.horaFin = horaFin;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
-    public BigDecimal getPrecioTotal() {
-        return precioTotal;
-    }
-
-    public void setPrecioTotal(BigDecimal precioTotal) {
-        this.precioTotal = precioTotal;
-    }
-
-    public List<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(List<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
-
-    // Getters y setters
-
-    
 }
 

@@ -1,30 +1,33 @@
 package com.lucasxyz.gestioncancha.Entities;
 
-import java.math.BigDecimal;
-import java.util.List;
+import jakarta.persistence.Entity;
 
+import java.util.UUID;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
 
+@Entity
+@Table(name = "Cancha")
 public class Cancha {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idCancha;
+    @Id
+    @GeneratedValue
+    @Column(name = "id_cancha")
+    private UUID idCancha;
 
+    @Column(name = "nombre", length = 100)
     private String nombre;
+
+    @Column(name = "ubicacion", length = 100)
     private String ubicacion;
-    private String tipo;
-    private BigDecimal precioPorHora;
-    private String estado;
 
-    @OneToMany(mappedBy = "cancha")
-    private List<Reserva> reservas;
-
-    public Integer getIdCancha() {
+    public UUID getIdCancha() {
         return idCancha;
     }
 
-    public void setIdCancha(Integer idCancha) {
+    public void setIdCancha(UUID idCancha) {
         this.idCancha = idCancha;
     }
 
@@ -44,39 +47,5 @@ public class Cancha {
         this.ubicacion = ubicacion;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public BigDecimal getPrecioPorHora() {
-        return precioPorHora;
-    }
-
-    public void setPrecioPorHora(BigDecimal precioPorHora) {
-        this.precioPorHora = precioPorHora;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public List<Reserva> getReservas() {
-        return reservas;
-    }
-
-    public void setReservas(List<Reserva> reservas) {
-        this.reservas = reservas;
-    }
-
-    // Getters y setters
     
-
 }
