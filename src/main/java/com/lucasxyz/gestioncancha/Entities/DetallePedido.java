@@ -18,8 +18,8 @@ public class DetallePedido {
     private Pedido pedido;
 
     @ManyToOne
-    @JoinColumn(name = "bebida_id", nullable = false)
-    private Bebida bebida;
+    @JoinColumn(name = "producto_id", nullable = false)
+    private Producto producto;
 
     @Column(name = "cantidad", nullable = false)
     private int cantidad;
@@ -29,9 +29,8 @@ public class DetallePedido {
 
     @ManyToOne
     @JoinColumn(name = "empresa_id", nullable = false)
+    
     private Empresa empresa;
-
-    // Getters y Setters
 
     public UUID getIdDetallePedido() {
         return idDetallePedido;
@@ -49,12 +48,12 @@ public class DetallePedido {
         this.pedido = pedido;
     }
 
-    public Bebida getBebida() {
-        return bebida;
+    public Producto getProducto() {
+        return producto;
     }
 
-    public void setBebida(Bebida bebida) {
-        this.bebida = bebida;
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 
     public int getCantidad() {
@@ -80,4 +79,7 @@ public class DetallePedido {
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
+    
+
+    
 }

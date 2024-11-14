@@ -1,0 +1,26 @@
+<div class="product-container">
+  <h2>Lista de Productos</h2>
+  <table class="product-table">
+    <thead>
+      <tr>
+        <th>Seleccionar</th>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th>Tipo</th>
+        <th>Cantidad Disponible</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of productos">
+        <td><input type="checkbox" [(ngModel)]="producto.selected" /></td>
+        <td>{{ producto.nombre }}</td>
+        <td>{{ producto.precio | currency }}</td>
+        <td>{{ producto.tipo }}</td>
+        <td>{{ producto.cantidad }}</td>
+        <td><button class="delete-button" (click)="deleteProducto(producto.id_producto)">Eliminar</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="delete-button" (click)="deleteSeleccionados()">Eliminar Seleccionados</button>
+</div>

@@ -1,7 +1,7 @@
 package com.lucasxyz.gestioncancha.Controllers;
 
 import com.lucasxyz.gestioncancha.Entities.Reserva;
-import com.lucasxyz.gestioncancha.Repositories.ReservaRepository;
+import com.lucasxyz .gestioncancha.Repositories.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

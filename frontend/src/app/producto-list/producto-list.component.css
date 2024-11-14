@@ -1,0 +1,44 @@
+/* Centrar el contenedor de la lista de productos */
+.product-container {
+  max-width: 800px; /* Ajusta el ancho según necesites */
+  margin: 0 auto; /* Centra horizontalmente */
+  padding: 20px;
+  background-color: #f9f9f9; /* Color de fondo del recuadro */
+  border: 1px solid #ddd; /* Borde del recuadro */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+/* Estilo de la tabla de productos */
+.product-table {
+  width: 100%; /* Ocupa el 100% del contenedor */
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.product-table th,
+.product-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Estilo del encabezado */
+.product-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+/* Botón eliminar */
+.delete-button {
+  background-color: #f44336; /* Rojo */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
