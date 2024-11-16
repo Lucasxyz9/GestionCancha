@@ -27,8 +27,20 @@ public class ProductoController {
 
     @PostMapping
     public Producto agregarProducto(@RequestBody Producto producto) {
-        return productoRepository.save(producto);
+        // Agregar logs para cada campo del producto
+        System.out.println("Producto recibido:");
+        System.out.println("Nombre: " + producto.getNombre());
+        System.out.println("Precio: " + producto.getPrecio_unitario());
+        System.out.println("Tipo: " + producto.getTipo());
+        System.out.println("Cantidad: " + producto.getCantidad_disponible());
+    
+        Producto productoGuardado = productoRepository.save(producto);
+        System.out.println("Producto agregado con éxito: " + productoGuardado);
+        return productoGuardado;
     }
+    
+
+
 
     @GetMapping
     public List<Producto> getAllProductos() {

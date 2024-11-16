@@ -15,9 +15,9 @@
       <tr *ngFor="let producto of productos">
         <td><input type="checkbox" [(ngModel)]="producto.selected" /></td>
         <td>{{ producto.nombre }}</td>
-        <td>{{ producto.precio | currency }}</td>
+        <td>{{ producto.precio_unitario | currency }}</td>
         <td>{{ producto.tipo }}</td>
-        <td>{{ producto.cantidad }}</td>
+        <td>{{ producto.cantidad_disponible }}</td>
         <td><button class="delete-button" (click)="deleteProducto(producto.id_producto)">Eliminar</button></td>
       </tr>
     </tbody>

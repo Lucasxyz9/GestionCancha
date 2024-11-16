@@ -1,58 +1,65 @@
-/* Centrar el contenedor del formulario */
+/* General form styling */
+.producto-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  margin: 0;
+}
+
+/* Contenedor del formulario con borde */
 .form-container {
-  max-width: 400px;
-  margin: 50px auto;
   padding: 20px;
+  border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #f9f9f9;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px; /* Limita el ancho máximo */
+  margin-top: 20px; /* Ajusta el margen superior */
+  margin-bottom: 10px; /* Ajusta el espacio inferior */
 }
 
-/* Estilos para el encabezado */
-.form-container h2 {
-  color: #333;
-  margin-bottom: 15px;
-}
-
-/* Estilos para las etiquetas y entradas */
+/* Estilos para los labels e inputs */
 label {
   display: block;
-  margin-top: 10px;
-  font-weight: bold;
-  color: #555;
-  text-align: left;
+  font-size: 14px;
+  margin: 10px 0 5px;
 }
 
-input[type="text"],
-input[type="number"] {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-/* Estilos para el botón */
-.submit-btn {
+input {
   width: 100%;
   padding: 10px;
-  margin-top: 20px;
+  margin-bottom: 10px; /* Reduce el margen inferior entre inputs */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Estilo del botón */
+.btn-submit {
+  width: 100%;
+  padding: 12px;
   background-color: #007bff;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-bottom: 0; /* Elimina el margen inferior del botón */
 }
 
-/* Cambio de color al hacer clic en el botón */
-.submit-btn:active {
-  background-color: #0056b3;
+/* Efecto al pasar el mouse sobre el botón */
+.btn-submit:hover {
+  background-color: #0056b3; /* Cambio de color al pasar el mouse */
 }
 
-.submit-btn:hover {
-  background-color: #0056b3;
+.btn-submit:active {
+  background-color: #004085; /* Cambio de color al hacer clic */
 }

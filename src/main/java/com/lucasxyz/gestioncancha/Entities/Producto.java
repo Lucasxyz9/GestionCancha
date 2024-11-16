@@ -18,10 +18,11 @@ public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_producto;
+
     private String nombre;
-    private String tipo;
+    private Double precio_unitario;
     private Integer cantidad_disponible;
-    private Integer precio_unitario;
+    private String tipo;
 
     @OneToMany(mappedBy = "producto")
     private List<DetallePedido> detallesPedido;
@@ -42,12 +43,12 @@ public class Producto {
         this.nombre = nombre;
     }
 
-    public String getTipo() {
-        return tipo;
+    public Double getPrecio_unitario() {
+        return precio_unitario;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setPrecio_unitario(Double precio_unitario) {
+        this.precio_unitario = precio_unitario;
     }
 
     public Integer getCantidad_disponible() {
@@ -58,12 +59,12 @@ public class Producto {
         this.cantidad_disponible = cantidad_disponible;
     }
 
-    public Integer getPrecio_unitario() {
-        return precio_unitario;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setPrecio_unitario(Integer precio_unitario) {
-        this.precio_unitario = precio_unitario;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public List<DetallePedido> getDetallesPedido() {
@@ -73,6 +74,8 @@ public class Producto {
     public void setDetallesPedido(List<DetallePedido> detallesPedido) {
         this.detallesPedido = detallesPedido;
     }
+    
+   
     
 
     

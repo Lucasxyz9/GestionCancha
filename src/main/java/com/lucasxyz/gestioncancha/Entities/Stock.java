@@ -1,6 +1,7 @@
 package com.lucasxyz.gestioncancha.Entities;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,9 +31,8 @@ public class Stock {
     @Column(name = "cantidad", nullable = false)
     private int cantidad;
 
-    @Column(name = "fecha_actualizacion", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Timestamp fechaActualizacion;
-
+    @Column(name = "fecha_actualizacion", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime fechaActualizacion;
     public int getIdStock() {
         return idStock;
     }
@@ -65,11 +65,11 @@ public class Stock {
         this.cantidad = cantidad;
     }
 
-    public Timestamp getFechaActualizacion() {
+    public LocalDateTime getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public void setFechaActualizacion(Timestamp fechaActualizacion) {
+    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 }

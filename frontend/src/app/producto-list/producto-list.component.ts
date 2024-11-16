@@ -16,9 +16,9 @@ export class ProductoListComponent implements OnInit {
   producto: Producto = { 
     id_producto: 0, 
     nombre: '', 
-    precio: 0, 
+    precio_unitario: 0, 
     tipo: '', 
-    cantidad: 0 
+    cantidad_disponible: 0 
   };
 
   // Método para manejar el envío de productos

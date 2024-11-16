@@ -6,6 +6,7 @@ import { ProductoListComponent } from './producto-list/producto-list.component';
 import { ProductoDetailComponent } from './producto-detail/producto-detail.component';
 import { ProductoFormComponent } from './producto-form/producto-form.component';
 
+
 const routes: Routes = [
   { path: '', redirectTo: '/productos', pathMatch: 'full' },  // Redirige por defecto a la lista de productos
   { path: 'productos', component: ProductoListComponent },  // Ruta para listar productos
