@@ -34,9 +34,10 @@ export class ProductoService {
   }
   
 
-    updateProducto(id: number, producto: Producto): Observable<Producto> {
-    return this.http.put<Producto>(`http://localhost:8080/producto/${id}`, producto);
+  updateProducto(id_producto: number, producto: Producto): Observable<Producto> {
+    return this.http.put<Producto>(`http://localhost:8080/productos/${id_producto}`, producto);
   }
+  
   
   // Agrega otros métodos según lo necesites, como para agregar productos, etc.
 }

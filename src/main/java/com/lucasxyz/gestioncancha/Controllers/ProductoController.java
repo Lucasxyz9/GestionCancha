@@ -2,6 +2,7 @@ package com.lucasxyz.gestioncancha.Controllers;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,17 +53,21 @@ public class ProductoController {
                 .orElseThrow(() -> new RuntimeException("No se encontró el producto con el ID: " + id));
     }
 
-    @PutMapping("/{id}")
-    public Producto updateProducto(@PathVariable Long id, @RequestBody Producto productoDetalles) {
-        Producto producto = productoRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("No se encontró el producto con el ID: " + id));
-    
-        producto.setNombre(productoDetalles.getNombre());
-        producto.setPrecio_unitario(productoDetalles.getPrecio_unitario());
-        producto.setCantidad_disponible(productoDetalles.getCantidad_disponible());
-        producto.setTipo(productoDetalles.getTipo());
-    
-        return productoRepository.save(producto);
+    @PutMapping("/{id_producto}")
+    public ResponseEntity<Producto> updateProducto(
+        @PathVariable Long id_producto,
+        @RequestBody Producto productoActualizado) {
+        Optional<Producto> productoExistente = productoRepository.findById(id_producto);
+    if (productoExistente.isPresent()) {
+        Producto producto = productoExistente.get();
+        producto.setNombre(productoActualizado.getNombre());
+        producto.setPrecio_unitario(productoActualizado.getPrecio_unitario());
+        producto.setCantidad_disponible(productoActualizado.getCantidad_disponible());
+        producto.setTipo(productoActualizado.getTipo());
+        Producto actualizado = productoRepository.save(producto);
+        return ResponseEntity.ok(actualizado);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

@@ -118,16 +118,18 @@ export class ProductoListComponent implements OnInit {
 
   updateProducto(producto: EstadoProducto): void {
     this.productoService.updateProducto(producto.id_producto, producto).subscribe(
-      response => {
-        producto.editing = false; // Salir del modo de edición después de guardar
-        alert("Producto actualizado exitosamente"); // Mensaje de éxito
-        console.log("Producto actualizado", response);
+      () => {
+        producto.editing = false; // Salir del modo de edición
+        alert("Producto actualizado exitosamente");
+        this.cargarProductos(); // Recargar la lista completa
       },
-      error => {
-        alert("Error al actualizar el producto. Intenta de nuevo."); // Mensaje de error
+      (error) => {
+        alert("Error al actualizar el producto. Intenta de nuevo.");
         console.error("Error al actualizar el producto", error);
       }
     );
   }
+  
+  
   
 }
