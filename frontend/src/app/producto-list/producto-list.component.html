@@ -1,79 +1,62 @@
-<div class="product-container">
-  <h2>Lista de Productos</h2>
-  <table class="product-table">
-    <thead>
-      <tr>
-        <th>Seleccionar</th>
-        <th>Producto</th>
-        <th>Precio</th>
-        <th>Tipo</th>
-        <th>Cantidad Disponible</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let producto of productos" [class.selected-row]="producto.selected">
-        <td><input type="checkbox" [(ngModel)]="producto.selected" /></td>
-        <!-- Modo de edición para el nombre -->
-        <td>
-          <span *ngIf="!producto.editing">{{ producto.nombre }}</span>
-          <input
-            *ngIf="producto.editing"
-            type="text"
-            [(ngModel)]="producto.nombre"
-          />
-        </td>
-        <!-- Modo de edición para el precio -->
-        <td>
-          <span *ngIf="!producto.editing">{{ producto.precio_unitario | currency }}</span>
-          <input
-            *ngIf="producto.editing"
-            type="number"
-            [(ngModel)]="producto.precio_unitario"
-          />
-        </td>
-        <!-- Modo de edición para el tipo -->
-        <td>
-          <span *ngIf="!producto.editing">{{ producto.tipo }}</span>
-          <input
-            *ngIf="producto.editing"
-            type="text"
-            [(ngModel)]="producto.tipo"
-          />
-        </td>
-        <!-- Modo de edición para la cantidad disponible -->
-        <td>
-          <span *ngIf="!producto.editing">{{ producto.cantidad_disponible }}</span>
-          <input
-            *ngIf="producto.editing"
-            type="number"
-            [(ngModel)]="producto.cantidad_disponible"
-          />
-        </td>
-        <td>
-          <button
-            class="edit-button"
-            *ngIf="!producto.editing"
-            (click)="producto.editing = true"
-          >
-            Modificar
-          </button>
-          <button
-            class="save-button"
-            *ngIf="producto.editing"
-            (click)="updateProducto(producto)"
-          >
-            Guardar
-          </button>
-          <button
-            class="delete-button"
-            (click)="deleteProducto(producto.id_producto)"
-          >
-            Eliminar
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <button class="delete-button" (click)="deleteSeleccionados()">Eliminar Seleccionados</button>
-</div>
+<table>
+  <thead>
+    <tr>
+      <th>
+        <input type="checkbox" (change)="toggleSeleccionarTodos($event)" />
+      </th>
+      <th>Nombre</th>
+      <th>Precio</th>
+      <th>Tipo</th>
+      <th>Cantidad</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let producto of productos">
+      <!-- Checkbox para selección -->
+      <td>
+        <input type="checkbox" [(ngModel)]="producto.selected" />
+      </td>
+
+      <!-- Campo Nombre -->
+      <td>
+        <span *ngIf="!producto.editing">{{ producto.nombre }}</span>
+        <input *ngIf="producto.editing" type="text" [(ngModel)]="producto.nombre" />
+      </td>
+
+      <!-- Campo Precio -->
+      <td>
+        <span *ngIf="!producto.editing">{{ producto.precio_unitario }}</span>
+        <input *ngIf="producto.editing" type="number" [(ngModel)]="producto.precio_unitario" />
+      </td>
+
+      <!-- Campo Tipo -->
+      <td>
+        <span *ngIf="!producto.editing">{{ producto.tipo }}</span>
+        <input *ngIf="producto.editing" type="text" [(ngModel)]="producto.tipo" />
+      </td>
+
+      <!-- Campo Cantidad -->
+      <td>
+        <span *ngIf="!producto.editing">
+          {{ producto.cantidad_disponible }}
+          <span *ngIf="producto.cantidad_disponible < cantidadMinima" class="alerta-bajo-stock">
+            ⚠ Bajo stock
+          </span>
+        </span>
+        <input *ngIf="producto.editing" type="number" [(ngModel)]="producto.cantidad_disponible" />
+      </td>
+
+      <!-- Botones -->
+      <td>
+        <button *ngIf="!producto.editing" (click)="editarProducto(producto)">Editar</button>
+        <button *ngIf="producto.editing" (click)="guardarProducto(producto)">Guardar</button>
+        <button *ngIf="producto.editing" (click)="cancelarEdicion(producto)">Cancelar</button>
+        <button (click)="deleteProducto(producto.id_producto)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Botón para eliminar productos seleccionados -->
+<button (click)="deleteSeleccionados()">Eliminar seleccionados</button>

@@ -9,17 +9,17 @@ import { Producto, EstadoProducto } from '../producto.model'; // Asegúrate de i
 })
 export class ProductoListComponent implements OnInit {
 
-  // Aquí solo debes tener una propiedad 'productos'
   productos: EstadoProducto[] = [];  // Solo se declara aquí una vez
 
-  // Variable para manejar un solo producto
   producto: Producto = { 
     id_producto: 0, 
     nombre: '', 
     precio_unitario: 0, 
     tipo: '', 
-    cantidad_disponible: 0 
+    cantidad_disponible: 0,
+    cantidadMinima: 10
   };
+  cantidadMinima: number = 10; 
 
   // Método para manejar el envío de productos
   onSubmit() {
@@ -57,25 +57,30 @@ export class ProductoListComponent implements OnInit {
       console.error('Error al cargar productos', error);
     
     });
-    
+      console.log(this.productos);  // Verifica que los datos se estén cargando correctamente
+
   }
   
   
   cargarProductos(): void {
-    this.productoService.getProductos().subscribe(
-      (productos: Producto[]) => {
-        this.productos = productos.map((producto) => ({
+    this.productoService.getProductos().subscribe({
+      next: (productos) => {
+        // Asegurar que cada producto tenga las propiedades necesarias
+        this.productos = productos.map(producto => ({
           ...producto,
-          editing: false, 
+          cantidad_minima: producto.cantidadMinima ?? 0, // Valor por defecto si no existe
+          editing: false,
           selected: false
-        })) as EstadoProducto[]; // Asegura el tipo adecuado
-        console.log('Productos cargados correctamente:', this.productos);
+        }));
+        console.log('Productos cargados:', this.productos);
       },
-      (error: any) => {
-        console.error('Error al cargar productos', error);
+      error: (err) => {
+        console.error('Error al cargar productos:', err);
       }
-    );
+    });
   }
+  
+
   
 
   deleteProducto(id: number): void {
@@ -110,12 +115,13 @@ export class ProductoListComponent implements OnInit {
         }
       });
     });
+  
   }
   
-  
-
-  
-
+  toggleSeleccionarTodos(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.productos.forEach((producto) => (producto.selected = checked));
+  }
   updateProducto(producto: EstadoProducto): void {
     this.productoService.updateProducto(producto.id_producto, producto).subscribe(
       () => {
@@ -129,7 +135,32 @@ export class ProductoListComponent implements OnInit {
       }
     );
   }
+  editarProducto(producto: EstadoProducto): void {
+    producto.editing = true;
+  }
+
+  guardarProducto(producto: EstadoProducto): void {
+    if (!producto.id_producto) {
+      console.error('El producto no tiene un id definido');
+      return;
+    }
   
+    this.productoService.updateProducto(producto.id_producto, producto).subscribe({
+      next: (updatedProducto) => {
+        producto.editing = false;
+        console.log('Producto actualizado:', updatedProducto);
+      },
+      error: (error) => console.error('Error al guardar el producto:', error)
+    });
+  }
   
+  cancelarEdicion(producto: EstadoProducto): void {
+    producto.editing = false;
+    // Vuelve a cargar los productos si es necesario para revertir los cambios
+    this.ngOnInit();
+  }
+
   
 }
+  
+

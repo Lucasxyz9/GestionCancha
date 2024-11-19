@@ -30,10 +30,10 @@ public class ProductoController {
      @PostMapping
     public ResponseEntity<?> createProducto(@RequestBody Producto producto) {
         // Verificar si el producto ya existe
-        if (productoRepository.existsByNombre(producto.getNombre())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("El producto con el nombre '" + producto.getNombre() + "' ya existe.");
-        }
+       // if (productoRepository.existsByNombre(producto.getNombre())) {
+         //   return ResponseEntity.status(HttpStatus.CONFLICT)
+           //         .body("El producto con el nombre '" + producto.getNombre() + "' ya existe.");
+        //}
         Producto nuevoProducto = productoRepository.save(producto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
     }
@@ -44,14 +44,25 @@ public class ProductoController {
 
     @GetMapping
     public List<Producto> getAllProductos() {
-        return productoRepository.findAll();
+        return productoRepository.findAll(); 
     }
-    
+
     @GetMapping("/{id}")
     public Producto obtenerProductoPorId(@PathVariable Long id) {
         return productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("No se encontró el producto con el ID: " + id));
     }
+    @GetMapping("/productos/stock")
+    public List<Producto> obtenerStock() {
+    return productoRepository.findAll();
+    }   
+    
+    @GetMapping("/productos/alerta-reabastecimiento")
+    public List<Producto> obtenerProductosConBajoStock() {
+    int cantidadMinima =10;
+        return productoRepository.findByCantidadMinimaLessThan(cantidadMinima);
+    }
+    
 
     @PutMapping("/{id_producto}")
     public ResponseEntity<Producto> updateProducto(

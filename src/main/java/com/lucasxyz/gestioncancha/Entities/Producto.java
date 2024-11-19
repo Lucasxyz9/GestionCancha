@@ -2,6 +2,7 @@ package com.lucasxyz.gestioncancha.Entities;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,10 +24,18 @@ public class Producto {
     private Double precio_unitario;
     private Integer cantidad_disponible;
     private String tipo;
+    @Column(name = "cantidad_minima")
+    private Integer cantidadMinima = 10;
+
+
+    
+
+
 
     @OneToMany(mappedBy = "producto")
     private List<DetallePedido> detallesPedido;
 
+    
     public Long getId_producto() {
         return id_producto;
     }
@@ -73,6 +82,14 @@ public class Producto {
 
     public void setDetallesPedido(List<DetallePedido> detallesPedido) {
         this.detallesPedido = detallesPedido;
+    }
+
+    public int getCantidad_minima() {
+        return cantidadMinima;
+    }
+
+    public void setCantidad_minima(int cantidad_minima) {
+        this.cantidadMinima = cantidad_minima;
     }
     
    

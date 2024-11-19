@@ -14,6 +14,7 @@ export class ProductoFormComponent implements OnInit {
     nombre: '',
     precio_unitario: 0,
     cantidad_disponible: 0,
+    cantidadMinima:0,
     tipo: ''
   };
 
@@ -71,6 +72,7 @@ export class ProductoFormComponent implements OnInit {
       nombre: '',
       precio_unitario: 0,
       cantidad_disponible: 0,
+      cantidadMinima:0,
       tipo: ''
     };
   }

@@ -8,8 +8,7 @@ import { Producto } from './producto.model';
 })
 export class ProductoService {
 
-  private apiUrl = 'http://localhost:8080/productos'; // Ajusta la URL a la de tu API
-
+  private apiUrl = 'http://localhost:8080/productos';
   constructor(private http: HttpClient) { }
 
   createProducto(producto: Producto) {
@@ -21,6 +20,7 @@ export class ProductoService {
   getProductos(): Observable<Producto[]> {
     return this.http.get<Producto[]>(this.apiUrl);
   }
+
   // Método para obtener un producto por su ID
   getProducto(id: number): Observable<Producto> {
     return this.http.get<Producto>(`${this.apiUrl}/${id}`);
@@ -39,5 +39,4 @@ export class ProductoService {
   }
   
   
-  // Agrega otros métodos según lo necesites, como para agregar productos, etc.
 }
