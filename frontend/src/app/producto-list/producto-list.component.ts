@@ -42,9 +42,14 @@ export class ProductoListComponent implements OnInit {
         ...producto,
         editing: false,
         selected: false
-      }));
-    });
-  }
+      })) as EstadoProducto[];
+    },
+    (error: any) => {
+      console.error('Error al cargar productos', error);
+      // Mostrar un mensaje de error al usuario
+    }
+  )
+};
 
   cargarProductos(): void {
     this.productoService.getProductos().subscribe(
@@ -54,48 +59,65 @@ export class ProductoListComponent implements OnInit {
           editing: false,
           selected: false
         })) as EstadoProducto[]; // Asegura el tipo adecuado
+        console.log('Productos cargados correctamente:', this.productos);
       },
       (error: any) => {
         console.error('Error al cargar productos', error);
       }
     );
   }
+  
 
   deleteProducto(id: number): void {
-    this.productoService.deleteProducto(id).subscribe(() => {
-      this.cargarProductos();   
-    });
+    this.productoService.deleteProducto(id).subscribe(
+      () => {
+        // Recargar los productos después de la eliminación
+        this.cargarProductos();  // Llamamos a cargarProductos para obtener la lista actualizada
+      },
+      (error) => {
+        console.error('Error al eliminar producto', error);
+      }
+    );
   }
+  
+
 
   deleteSeleccionados(): void {
     const seleccionados = this.productos
       .filter((producto) => producto.selected)
       .map((producto) => producto.id_producto);
-
+  
     if (seleccionados.length === 0) {
       alert("Por favor selecciona al menos un producto para eliminar.");
       return;
     }
-
+  
     seleccionados.forEach((id, index) => {
       this.productoService.deleteProducto(id).subscribe(() => {
         if (index === seleccionados.length - 1) {
-          this.cargarProductos(); // Recarga la lista cuando se termina la eliminación
+          // Al final de todas las eliminaciones, actualizamos la lista
+          this.cargarProductos();  // Recargamos la lista después de la eliminación
         }
       });
     });
   }
+  
+  
+
+  
 
   updateProducto(producto: EstadoProducto): void {
     this.productoService.updateProducto(producto.id_producto, producto).subscribe(
       response => {
         producto.editing = false; // Salir del modo de edición después de guardar
+        alert("Producto actualizado exitosamente"); // Mensaje de éxito
         console.log("Producto actualizado", response);
-        // Opcional: refrescar la lista de productos si es necesario
       },
       error => {
+        alert("Error al actualizar el producto. Intenta de nuevo."); // Mensaje de error
         console.error("Error al actualizar el producto", error);
       }
     );
   }
+  
 }

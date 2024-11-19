@@ -26,13 +26,17 @@ export class ProductoService {
     return this.http.get<Producto>(`${this.apiUrl}/${id}`);
   }
 
-  deleteProducto(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  // Método para eliminar producto
+  deleteProducto(id: number): Observable<string> {  // Esperamos que el servidor devuelva texto
+    return this.http.delete(`${this.apiUrl}/${id}`, { 
+      responseType: 'text' // Le decimos a Angular que espere texto plano
+    });
   }
+  
 
-  updateProducto(id: number, producto: Producto): Observable<Producto> {
-    return this.http.put<Producto>(`${this.apiUrl}/${id}`, producto);
+    updateProducto(id: number, producto: Producto): Observable<Producto> {
+    return this.http.put<Producto>(`http://localhost:8080/producto/${id}`, producto);
   }
-
+  
   // Agrega otros métodos según lo necesites, como para agregar productos, etc.
 }

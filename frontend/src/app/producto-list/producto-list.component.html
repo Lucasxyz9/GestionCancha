@@ -12,13 +12,66 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let producto of productos">
+      <tr *ngFor="let producto of productos" [class.selected-row]="producto.selected">
         <td><input type="checkbox" [(ngModel)]="producto.selected" /></td>
-        <td>{{ producto.nombre }}</td>
-        <td>{{ producto.precio_unitario | currency }}</td>
-        <td>{{ producto.tipo }}</td>
-        <td>{{ producto.cantidad_disponible }}</td>
-        <td><button class="delete-button" (click)="deleteProducto(producto.id_producto)">Eliminar</button></td>
+        <!-- Modo de edición para el nombre -->
+        <td>
+          <span *ngIf="!producto.editing">{{ producto.nombre }}</span>
+          <input
+            *ngIf="producto.editing"
+            type="text"
+            [(ngModel)]="producto.nombre"
+          />
+        </td>
+        <!-- Modo de edición para el precio -->
+        <td>
+          <span *ngIf="!producto.editing">{{ producto.precio_unitario | currency }}</span>
+          <input
+            *ngIf="producto.editing"
+            type="number"
+            [(ngModel)]="producto.precio_unitario"
+          />
+        </td>
+        <!-- Modo de edición para el tipo -->
+        <td>
+          <span *ngIf="!producto.editing">{{ producto.tipo }}</span>
+          <input
+            *ngIf="producto.editing"
+            type="text"
+            [(ngModel)]="producto.tipo"
+          />
+        </td>
+        <!-- Modo de edición para la cantidad disponible -->
+        <td>
+          <span *ngIf="!producto.editing">{{ producto.cantidad_disponible }}</span>
+          <input
+            *ngIf="producto.editing"
+            type="number"
+            [(ngModel)]="producto.cantidad_disponible"
+          />
+        </td>
+        <td>
+          <button
+            class="edit-button"
+            *ngIf="!producto.editing"
+            (click)="producto.editing = true"
+          >
+            Modificar
+          </button>
+          <button
+            class="save-button"
+            *ngIf="producto.editing"
+            (click)="updateProducto(producto)"
+          >
+            Guardar
+          </button>
+          <button
+            class="delete-button"
+            (click)="deleteProducto(producto.id_producto)"
+          >
+            Eliminar
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
