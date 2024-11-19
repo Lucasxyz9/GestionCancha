@@ -23,6 +23,14 @@ export class ProductoListComponent implements OnInit {
 
   // Método para manejar el envío de productos
   onSubmit() {
+    // Validar si el producto ya existe en la lista
+    const productoDuplicado = this.productos.some(p => p.nombre === this.producto.nombre);
+  
+    if (productoDuplicado) {
+      alert("Este producto ya existe.");
+      return;  // Detener el proceso si el producto es duplicado
+    }
+  
     console.log(this.producto);  // Verifica que todos los campos estén presentes
     this.productoService.createProducto(this.producto).subscribe(
       response => {
@@ -33,6 +41,7 @@ export class ProductoListComponent implements OnInit {
       }
     );
   }
+  
 
   constructor(private productoService: ProductoService) { }
 
@@ -46,17 +55,18 @@ export class ProductoListComponent implements OnInit {
     },
     (error: any) => {
       console.error('Error al cargar productos', error);
-      // Mostrar un mensaje de error al usuario
-    }
-  )
-};
-
+    
+    });
+    
+  }
+  
+  
   cargarProductos(): void {
     this.productoService.getProductos().subscribe(
       (productos: Producto[]) => {
         this.productos = productos.map((producto) => ({
           ...producto,
-          editing: false,
+          editing: false, 
           selected: false
         })) as EstadoProducto[]; // Asegura el tipo adecuado
         console.log('Productos cargados correctamente:', this.productos);

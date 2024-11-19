@@ -4,7 +4,8 @@ package com.lucasxyz.gestioncancha.Controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,19 +26,17 @@ public class ProductoController {
     @Autowired
     private ProductoRepository productoRepository;
 
-    @PostMapping
-    public Producto agregarProducto(@RequestBody Producto producto) {
-        // Agregar logs para cada campo del producto
-        System.out.println("Producto recibido:");
-        System.out.println("Nombre: " + producto.getNombre());
-        System.out.println("Precio: " + producto.getPrecio_unitario());
-        System.out.println("Tipo: " + producto.getTipo());
-        System.out.println("Cantidad: " + producto.getCantidad_disponible());
-    
-        Producto productoGuardado = productoRepository.save(producto);
-        System.out.println("Producto agregado con éxito: " + productoGuardado);
-        return productoGuardado;
+     @PostMapping
+    public ResponseEntity<?> createProducto(@RequestBody Producto producto) {
+        // Verificar si el producto ya existe
+        if (productoRepository.existsByNombre(producto.getNombre())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("El producto con el nombre '" + producto.getNombre() + "' ya existe.");
+        }
+        Producto nuevoProducto = productoRepository.save(producto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
     }
+
     
 
 

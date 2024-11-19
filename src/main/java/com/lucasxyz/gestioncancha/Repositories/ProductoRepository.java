@@ -8,4 +8,6 @@ import com.lucasxyz.gestioncancha.Entities.Producto;;
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
+    boolean existsByNombre(String nombre);
+
 }
