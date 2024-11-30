@@ -38,5 +38,7 @@ export class ProductoService {
     return this.http.put<Producto>(`http://localhost:8080/productos/${id_producto}`, producto);
   }
   
-  
+  searchProducts(query: string): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}?search=${query}`);
+  }
 }

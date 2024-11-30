@@ -1,0 +1,67 @@
+<div class="form-container">
+  <h2>Gestionar Stock</h2>
+
+  <!-- Selección de Sucursal -->
+  <div class="form-group">
+    <label for="sucursal">Sucursal:</label>
+    <select
+      id="sucursal"
+      class="form-control"
+      [(ngModel)]="stock.sucursal.idSucursal"
+      name="sucursal"
+    >
+      <option *ngFor="let sucursal of sucursales" [value]="sucursal.idSucursal">
+        {{ sucursal.nombre }}
+      </option>
+    </select> 
+  </div>
+
+  <!-- Búsqueda de Producto -->
+  <div class="form-group">
+    <label for="producto">Buscar Producto:</label>
+    <input
+      id="producto"
+      type="text"
+      class="form-control"
+      [(ngModel)]="searchTerm"
+      (input)="searchProductos()"
+      placeholder="Escribe para buscar un producto"
+    />
+    <ul class="suggestions" *ngIf="filteredProductos.length > 0">
+      <li
+        *ngFor="let producto of filteredProductos"
+        (click)="selectProducto(producto)"
+      >
+        {{ producto.nombre }} - {{ producto.precio_unitario | currency }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Detalles del Producto Seleccionado -->
+  <div *ngIf="stock.productoId">
+    <div class="form-group">
+      <label>Producto Seleccionado:</label>
+      <p>{{ selectedProductoNombre }}</p> <!-- Mostramos el nombre aquí, no en el stock -->
+    </div>
+    <div class="form-group">
+      <label>Precio:</label>
+      <p>{{ stock.precio | currency }}</p>
+    </div>
+  </div>
+
+  <!-- Cantidad -->
+  <div class="form-group">
+    <label for="cantidad">Cantidad:</label>
+    <input
+      id="cantidad"
+      class="form-control"
+      type="number"
+      [(ngModel)]="stock.cantidad"
+      name="cantidad"
+      min="1"
+    />
+  </div>
+
+  <!-- Botón Guardar -->
+  <button class="btn btn-primary" (click)="saveStock()">Guardar</button>
+</div>

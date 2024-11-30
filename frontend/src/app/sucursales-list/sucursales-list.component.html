@@ -1,0 +1,57 @@
+<table>
+    <thead>
+      <tr>
+        <th>
+          <input type="checkbox" [checked]="todosSeleccionados" (change)="toggleSeleccionarTodos()" /> Seleccionar Todos
+        </th>
+        <th>ID</th> <!-- Nueva columna para mostrar el ID -->
+        <th>Nombre</th>
+        <th>Ubicación</th>
+        <th>Timbrado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sucursal of sucursales">
+        <!-- Checkbox para selección -->
+        <td>
+          <input type="checkbox" [(ngModel)]="sucursal.selected" />
+        </td>
+    
+        <!-- Mostrar ID de la sucursal -->
+        <td>
+          <span>{{ sucursal.idSucursal }}</span> <!-- Cambié id_sucursal por idSucursal -->
+        </td>
+  
+        <!-- Campo Nombre -->
+        <td>
+          <span *ngIf="!sucursal.editing">{{ sucursal.nombre }}</span>
+          <input *ngIf="sucursal.editing" type="text" [(ngModel)]="sucursal.nombre" />
+        </td>
+    
+        <!-- Campo Ubicación -->
+        <td>
+          <span *ngIf="!sucursal.editing">{{ sucursal.ubicacion }}</span>
+          <input *ngIf="sucursal.editing" type="text" [(ngModel)]="sucursal.ubicacion" />
+        </td>
+    
+        <!-- Campo Timbrado -->
+        <td>
+          <span *ngIf="!sucursal.editing">{{ sucursal.timbrado }}</span>
+          <input *ngIf="sucursal.editing" type="text" [(ngModel)]="sucursal.timbrado" />
+        </td>
+    
+        <!-- Botones -->
+        <td>
+          <button *ngIf="!sucursal.editing" (click)="editarSucursal(sucursal)">Editar</button>
+          <button *ngIf="sucursal.editing" (click)="guardarSucursal(sucursal)">Guardar</button>
+          <button *ngIf="sucursal.editing" (click)="cancelarEdicion(sucursal)">Cancelar</button>
+          <button (click)="deleteSucursal(sucursal.idSucursal)">Eliminar</button> <!-- Cambié id_sucursal por idSucursal -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <!-- Botón para eliminar sucursales seleccionadas -->
+  <button (click)="deleteSeleccionados()">Eliminar seleccionados</button>
+  

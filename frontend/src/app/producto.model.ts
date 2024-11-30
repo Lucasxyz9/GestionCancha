@@ -11,5 +11,4 @@ export interface EstadoProducto extends Producto {
   editing: boolean;
   selected: boolean;
   cantidad_minima: number;  
-
 }

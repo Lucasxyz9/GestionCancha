@@ -1,0 +1,15 @@
+<form (ngSubmit)="onSubmit()">
+  <div>
+    <label for="nombre">Nombre:</label>
+    <input id="nombre" [(ngModel)]="sucursal.nombre" name="nombre" required />
+  </div>
+  <div>
+    <label for="ubicacion">Ubicación:</label>
+    <input id="ubicacion" [(ngModel)]="sucursal.ubicacion" name="ubicacion" required />
+  </div>
+  <div>
+    <label for="timbrado">Timbrado:</label>
+    <input id="timbrado" [(ngModel)]="sucursal.timbrado" name="timbrado" required />
+  </div>
+  <button type="submit">Guardar</button>
+</form>

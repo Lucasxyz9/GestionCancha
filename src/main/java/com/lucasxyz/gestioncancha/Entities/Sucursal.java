@@ -1,6 +1,9 @@
 package com.lucasxyz.gestioncancha.Entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -9,15 +12,20 @@ import jakarta.persistence.Table;
 public class Sucursal {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_sucursal")
     private int idSucursal;
-    
-    private String nombre;
-    
-    private String ubicacion;
-    
-    private String rucSucursal;
 
-    // Getters and Setters
+    @Column(name = "nombre", nullable = false)
+    private String nombre;
+
+    @Column(name = "ubicacion", nullable = false)
+    private String ubicacion;
+
+    @Column(name = "timbrado", nullable = false)  // Cambio de 'ruc_sucursal' a 'timbrado'
+    private String timbrado;
+
+    // Getters y Setters
     public int getIdSucursal() {
         return idSucursal;
     }
@@ -42,12 +50,13 @@ public class Sucursal {
         this.ubicacion = ubicacion;
     }
 
-    public String getRucSucursal() {
-        return rucSucursal;
+    public String getTimbrado() {
+        return timbrado;
     }
 
-    public void setRucSucursal(String rucSucursal) {
-        this.rucSucursal = rucSucursal;
+    public void setTimbrado(String timbrado) {
+        this.timbrado = timbrado;
     }
+
+    
 }
-

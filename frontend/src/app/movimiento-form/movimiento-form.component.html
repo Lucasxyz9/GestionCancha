@@ -1,0 +1,42 @@
+<form [formGroup]="movimientoForm" (ngSubmit)="onSubmit()">
+  <h2>Registrar Transferencia</h2>
+
+  <!-- Selección de sucursal origen -->
+  <div>
+    <label for="sucursalOrigen">Sucursal Origen:</label>
+    <select id="sucursalOrigen" formControlName="sucursalOrigen" (change)="onSucursalOrigenChange()">
+      <option *ngFor="let sucursal of sucursales" [value]="sucursal.id_sucursal">
+        {{ sucursal.nombre }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Selección de productos -->
+  <div>
+    <label for="producto">Producto:</label>
+    <select id="producto" formControlName="producto" [disabled]="!productos.length">
+      <option *ngFor="let producto of productos" [value]="producto.id_producto">
+        {{ producto.nombre }} (Stock: {{ producto.cantidad }})
+      </option>
+    </select>
+  </div>
+
+  <!-- Sucursal destino -->
+  <div>
+    <label for="sucursalDestino">Sucursal Destino:</label>
+    <select id="sucursalDestino" formControlName="sucursalDestino">
+      <option *ngFor="let sucursal of sucursales" [value]="sucursal.id_sucursal">
+        {{ sucursal.nombre }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Cantidad -->
+  <div>
+    <label for="cantidad">Cantidad:</label>
+    <input type="number" id="cantidad" formControlName="cantidad" [max]="getMaxCantidad()" />
+  </div>
+
+  <!-- Botón de enviar -->
+  <button type="submit" [disabled]="movimientoForm.invalid">Registrar Transferencia</button>
+</form>

@@ -91,11 +91,7 @@ public class Producto {
     public void setCantidad_minima(int cantidad_minima) {
         this.cantidadMinima = cantidad_minima;
     }
-    
-   
-    
-
-    
+        
     
    
 

@@ -1,0 +1,26 @@
+<div>
+  <button class="add-button" (click)="navigateToForm()">Agregar Nuevo Stock</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Sucursal</th>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let stock of stocks">
+      <td>{{ stock.id }}</td>
+      <td>{{ getSucursalName(stock.sucursalId) }}</td>
+      <td>{{ stock.producto }}</td>
+      <td>{{ stock.cantidad }}</td>
+      <td>
+        <button (click)="editStock(stock)">Editar</button>
+        </td>
+    </tr>
+  </tbody>
+</table>
