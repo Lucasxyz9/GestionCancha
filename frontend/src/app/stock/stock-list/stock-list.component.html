@@ -1,26 +1,21 @@
-<div>
-  <button class="add-button" (click)="navigateToForm()">Agregar Nuevo Stock</button>
+<div class="stock-list">
+  <h2>Lista de Productos en Stock</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre Producto</th>
+        <th>Sucursal</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stock of stocks">
+        <td>{{ stock.producto.nombre }}</td> 
+        <td>{{ stock.sucursal.nombre }}</td>  <!-- Nombre de la sucursal -->
+        <td>{{ stock.cantidad }}</td>
+        <td>{{ stock.precio }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-
-<table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Sucursal</th>
-      <th>Producto</th>
-      <th>Cantidad</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let stock of stocks">
-      <td>{{ stock.id }}</td>
-      <td>{{ getSucursalName(stock.sucursalId) }}</td>
-      <td>{{ stock.producto }}</td>
-      <td>{{ stock.cantidad }}</td>
-      <td>
-        <button (click)="editStock(stock)">Editar</button>
-        </td>
-    </tr>
-  </tbody>
-</table>

@@ -1,0 +1,98 @@
+<div class="container">
+  <h2>Administrar Stock</h2>
+
+  <!-- Formulario de Stock -->
+  <form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
+    <div formArrayName="stocks">
+      <!-- Iterar sobre las filas de stock -->
+      <div *ngFor="let stock of stocks.controls; let i = index" [formGroupName]="i" class="stock-row">
+        
+        <!-- Nombre del Producto -->
+        <div class="form-group">
+          <label for="nombre{{i}}">Nombre del Producto:</label>
+          <input
+            id="nombre{{i}}"
+            formControlName="nombre"
+            type="text"
+            class="form-control"
+            placeholder="Nombre del producto"
+          />
+          <div *ngIf="stock.get('nombre')?.invalid && stock.get('nombre')?.touched" class="invalid-feedback">
+            Nombre del producto es obligatorio.
+          </div>
+        </div>
+
+        <!-- Cantidad -->
+        <div class="form-group">
+          <label for="cantidad{{i}}">Cantidad:</label>
+          <input
+            id="cantidad{{i}}"
+            formControlName="cantidad"
+            type="number"
+            class="form-control"
+            min="1"
+            placeholder="Cantidad"
+          />
+          <div *ngIf="stock.get('cantidad')?.invalid && stock.get('cantidad')?.touched" class="invalid-feedback">
+            La cantidad debe ser mayor que 0.
+          </div>
+        </div>
+
+        <!-- Precio -->
+        <div class="form-group">
+          <label for="precio{{i}}">Precio:</label>
+          <input
+            id="precio{{i}}"
+            formControlName="precio"
+            type="number"
+            class="form-control"
+            min="0.01"
+            placeholder="Precio"
+          />
+          <div *ngIf="stock.get('precio')?.invalid && stock.get('precio')?.touched" class="invalid-feedback">
+            El precio debe ser positivo.
+          </div>
+        </div>
+
+        <!-- Sucursal -->
+        <div class="form-group">
+          <label for="sucursalId{{i}}">Sucursal:</label>
+          <select
+            id="sucursalId{{i}}"
+            formControlName="sucursalId"
+            class="form-control"
+          >
+            <option value="0">Seleccione una sucursal</option>
+            <option *ngFor="let sucursal of sucursales" [value]="sucursal.id_sucursal">
+              {{ sucursal.nombre }}
+            </option>
+          </select>
+          <div *ngIf="stock.get('sucursalId')?.invalid && stock.get('sucursalId')?.touched" class="invalid-feedback">
+            La sucursal es obligatoria.
+          </div>
+        </div>
+
+        <!-- Botón para eliminar la fila -->
+        <button type="button" class="btn btn-danger" (click)="removeStockRow(i)">
+          Eliminar Fila
+        </button>
+      </div>
+    </div>
+
+    <!-- Botón para agregar nuevas filas -->
+    <button type="button" class="btn btn-primary" (click)="addStockRow()">
+      Agregar Fila
+    </button>
+
+    <!-- Botón para enviar el formulario -->
+    <button type="submit" class="btn btn-success" [disabled]="!stockForm.valid">
+      Guardar Stocks
+    </button>
+  </form>
+</div>
+
+<!-- Mensaje de éxito al guardar los datos -->
+<div *ngIf="stockData">
+  <p><strong>Datos de stock guardados correctamente:</strong></p>
+  <pre>{{ stockData | json }}</pre>
+</div>

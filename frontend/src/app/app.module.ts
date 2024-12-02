@@ -14,7 +14,8 @@ import { CommonModule } from '@angular/common';
 import { SucursalesListComponent } from './sucursales-list/sucursales-list.component';
 import { StockService } from './stock.service';
 import { ReactiveFormsModule } from '@angular/forms'; // Importa ReactiveFormsModule
-import { FormsModule } from '@angular/forms'; // Para formularios basados en plantilla
+import { FormsModule } from '@angular/forms';
+import { StockManyComponent } from './stock-many/stock-many.component'; // Para formularios basados en plantilla
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { FormsModule } from '@angular/forms'; // Para formularios basados en pla
     StockListComponent, 
     StockFormComponent,
     SucursalFormComponent,
-    SucursalesListComponent,  ],
+    SucursalesListComponent,
+    StockManyComponent,  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

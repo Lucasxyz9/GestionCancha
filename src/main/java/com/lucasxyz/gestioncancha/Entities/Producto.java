@@ -18,8 +18,10 @@ public class Producto {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_producto")
     private Long id_producto;
 
+    @Column(name = "nombre")
     private String nombre;
     private Double precio_unitario;
     private Integer cantidad_disponible;
@@ -27,15 +29,9 @@ public class Producto {
     @Column(name = "cantidad_minima")
     private Integer cantidadMinima = 10;
 
-
-    
-
-
-
     @OneToMany(mappedBy = "producto")
     private List<DetallePedido> detallesPedido;
 
-    
     public Long getId_producto() {
         return id_producto;
     }

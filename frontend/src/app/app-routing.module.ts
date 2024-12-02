@@ -9,6 +9,7 @@
   import { StockListComponent } from './stock/stock-list/stock-list.component';
 import { SucursalFormComponent } from './sucursales-form/sucursales-form.component';
 import { SucursalesListComponent } from './sucursales-list/sucursales-list.component';
+import { StockManyComponent } from './stock-many/stock-many.component';
 
   const routes: Routes = [
     // Redirige a productos por defecto
@@ -24,6 +25,9 @@ import { SucursalesListComponent } from './sucursales-list/sucursales-list.compo
     { path: 'stocks', component: StockListComponent }, // Ruta para la lista de stocks
     { path: 'stocks/new', component: StockFormComponent }, // Ruta para agregar un nuevo stock
     { path: 'stocks/edit/:id', component: StockFormComponent }, // Ruta para editar un stock
+    { path: 'stocks/muchos', component: StockManyComponent },  // Ruta para el formulario de múltiples Stocks
+    { path: 'stocks/create', component: StockManyComponent },  // Otras rutas pueden ir aquí
+
 
     //Ruta de sucursales crud
     {path:'sucursales/list', component: SucursalesListComponent},

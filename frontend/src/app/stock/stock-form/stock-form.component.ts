@@ -13,10 +13,10 @@ import { SucursalService } from 'src/app/sucursales.service';
 })
 export class StockFormComponent implements OnInit {
   stock: Stock = {
-    productoId: 0,   // Solo se envía el ID del producto
-    sucursal: { idSucursal: 0 }, // Se define como un objeto con el ID de la sucursal
-    cantidad: 0,      // Cantidad en stock
-    precio: 0,        // Precio del producto
+    idProducto: 0,  // El ID del producto es un int
+    idSucursal: 0,   // Solo el ID de la sucursal
+    cantidad: 0,     // Cantidad en stock
+    precio: 0,       // Precio del producto
   };
 
   productos: Producto[] = [];  // Lista de productos que se usan en el buscador
@@ -24,8 +24,7 @@ export class StockFormComponent implements OnInit {
   sucursales: Sucursal[] = [];  // Lista de sucursales
   searchTerm: string = '';  // Término de búsqueda para el producto
 
-  // Variable para almacenar el nombre del producto seleccionado (temporal)
-  selectedProductoNombre: string = ''; 
+  selectedProductoNombre: string = '';  // Variable para almacenar el nombre del producto seleccionado
 
   constructor(
     private productoService: ProductoService,
@@ -58,7 +57,7 @@ export class StockFormComponent implements OnInit {
   }
 
   selectProducto(producto: Producto): void {
-    this.stock.productoId = producto.id_producto; // Seleccionamos el ID del producto
+    this.stock.idProducto=producto.id_producto
     this.stock.precio = producto.precio_unitario;  // Seleccionamos el precio del producto
     this.selectedProductoNombre = producto.nombre;  // Mostramos el nombre en la variable
     this.searchTerm = producto.nombre;  // Mostramos el nombre en el campo de búsqueda
@@ -66,12 +65,27 @@ export class StockFormComponent implements OnInit {
   }
 
   saveStock(): void {
-    // Validación de stock antes de enviarlo
+    // Validar que todos los campos sean correctos antes de enviarlos
     if (this.isValidStock()) {
-      this.stockService.saveStock(this.stock).subscribe({
+      // Asegúrate de que los valores sean del tipo correcto
+      const stockData: Stock = {
+        idProducto: Number(this.stock.idProducto), // Convierte a number, si es necesario
+        idSucursal: Number(this.stock.idSucursal), // Asegúrate de que sea number
+        cantidad: Number(this.stock.cantidad), // Mantén cantidad como número
+        precio: Number(this.stock.precio) // Convierte a number, si es necesario
+      };
+  
+      // Verifica que las conversiones sean válidas
+      if (isNaN(stockData.idProducto) || isNaN(stockData.precio) || isNaN(stockData.cantidad) || isNaN(stockData.idSucursal)) {
+        alert('Por favor, asegúrate de que todos los campos sean números válidos.');
+        return;
+      }
+  
+      // Enviar los datos al backend
+      this.stockService.saveStock(stockData).subscribe({
         next: () => {
           alert('Stock guardado correctamente');
-          this.resetForm();
+          this.resetForm(); // Restablecer el formulario si es necesario
         },
         error: (err) => {
           console.error('Error al guardar el stock:', err);
@@ -85,22 +99,22 @@ export class StockFormComponent implements OnInit {
 
   isValidStock(): boolean {
     return (
-      !!this.stock.productoId && 
-      this.stock.sucursal.idSucursal > 0 && 
-      this.stock.cantidad > 0 &&
-      this.stock.precio > 0
+      !!this.stock.idProducto &&  // Verifica que el ID del producto esté presente
+      this.stock.idSucursal > 0 &&  // Verifica que el ID de la sucursal sea válido
+      this.stock.cantidad > 0 &&  // Verifica que la cantidad sea mayor a 0
+      this.stock.precio > 0  // Verifica que el precio sea mayor a 0
     );
   }
 
   resetForm(): void {
     this.stock = {
-      productoId: 0,
-      sucursal: { idSucursal: 0 }, // Reiniciamos la sucursal como un objeto vacío
-      cantidad: 0,
-      precio: 0,
+      idProducto: 0,    // Reinicia el ID del producto como string vacío
+      idSucursal: 0,     // Reinicia el ID de la sucursal
+      cantidad: 0,       // Reinicia la cantidad
+      precio: 0,         // Reinicia el precio
     };
     this.searchTerm = '';
-    this.selectedProductoNombre = ''; // Reseteamos el nombre seleccionado
+    this.selectedProductoNombre = '';  // Reseteamos el nombre seleccionado
     this.filteredProductos = [];
   }
 }

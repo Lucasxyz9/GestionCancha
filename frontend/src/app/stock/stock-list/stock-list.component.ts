@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { StockService } from '../../stock.service';
-import { Router } from '@angular/router';
-import { SUCURSALES } from 'src/app/shared/sucursales-lista';
+import { HttpClient } from '@angular/common/http';
+import { StockList } from '../../stock-list.model';  // Asegúrate de importar el modelo actualizado
 
 @Component({
   selector: 'app-stock-list',
@@ -9,30 +8,24 @@ import { SUCURSALES } from 'src/app/shared/sucursales-lista';
   styleUrls: ['./stock-list.component.css']
 })
 export class StockListComponent implements OnInit {
-  stocks: any[] = [];
-  sucursales = SUCURSALES;
+  stocks: StockList[] = [];  // Usamos el modelo StockList actualizado
 
-  constructor(private stockService: StockService, private router: Router) {}
+  constructor(private http: HttpClient) { }
+
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.loadStocks();
   }
 
-
-
-  
-
-  editStock(stock: any): void {
-    this.router.navigate(['/stock/edit', stock.id]);
-  }
-
-  
-
-  navigateToForm(): void {
-    this.router.navigate(['/stock/create']);
-  }
-
-  getSucursalName(sucursalId: number): string {
-    const sucursal = this.sucursales.find((s) => s.id === sucursalId);
-    return sucursal ? sucursal.nombre : 'Sucursal desconocida';
+  loadStocks(): void {
+    this.http.get<StockList[]>('http://localhost:8080/api/stock')
+      .subscribe(
+        (data) => {
+          console.log('Datos recibidos:', data);  // Agregar esto para ver la respuesta
+          this.stocks = data;
+        },
+        (error) => {
+          console.error('Error al cargar los stocks', error);
+        }
+      );
   }
 }
