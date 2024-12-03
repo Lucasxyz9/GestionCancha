@@ -1,5 +1,11 @@
 <div class="stock-list">
   <h2>Lista de Productos en Stock</h2>
+
+  <label>
+    <input type="checkbox" [(ngModel)]="sortBySucursal" (change)="sortStocks()" />
+    Ordenar por Sucursal
+  </label>
+
   <table>
     <thead>
       <tr>
@@ -7,15 +13,22 @@
         <th>Sucursal</th>
         <th>Cantidad</th>
         <th>Precio</th>
+        <th>Acciones</th> <!-- Columna adicional para acciones -->
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let stock of stocks">
-        <td>{{ stock.producto.nombre }}</td> 
-        <td>{{ stock.sucursal.nombre }}</td>  <!-- Nombre de la sucursal -->
+        <td>{{ stock.producto.nombre }}</td>
+        <td>{{ stock.sucursal.nombre }}</td>
         <td>{{ stock.cantidad }}</td>
         <td>{{ stock.precio }}</td>
+        <td>
+          <button (click)="deleteStock(stock)">Eliminar</button>
+        </td>
       </tr>
+
+      
+      
     </tbody>
   </table>
 </div>

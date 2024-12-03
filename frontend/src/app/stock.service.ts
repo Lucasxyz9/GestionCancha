@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Stock } from './stock.model';
 
@@ -25,6 +25,10 @@ export class StockService {
    getStockByProductoAndSucursal(productoId: number, sucursalId: number): Observable<any> {
     // Llama a tu API backend con los parámetros productoId y sucursalId
     return this.http.get<any>(`${this.baseUrl}/search?productoId=${productoId}&sucursalId=${sucursalId}`);
+  }
+
+  saveStocks(stocks: Stock[]): Observable<HttpResponse<any>> {
+    return this.http.post<any>(`${this.apiUrl}/many`, stocks, { observe: 'response' });
   }
   
 }

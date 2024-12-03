@@ -13,5 +13,6 @@ public interface StockRepository extends JpaRepository<Stock, Integer> {
     List<Object[]> findAllWithProductoNombre();
 
     List<Stock> findByProductoNombre(String nombre);
-    
+    void deleteById(Integer id);
+
 }

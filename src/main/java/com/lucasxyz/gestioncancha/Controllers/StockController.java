@@ -7,6 +7,7 @@ import com.lucasxyz.gestioncancha.Repositories.ProductoRepository;
 import com.lucasxyz.gestioncancha.Repositories.StockRepository;
 import com.lucasxyz.gestioncancha.Repositories.SucursalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,7 +91,7 @@ public class StockController {
 
 
     @GetMapping("/producto/nombre/{nombre}")
-public ResponseEntity<Stock> obtenerStockPorNombre(@PathVariable String nombre) {
+    public ResponseEntity<Stock> obtenerStockPorNombre(@PathVariable String nombre) {
     List<Stock> stocks = stockRepository.findByProductoNombre(nombre);
 
     if (stocks.isEmpty()) {
@@ -98,20 +99,53 @@ public ResponseEntity<Stock> obtenerStockPorNombre(@PathVariable String nombre) 
     }
 
     // Retornamos el primer stock encontrado (puedes cambiar esta lógica si necesitas manejar múltiples resultados)
-    return ResponseEntity.ok(stocks.get(0)); 
-}
+        return ResponseEntity.ok(stocks.get(0)); 
+    }
 
 
 
 
     // Eliminar un registro de Stock (DELETE)
-    @DeleteMapping("/{stockId}")
-    public String eliminarStock(@PathVariable int stockId) {
-        Stock stock = stockRepository.findById(stockId)
-                .orElseThrow(() -> new RuntimeException("Stock no encontrado"));
-        stockRepository.delete(stock);
-        return "Stock eliminado con éxito";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStock(@PathVariable Integer id) {
+    System.out.println("ID recibido: " + id);  // Verifica que el ID sea recibido correctamente
+    if (!stockRepository.existsById(id)) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+    stockRepository.deleteById(id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @PostMapping("/many")
+    public ResponseEntity<?> saveMany(@RequestBody List<Stock> stockList) {
+        try {
+            for (Stock stock : stockList) {
+            // Validar la existencia de las relaciones
+            Producto producto = productoRepository.findById(stock.getProducto().getId_producto())
+                    .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado: " + stock.getProducto().getId_producto()));
+            Sucursal sucursal = sucursalRepository.findById(stock.getSucursal().getIdSucursal())
+                    .orElseThrow(() -> new IllegalArgumentException("Sucursal no encontrada: " + stock.getSucursal().getIdSucursal()));
+
+            // Asignar las entidades completas a la entidad Stock
+            stock.setProducto(producto);
+            stock.setSucursal(sucursal);
+
+             // Guardar en la base de datos
+            stockRepository.save(stock);
+        }
+
+        // Enviar mensaje de éxito
+            return ResponseEntity.ok("Stocks guardados correctamente");
+
+        } catch (Exception e) {
+        e.printStackTrace();
+        // Enviar mensaje de error con código 400
+            return ResponseEntity.badRequest().body("Error al guardar los stocks: " + e.getMessage());
+        }
+    }
+
+
 
     
 }
