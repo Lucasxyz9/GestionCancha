@@ -17,6 +17,10 @@ import { ReactiveFormsModule } from '@angular/forms'; // Importa ReactiveFormsMo
 import { FormsModule } from '@angular/forms';
 import { StockManyComponent } from './stock-many/stock-many.component'; // Para formularios basados en plantilla
 
+// Importa los módulos de Angular Material necesarios
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,7 +31,8 @@ import { StockManyComponent } from './stock-many/stock-many.component'; // Para 
     StockFormComponent,
     SucursalFormComponent,
     SucursalesListComponent,
-    StockManyComponent,  ],
+    StockManyComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -37,6 +42,8 @@ import { StockManyComponent } from './stock-many/stock-many.component'; // Para 
     CommonModule,
     ReactiveFormsModule, // Asegúrate de importar esto
     FormsModule, // También importa FormsModule si usas [(ngModel)]
+    MatTableModule,  // Asegúrate de importar MatTableModule
+    MatPaginatorModule // Y MatPaginatorModule para la paginación
   ],
   providers: [StockService],
   bootstrap: [AppComponent]

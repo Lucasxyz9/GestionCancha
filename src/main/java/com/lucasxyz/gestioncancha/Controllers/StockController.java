@@ -7,6 +7,8 @@ import com.lucasxyz.gestioncancha.Repositories.ProductoRepository;
 import com.lucasxyz.gestioncancha.Repositories.StockRepository;
 import com.lucasxyz.gestioncancha.Repositories.SucursalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +55,13 @@ public class StockController {
         return stockRepository.findById(stockId)
                 .orElseThrow(() -> new RuntimeException("Stock no encontrado"));
     }
+
+    @GetMapping("/api/stock")
+    public Page<Stock> getStocks(@RequestParam int page, @RequestParam int size) {
+    PageRequest pageable = PageRequest.of(page, size);
+        return stockRepository.findAll(pageable);
+    }
+
 
     @PostMapping("/save")
     public ResponseEntity<String> crearStock(@RequestBody Map<String, Object> datos) {
