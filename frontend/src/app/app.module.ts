@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { ProductoListComponent } from './producto-list/producto-list.component';
 import { ProductoFormComponent } from './producto-form/producto-form.component';
@@ -20,6 +21,10 @@ import { StockManyComponent } from './stock-many/stock-many.component'; // Para 
 // Importa los módulos de Angular Material necesarios
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { VentasComponent } from './ventas/ventas.component'
 
 @NgModule({
   declarations: [
@@ -31,7 +36,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     StockFormComponent,
     SucursalFormComponent,
     SucursalesListComponent,
-    StockManyComponent
+    StockManyComponent,
+    VentasComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +49,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     ReactiveFormsModule, // Asegúrate de importar esto
     FormsModule, // También importa FormsModule si usas [(ngModel)]
     MatTableModule,  // Asegúrate de importar MatTableModule
-    MatPaginatorModule // Y MatPaginatorModule para la paginación
+    MatPaginatorModule, // Y MatPaginatorModule para la paginación
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    BrowserAnimationsModule
   ],
   providers: [StockService],
   bootstrap: [AppComponent]

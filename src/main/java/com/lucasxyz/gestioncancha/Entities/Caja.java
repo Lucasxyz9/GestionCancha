@@ -1,9 +1,10 @@
 package com.lucasxyz.gestioncancha.Entities;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,14 +14,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
-
 public class Caja {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idCaja;
+    @Column(name = "id_caja")
+    private Long idCaja;
 
     private BigDecimal monto;
-    private LocalDateTime fecha;
+    private LocalDate fecha;
 
     @ManyToOne
     @JoinColumn(name = "id_sucursal")
@@ -29,11 +30,11 @@ public class Caja {
     @OneToMany(mappedBy = "caja")
     private List<Cobros> cobros;
 
-    public Integer getIdCaja() {
+    public Long getIdCaja() {
         return idCaja;
     }
 
-    public void setIdCaja(Integer idCaja) {
+    public void setIdCaja(Long idCaja) {
         this.idCaja = idCaja;
     }
 
@@ -45,11 +46,11 @@ public class Caja {
         this.monto = monto;
     }
 
-    public LocalDateTime getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDateTime fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
@@ -68,6 +69,5 @@ public class Caja {
     public void setCobros(List<Cobros> cobros) {
         this.cobros = cobros;
     }
-
-    
 }
+

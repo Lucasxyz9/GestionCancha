@@ -33,6 +33,12 @@ public class Producto {
     @OneToMany(mappedBy = "producto")
     private List<DetalleCaja> detallesCaja;  // Relación con DetalleCaja
 
+    @ManyToOne
+    @JoinColumn(name = "sucursal_id")  // Asumiendo que esta es la columna de la clave foránea
+    private Sucursal sucursal;
+
+
+
     // Constructor vacío
     public Producto() {}
 

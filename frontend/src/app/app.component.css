@@ -1,30 +1,39 @@
+/* Estilos generales */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  font-family: 'Roboto', sans-serif; /* Fuente de Angular Material */
+  background-color: #fafafa; /* Fondo claro */
   margin: 0;
   padding: 0;
+  color: white; /* Texto blanco */
 }
 
+/* Contenedor principal */
 .container {
-  width: 80%;
-  margin: 20px auto;
+  width: 90%;
+  margin: 30px auto;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  max-width: 1200px;
 }
 
+/* Título principal */
 h1 {
   text-align: center;
-  color: #333;
+  font-size: 2rem;
+  color: white; /* Texto blanco */
+  margin-bottom: 20px;
+  font-weight: 600;
 }
 
+/* Estilo para las listas de enlaces */
 ul {
   list-style-type: none;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
   justify-content: center;
   align-items: center;
 }
@@ -35,19 +44,47 @@ li {
   justify-content: center;
 }
 
+/* Estilos de los enlaces (botones) */
 a {
   text-decoration: none;
-  color: white;
+  color: white; /* Color del texto blanco */
   font-weight: bold;
-  background-color: #007BFF;
-  padding: 10px 20px;
+  background-color: #007BFF; /* Color azul brillante */
+  padding: 12px 25px;
   border-radius: 5px;
-  width: 200px;
+  width: 250px;
   text-align: center;
   display: block;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
+/* Efecto al pasar el ratón (hover) */
 a:hover {
   background-color: #0056b3;
+  transform: translateY(-4px); /* Efecto de desplazamiento sutil */
+}
+
+/* Efecto al presionar (active) */
+a:active {
+  transform: translateY(1px); /* Presión del botón */
+}
+
+/* Estilo para los botones secundarios o alternativos */
+a.secondary-button {
+  background-color: #28a745; /* Verde */
+}
+
+a.secondary-button:hover {
+  background-color: #218838; /* Verde oscuro */
+}
+
+/* Estilo del menú hamburguesa (botón de icono) */
+button.mat-icon-button {
+  color: white; /* Icono del menú hamburguesa blanco */
+  margin-left: 16px;
+  margin-top: 16px;
+}
+
+button.mat-icon-button:hover {
+  color: #0056b3; /* Cambio de color del icono al pasar el ratón */
 }

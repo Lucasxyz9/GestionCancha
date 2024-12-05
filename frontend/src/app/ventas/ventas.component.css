@@ -1,0 +1,54 @@
+.ventas-container {
+  display: flex;
+  gap: 20px;
+}
+
+.busqueda {
+  flex: 1;
+}
+
+.busqueda input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.productos-filtrados {
+  list-style: none;
+  padding: 0;
+}
+
+.productos-filtrados li {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.productos-filtrados li:hover {
+  background-color: #f0f0f0;
+}
+
+.carrito {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 10px;
+  max-width: 400px;
+}
+
+.carrito ul {
+  list-style: none;
+  padding: 0;
+}
+
+.carrito ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.carrito button {
+  margin-left: 5px;
+}

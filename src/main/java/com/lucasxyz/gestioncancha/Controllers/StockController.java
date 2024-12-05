@@ -101,7 +101,7 @@ public class StockController {
 
     @GetMapping("/producto/nombre/{nombre}")
     public ResponseEntity<Stock> obtenerStockPorNombre(@PathVariable String nombre) {
-    List<Stock> stocks = stockRepository.findByProductoNombre(nombre);
+    List<Stock> stocks = stockRepository.findByProducto_Nombre(nombre);
 
     if (stocks.isEmpty()) {
         return ResponseEntity.notFound().build();

@@ -1,13 +1,31 @@
-<div class="container">
-  <h1>Gestión de Productos</h1>
-  <ul>
-    <li><a routerLink="/productos">Lista de Productos</a></li>
-    <li><a routerLink="/productos/crear">Nuevo Producto</a></li>
-  </ul>
-</div>
-<nav>
-  <a routerLink="/stocks/new">Inventario</a>
-  <a routerLink="/stocks">Agregar Stocks</a>
+<mat-sidenav-container class="example-container">
+  <!-- Sidenav (menú hamburguesa) -->
+  <mat-sidenav #sidenav mode="side" opened>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/productos">Lista de Productos</a>
+      <a mat-list-item routerLink="/productos/crear">Nuevo Producto</a>
+      <a mat-list-item routerLink="/sucursales/list">Lista de Sucursales</a>
+      <a mat-list-item routerLink="/sucursales/form">Crear Sucursales</a>
 
-</nav>
-<router-outlet></router-outlet>
+      <a mat-list-item routerLink="/stocks">Lista de Stocks</a> <!-- Nueva ruta de Stocks -->
+      <a mat-list-item routerLink="/stocks/new">Nuevo Stock</a>
+      <a mat-list-item routerLink="/stocks/muchos">Agregar Varios Stock</a> 
+
+      <a mat-list-item routerLink="/ventas">Ventas</a> 
+
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Contenido principal -->
+  <mat-sidenav-content>
+    <!-- Botón del menú hamburguesa -->
+    <button mat-icon-button (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <!-- El contenido principal de la página -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

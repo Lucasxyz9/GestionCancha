@@ -32,8 +32,13 @@ public class DetalleCajaController {
 
     // Crear un nuevo detalle de caja
     @PostMapping
-    public DetalleCaja createDetalleCaja(@RequestBody DetalleCaja detalleCaja) {
-        return detalleCajaRepository.save(detalleCaja);
+    public ResponseEntity<DetalleCaja> createDetalleCaja(@RequestBody DetalleCaja detalleCaja) {
+        try {
+            DetalleCaja nuevoDetalle = detalleCajaRepository.save(detalleCaja);
+            return ResponseEntity.ok(nuevoDetalle);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null); // Manejo de errores
+        }
     }
 
     // Actualizar un detalle de caja existente
@@ -43,14 +48,17 @@ public class DetalleCajaController {
 
         if (detalleCaja.isPresent()) {
             DetalleCaja existingDetalleCaja = detalleCaja.get();
+            // Aquí actualizas las propiedades del detalle
             existingDetalleCaja.setCaja(detalleCajaDetails.getCaja());
             existingDetalleCaja.setStock(detalleCajaDetails.getStock());
             existingDetalleCaja.setProducto(detalleCajaDetails.getProducto());
             existingDetalleCaja.setCantidad(detalleCajaDetails.getCantidad());
             existingDetalleCaja.setFecha(detalleCajaDetails.getFecha());
+
+            // Guardamos y retornamos el detalle actualizado
             return ResponseEntity.ok(detalleCajaRepository.save(existingDetalleCaja));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();  // Si no se encuentra el detalle
         }
     }
 
@@ -61,7 +69,7 @@ public class DetalleCajaController {
             detalleCajaRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();  // Si no existe el detalle a eliminar
         }
     }
 }

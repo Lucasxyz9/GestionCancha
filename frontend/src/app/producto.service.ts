@@ -7,8 +7,9 @@ import { Producto } from './producto.model';
   providedIn: 'root'
 })
 export class ProductoService {
-
   private apiUrl = 'http://localhost:8080/productos';
+  private apiUrlProducto = 'http://localhost:8080/productos/sucursal/';
+
   constructor(private http: HttpClient) { }
 
   createProducto(producto: Producto) {
@@ -41,4 +42,11 @@ export class ProductoService {
   searchProducts(query: string): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.apiUrl}?search=${query}`);
   }
+
+  // Obtener productos por sucursal
+  getProductosPorSucursal(sucursalId: number): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrlProducto}${sucursalId}`);
+  }
 }
+
+
