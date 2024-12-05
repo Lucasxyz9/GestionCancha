@@ -24,7 +24,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { VentasComponent } from './ventas/ventas.component'
+import { VentasComponent } from './ventas/ventas.component';
+import { VideoayudaComponent } from './videoayuda/videoayuda.component'
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { VentasComponent } from './ventas/ventas.component'
     SucursalFormComponent,
     SucursalesListComponent,
     StockManyComponent,
-    VentasComponent
+    VentasComponent,
+    VideoayudaComponent
   ],
   imports: [
     BrowserModule,

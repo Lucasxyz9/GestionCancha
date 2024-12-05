@@ -11,6 +11,7 @@ import { StockManyComponent } from './stock-many/stock-many.component';
 import { SucursalFormComponent } from './sucursales-form/sucursales-form.component';
 import { SucursalesListComponent } from './sucursales-list/sucursales-list.component';
 import { VentasComponent } from './ventas/ventas.component';
+import { VideoayudaComponent } from './videoayuda/videoayuda.component';
 
 const routes: Routes = [
   // Redirige a productos por defecto
@@ -34,6 +35,9 @@ const routes: Routes = [
 
   // Ruta de ventas
   { path: 'ventas', component: VentasComponent }, // Ruta para VentasComponent
+
+  //ruta para ayuda didactica
+  { path: 'ayuda', component: VideoayudaComponent }
 ];
 
 @NgModule({
