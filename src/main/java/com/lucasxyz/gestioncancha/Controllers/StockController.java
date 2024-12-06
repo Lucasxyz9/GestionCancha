@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,39 +65,64 @@ public class StockController {
 
 
     @PostMapping("/save")
-    public ResponseEntity<String> crearStock(@RequestBody Map<String, Object> datos) {
-        try {
-            // Convertir identificadores a Long
-            Long idProducto = Long.valueOf(datos.get("idProducto").toString());
-            Integer idSucursal = (Integer)datos.get("idSucursal");
-            Integer cantidad = (Integer) datos.get("cantidad");
-            Double precio = datos.get("precio") != null ? Double.parseDouble(datos.get("precio").toString()) : null;
+public ResponseEntity<Map<String, String>> crearStock(@RequestBody Map<String, Object> datos) {
+    try {
+        // Convertir identificadores a Long
+        Long idProducto = Long.valueOf(datos.get("idProducto").toString());
+        Integer idSucursal = (Integer) datos.get("idSucursal");
+        Integer cantidad = (Integer) datos.get("cantidad");
+        Double precio = datos.get("precio") != null ? Double.parseDouble(datos.get("precio").toString()) : null;
 
-            // Validar que no falten datos
-            if (idProducto == null || idSucursal == null || cantidad == null || precio == null) {
-                return ResponseEntity.badRequest().body("Faltan valores obligatorios en el JSON");
-            }
-
-            // Buscar entidades relacionadas
-            Producto producto = productoRepository.findById(idProducto)
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-            Sucursal sucursal = sucursalRepository.findById(idSucursal)
-                    .orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
-
-            // Crear y guardar el objeto Stock
-            Stock stock = new Stock();
-            stock.setProducto(producto);
-            stock.setSucursal(sucursal);
-            stock.setCantidad(cantidad);
-            stock.setPrecio(precio);
-
-            stockRepository.save(stock); // Guardar en la base de datos
-            return ResponseEntity.ok("Stock creado exitosamente");
-        } catch (Exception e) {
-            // Manejar errores
-            return ResponseEntity.badRequest().body("Error al crear el stock: " + e.getMessage());
+        // Validar que no falten datos
+        if (idProducto == null || idSucursal == null || cantidad == null || precio == null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Faltan valores obligatorios en el JSON");
+            return ResponseEntity.badRequest().body(response);
         }
+
+        // Buscar entidades relacionadas
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        Sucursal sucursal = sucursalRepository.findById(idSucursal)
+                .orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
+
+        // Buscar si ya existe un stock con el producto y la sucursal
+        Stock stockExistente = stockRepository.findByProductoAndSucursal(producto, sucursal);
+
+        if (stockExistente != null) {
+            // Si existe, actualizar la cantidad
+            stockExistente.setCantidad(stockExistente.getCantidad() + cantidad);
+            stockExistente.setPrecio(precio);  // Actualizar precio si es necesario
+            stockRepository.save(stockExistente);  // Guardar actualización
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Stock actualizado exitosamente");
+            return ResponseEntity.ok(response);
+        } else {
+            // Si no existe, crear un nuevo stock
+            Stock nuevoStock = new Stock();
+            nuevoStock.setProducto(producto);
+            nuevoStock.setSucursal(sucursal);
+            nuevoStock.setCantidad(cantidad);
+            nuevoStock.setPrecio(precio);
+
+            stockRepository.save(nuevoStock); // Guardar en la base de datos
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Stock creado exitosamente");
+            return ResponseEntity.ok(response);
+        }
+
+    } catch (Exception e) {
+        // Manejar errores
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Error al crear o actualizar el stock: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+}
+
+    
+
 
 
     @GetMapping("/producto/nombre/{nombre}")

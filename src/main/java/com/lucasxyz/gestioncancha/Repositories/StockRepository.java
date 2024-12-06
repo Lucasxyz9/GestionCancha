@@ -2,6 +2,7 @@ package com.lucasxyz.gestioncancha.Repositories;
 
 import com.lucasxyz.gestioncancha.Entities.Producto;
 import com.lucasxyz.gestioncancha.Entities.Stock;
+import com.lucasxyz.gestioncancha.Entities.Sucursal;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface StockRepository extends JpaRepository<Stock, Integer> { 
+    Stock findByProductoAndSucursal(Producto producto, Sucursal sucursal);
+
     // Consulta personalizada que hace un JOIN entre Stock y Producto
     @Query("SELECT s, p.nombre AS productoNombre FROM Stock s JOIN s.producto p")
     List<Object[]> findAllWithProductoNombre();

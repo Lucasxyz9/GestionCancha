@@ -5,6 +5,7 @@ import { Producto } from 'src/app/producto.model';
 import { ProductoService } from 'src/app/producto.service';
 import { Sucursal } from 'src/app/sucursal.model';
 import { SucursalService } from 'src/app/sucursales.service';
+import Swal from 'sweetalert2';  // Importa SweetAlert2
 
 @Component({
   selector: 'app-stock-form',
@@ -57,7 +58,7 @@ export class StockFormComponent implements OnInit {
   }
 
   selectProducto(producto: Producto): void {
-    this.stock.idProducto=producto.id_producto
+    this.stock.idProducto = producto.id_producto;
     this.stock.precio = producto.precio_unitario;  // Seleccionamos el precio del producto
     this.selectedProductoNombre = producto.nombre;  // Mostramos el nombre en la variable
     this.searchTerm = producto.nombre;  // Mostramos el nombre en el campo de búsqueda
@@ -67,35 +68,44 @@ export class StockFormComponent implements OnInit {
   saveStock(): void {
     // Validar que todos los campos sean correctos antes de enviarlos
     if (this.isValidStock()) {
-      // Asegúrate de que los valores sean del tipo correcto
+      // Preparar los datos para enviar
       const stockData: Stock = {
-        idProducto: Number(this.stock.idProducto), // Convierte a number, si es necesario
-        idSucursal: Number(this.stock.idSucursal), // Asegúrate de que sea number
-        cantidad: Number(this.stock.cantidad), // Mantén cantidad como número
-        precio: Number(this.stock.precio) // Convierte a number, si es necesario
+        idProducto: Number(this.stock.idProducto),
+        idSucursal: Number(this.stock.idSucursal),
+        cantidad: Number(this.stock.cantidad),
+        precio: Number(this.stock.precio)
       };
   
-      // Verifica que las conversiones sean válidas
+      // Verificar que las conversiones sean válidas
       if (isNaN(stockData.idProducto) || isNaN(stockData.precio) || isNaN(stockData.cantidad) || isNaN(stockData.idSucursal)) {
-        alert('Por favor, asegúrate de que todos los campos sean números válidos.');
+        Swal.fire('Error', 'Por favor, asegúrate de que todos los campos sean números válidos.', 'error');
         return;
       }
   
       // Enviar los datos al backend
       this.stockService.saveStock(stockData).subscribe({
-        next: () => {
-          alert('Stock guardado correctamente');
-          this.resetForm(); // Restablecer el formulario si es necesario
+        next: (response: any) => { // Asegúrate de que la respuesta esté tipada correctamente
+          // Si el backend devuelve un campo "message"
+          const message = response?.message || 'Stock guardado exitosamente';
+          Swal.fire('Éxito', message, 'success');
+          this.resetForm();
         },
         error: (err) => {
           console.error('Error al guardar el stock:', err);
-          alert('Error al guardar el stock.');
+          // Verificar si el backend envía un mensaje de error
+          const errorMessage = err?.error?.message || 'Hubo un error al guardar el stock. Intenta nuevamente.';
+          Swal.fire('Error', errorMessage, 'error');
         }
       });
     } else {
-      alert('Por favor, completa todos los campos correctamente.');
+      Swal.fire('Advertencia', 'Por favor, completa todos los campos correctamente.', 'warning');
     }
   }
+    
+  
+  
+  
+  
 
   isValidStock(): boolean {
     return (
