@@ -30,6 +30,7 @@ public interface StockRepository extends JpaRepository<Stock, Integer> {
 
     // Método para encontrar Stock por ID de Producto
     @Query("SELECT s FROM Stock s WHERE s.producto.id = :productoId")
-    Optional<Stock> findByProducto_Id(Long productoId);
-}
+    List<Stock> findByProducto_Id(@Param("productoId") Long productoId);
+
+}       
 

@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,48 +81,71 @@ public class CajaController {
     }
 
     @PostMapping("/registrarVenta")
-    public ResponseEntity<String> registrarVenta(@RequestBody Map<String, Object> datosVenta) {
-        try {
-            // Extraer datos del JSON recibido
-            Long cajaId = ((Number) datosVenta.get("cajaId")).longValue();
-            @SuppressWarnings("unchecked")
-            List<Map<String, Object>> productos = (List<Map<String, Object>>) datosVenta.get("productos");
-            double total = ((Number) datosVenta.get("total")).doubleValue();
+public ResponseEntity<Map<String, Object>> registrarVenta(@RequestBody Map<String, Object> datosVenta) {
+    Map<String, Object> response = new HashMap<>();
+    try {
+        // Extraer datos del JSON recibido
+        Long cajaId = ((Number) datosVenta.get("cajaId")).longValue();
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> productos = (List<Map<String, Object>>) datosVenta.get("productos");
+        double total = ((Number) datosVenta.get("total")).doubleValue();
 
-            // 1. Actualizar el monto de la caja
-            Caja caja = cajaRepository.findById(cajaId)
-                    .orElseThrow(() -> new RuntimeException("Caja no encontrada"));
+        // 1. Actualizar el monto de la caja
+        Caja caja = cajaRepository.findById(cajaId)
+                .orElseThrow(() -> new RuntimeException("Caja no encontrada"));
 
-            // Convertir el total de double a BigDecimal antes de sumarlo
-            caja.setMonto(caja.getMonto().add(BigDecimal.valueOf(total)));  // Usar add() para sumar BigDecimal
-            cajaRepository.save(caja);
+        // Convertir el total de double a BigDecimal antes de sumarlo
+        caja.setMonto(caja.getMonto().add(BigDecimal.valueOf(total))); // Usar add() para sumar BigDecimal
+        cajaRepository.save(caja);
 
-            // 2. Descontar del stock
-            for (Map<String, Object> producto : productos) {
-                Long productoId = ((Number) producto.get("id_producto")).longValue();
-                int cantidadVendida = ((Number) producto.get("cantidad")).intValue();
+        // 2. Descontar del stock
+        for (Map<String, Object> producto : productos) {
+            Long productoId = ((Number) producto.get("id_producto")).longValue();
+            int cantidadVendida = ((Number) producto.get("cantidad")).intValue();
 
-                // Aquí usamos el método findByProducto_Id que se ajusta a la estructura correcta del repositorio
-                Stock stock = stockRepository.findByProducto_Id(productoId)  // Cambié el método a findByProducto_Id
-                        .orElseThrow(() -> new RuntimeException("Producto no encontrado en stock"));
+            // Buscar registros del producto en el stock
+            List<Stock> stockList = stockRepository.findByProducto_Id(productoId);
 
+            if (stockList.isEmpty()) {
+                throw new RuntimeException("Producto no encontrado en stock para el ID: " + productoId);
+            }
+
+            // Verificar y actualizar cada registro del stock
+            for (Stock stock : stockList) {
                 if (stock.getCantidad() < cantidadVendida) {
                     throw new RuntimeException("Stock insuficiente para el producto: " + productoId);
                 }
 
-                // Actualizamos el stock reduciendo la cantidad
+                // Actualizar el stock reduciendo la cantidad
                 stock.setCantidad(stock.getCantidad() - cantidadVendida);
                 stockRepository.save(stock);
+
+                // Salir del bucle si ya se descontó la cantidad requerida
+                cantidadVendida = 0;
+                break;
             }
 
-            return ResponseEntity.ok("Venta registrada exitosamente y stock actualizado");
-        } catch (Exception e) {
-            // Loguear el error completo para más detalles
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al registrar la venta: " + e.getMessage());
+            // Si después de recorrer el stock queda cantidad sin descontar, hay un problema
+            if (cantidadVendida > 0) {
+                throw new RuntimeException("Stock insuficiente para completar la venta del producto: " + productoId);
+            }
         }
-    }
 
+        // Preparar la respuesta exitosa
+        response.put("message", "Venta registrada exitosamente y stock actualizado");
+        response.put("status", "success");
+        return ResponseEntity.ok(response);
+
+    } catch (Exception e) {
+        // Loguear el error completo para más detalles
+        e.printStackTrace();
+
+        // Preparar la respuesta de error
+        response.put("message", "Error al registrar la venta: " + e.getMessage());
+        response.put("status", "error");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+}
 
 
     
