@@ -153,9 +153,10 @@ public ResponseEntity<Map<String, String>> crearStock(@RequestBody Map<String, O
 
 
     @PostMapping("/many")
-    public ResponseEntity<?> saveMany(@RequestBody List<Stock> stockList) {
-        try {
-            for (Stock stock : stockList) {
+public ResponseEntity<Map<String, String>> saveMany(@RequestBody List<Stock> stockList) {
+    try {
+        // Recorrer la lista de stocks para procesarlos
+        for (Stock stock : stockList) {
             // Validar la existencia de las relaciones
             Producto producto = productoRepository.findById(stock.getProducto().getId_producto())
                     .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado: " + stock.getProducto().getId_producto()));
@@ -166,19 +167,40 @@ public ResponseEntity<Map<String, String>> crearStock(@RequestBody Map<String, O
             stock.setProducto(producto);
             stock.setSucursal(sucursal);
 
-             // Guardar en la base de datos
-            stockRepository.save(stock);
+            // Verificar si ya existe un stock con el mismo producto y sucursal
+            Stock stockExistente = stockRepository.findByProductoAndSucursal(producto, sucursal);
+
+            if (stockExistente != null) {
+                // Si ya existe, actualizar la cantidad
+                stockExistente.setCantidad(stockExistente.getCantidad() + stock.getCantidad());
+                stockExistente.setPrecio(stock.getPrecio()); // Si también se necesita actualizar el precio
+
+                stockRepository.save(stockExistente); // Guardar la actualización
+            } else {
+                // Si no existe, guardar el nuevo stock
+                stockRepository.save(stock);
+            }
         }
 
-        // Enviar mensaje de éxito
-            return ResponseEntity.ok("Stocks guardados correctamente");
+        // Enviar respuesta de éxito
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Stocks guardados correctamente");
+        return ResponseEntity.ok(response);
 
-        } catch (Exception e) {
+    } catch (IllegalArgumentException e) {
+        // Manejar errores específicos de las relaciones
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Error: " + e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    } catch (Exception e) {
+        // Manejar errores generales
         e.printStackTrace();
-        // Enviar mensaje de error con código 400
-            return ResponseEntity.badRequest().body("Error al guardar los stocks: " + e.getMessage());
-        }
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Error al guardar los stocks: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+}
+
 
 
 

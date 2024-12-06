@@ -6,6 +6,8 @@ import { ProductoService } from 'src/app/producto.service';
 import { Sucursal } from 'src/app/sucursal.model';
 import { SucursalService } from 'src/app/sucursales.service';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import Swal from 'sweetalert2'; // Importa SweetAlert
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-stock-many',
@@ -97,31 +99,26 @@ export class StockManyComponent implements OnInit {
 
   // Manejar la selección de un producto y asignar precio automáticamente
   selectProducto(event: any, index: number) {
-  const selectedProductName = event.target.value;
-  
-  // Buscar el producto por el nombre
-  const selectedProduct = this.filteredProductos.find(product => product.nombre === selectedProductName);
-  
-  // Si se encuentra el producto, asignar tanto la ID como el precio al formulario
+    const selectedProductName = event.target.value;
+    
+    // Buscar el producto por el nombre
+    const selectedProduct = this.filteredProductos.find(product => product.nombre === selectedProductName);
+    
+    // Si se encuentra el producto, asignar tanto la ID como el precio al formulario
     if (selectedProduct) {
-      // Asignar la ID del producto seleccionado al formulario
       this.stocksFormArray.at(index).get('idProducto')?.setValue(selectedProduct.id_producto);
-      
-      // Asignar el precio del producto al formulario
       this.stocksFormArray.at(index).get('precio')?.setValue(selectedProduct.precio_unitario);
     }
   }
 
   // Obtener el nombre del producto para mostrar en el input
   getProductoNombre(index: number): string {
-  const idProducto = this.stocksFormArray.at(index).get('idProducto')?.value;
-  const producto = this.productos.find(p => p.id_producto === idProducto);
-  return producto ? producto.nombre : '';
+    const idProducto = this.stocksFormArray.at(index).get('idProducto')?.value;
+    const producto = this.productos.find(p => p.id_producto === idProducto);
+    return producto ? producto.nombre : '';
   }
-  
 
   // Manejar el envío del formulario
-  // Agregar la validación antes de enviar
   onSubmit(): void {
     const validStocks = this.stocksFormArray.controls.filter(control => {
       return control.get('nombreProducto')?.value &&
@@ -132,7 +129,7 @@ export class StockManyComponent implements OnInit {
   
     // Verificar si hay filas válidas
     if (validStocks.length === 0) {
-      alert('Por favor, complete al menos una fila válida.');
+      Swal.fire('Advertencia', 'Por favor, complete al menos una fila válida.', 'warning');
       return;
     }
   
@@ -151,23 +148,21 @@ export class StockManyComponent implements OnInit {
   
     // Enviar los datos al backend y manejar la respuesta
     this.stockService.saveStocks(stockData).subscribe({
-      next: (response) => {
-        if (response.status === 200) {
-          alert('Stocks guardados correctamente');
+      next: (response: HttpResponse<any>) => {
+        if (response.body && response.body.message === 'Stocks guardados correctamente') {
+          Swal.fire('Éxito', 'Stocks guardados correctamente', 'success');
           this.resetForm(); // Reiniciar el formulario
         } else {
-          alert('Error al guardar los stocks.');
+          Swal.fire('Error', 'Error al guardar los stocks: ' + (response.body?.message || 'Desconocido'), 'error');
         }
       },
       error: (err) => {
         console.error('Error al guardar los stocks:', err);
-        alert('Error al guardar los stocks.');
+        Swal.fire('Error', 'Error al guardar los stocks. Intenta nuevamente.', 'error');
       }
     });
   }
   
-
-
   // Reiniciar el formulario a su estado inicial
   resetForm(): void {
     this.stockForm.reset();

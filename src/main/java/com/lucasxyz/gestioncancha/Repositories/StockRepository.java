@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface StockRepository extends JpaRepository<Stock, Integer> { 
     Stock findByProductoAndSucursal(Producto producto, Sucursal sucursal);
-
+    
     // Consulta personalizada que hace un JOIN entre Stock y Producto
     @Query("SELECT s, p.nombre AS productoNombre FROM Stock s JOIN s.producto p")
     List<Object[]> findAllWithProductoNombre();
