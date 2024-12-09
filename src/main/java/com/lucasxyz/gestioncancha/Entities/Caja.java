@@ -27,6 +27,11 @@ public class Caja {
     @JoinColumn(name = "id_sucursal")
     private Sucursal sucursal;
 
+    @ManyToOne
+    @JoinColumn(name = "id_cliente") // Define la columna que actúa como clave foránea
+    private Cliente cliente;
+
+
     @OneToMany(mappedBy = "caja")
     private List<Cobros> cobros;
 

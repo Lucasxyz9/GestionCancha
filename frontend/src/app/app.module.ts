@@ -25,7 +25,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { VentasComponent } from './ventas/ventas.component';
-import { VideoayudaComponent } from './videoayuda/videoayuda.component'
+import { VideoayudaComponent } from './videoayuda/videoayuda.component';
+import { ClienteFormComponent } from './clientes-form/clientes-form.component'
+
 
 @NgModule({
   declarations: [
@@ -39,7 +41,8 @@ import { VideoayudaComponent } from './videoayuda/videoayuda.component'
     SucursalesListComponent,
     StockManyComponent,
     VentasComponent,
-    VideoayudaComponent
+    VideoayudaComponent,
+    ClienteFormComponent,
   ],
   imports: [
     BrowserModule,

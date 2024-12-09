@@ -12,10 +12,13 @@ import { SucursalFormComponent } from './sucursales-form/sucursales-form.compone
 import { SucursalesListComponent } from './sucursales-list/sucursales-list.component';
 import { VentasComponent } from './ventas/ventas.component';
 import { VideoayudaComponent } from './videoayuda/videoayuda.component';
+import { ClienteFormComponent } from './clientes-form/clientes-form.component';
 
 const routes: Routes = [
   // Redirige a productos por defecto
   { path: '', redirectTo: '/productos', pathMatch: 'full' },
+
+
 
   // Rutas de productos
   { path: 'productos', component: ProductoListComponent },
@@ -37,7 +40,10 @@ const routes: Routes = [
   { path: 'ventas', component: VentasComponent }, // Ruta para VentasComponent
 
   //ruta para ayuda didactica
-  { path: 'ayuda', component: VideoayudaComponent }
+  { path: 'ayuda', component: VideoayudaComponent },
+
+    //Rutas de clientes
+  { path: 'cliente/crear', component: ClienteFormComponent}
 ];
 
 @NgModule({

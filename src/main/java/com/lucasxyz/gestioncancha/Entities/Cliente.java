@@ -28,6 +28,13 @@ public class Cliente {
     @Column(name = "email", length = 100, unique = true)
     private String email;
 
+    @Column(name = "ci", length = 100)
+    private String ci;
+
+    @Column(name = "ruc", length = 100, nullable = true)
+    private String ruc;
+    
+
     public UUID getIdCliente() {
         return idCliente;
     }
@@ -66,6 +73,22 @@ public class Cliente {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRuc() {
+        return ruc;
+    }
+
+    public void setRuc(String ruc) {
+        this.ruc = ruc;
+    }
+
+    public String getCi() {
+        return ci;
+    }
+
+    public void setCi(String ci) {
+        this.ci = ci;
     }
 
     

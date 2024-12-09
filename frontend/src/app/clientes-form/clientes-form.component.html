@@ -1,0 +1,81 @@
+<div class="customer-form">
+  <h2>Registrar Cliente</h2>
+  <form [formGroup]="clienteForm" (ngSubmit)="guardarCliente()">
+    <div class="form-group">
+      <label for="nombre">Nombre</label>
+      <input
+        id="nombre"
+        formControlName="nombre"
+        type="text"
+        placeholder="Ingrese el nombre"
+        [class.invalid]="clienteForm.get('nombre')?.invalid && clienteForm.get('nombre')?.touched"
+      />
+      <div class="error-message" *ngIf="clienteForm.get('nombre')?.invalid && clienteForm.get('nombre')?.touched">
+        El nombre es requerido.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="apellido">Apellido</label>
+      <input
+        id="apellido"
+        formControlName="apellido"
+        type="text"
+        placeholder="Ingrese el apellido"
+        [class.invalid]="clienteForm.get('apellido')?.invalid && clienteForm.get('apellido')?.touched"
+      />
+      <div class="error-message" *ngIf="clienteForm.get('apellido')?.invalid && clienteForm.get('apellido')?.touched">
+        El apellido es requerido.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Teléfono</label>
+      <input
+        id="telefono"
+        formControlName="telefono"
+        type="text"
+        placeholder="Ingrese el teléfono"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        formControlName="email"
+        type="email"
+        placeholder="Ingrese el email"
+        [class.invalid]="clienteForm.get('email')?.invalid && clienteForm.get('email')?.touched"
+      />
+      <div class="error-message" *ngIf="clienteForm.get('email')?.invalid && clienteForm.get('email')?.touched">
+        Ingrese un email válido.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="ci">Cédula de Identidad (CI)</label>
+      <input
+        id="ci"
+        formControlName="ci"
+        type="text"
+        placeholder="Ingrese el CI"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="ruc">RUC</label>
+      <input
+        id="ruc"
+        formControlName="ruc"
+        type="text"
+        placeholder="Ingrese el RUC"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="clienteForm.invalid">Guardar Cliente</button>
+      <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+</div>

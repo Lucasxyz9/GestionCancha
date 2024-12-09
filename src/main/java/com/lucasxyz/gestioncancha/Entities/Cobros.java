@@ -26,7 +26,7 @@ public class Cobros {
     private Caja caja;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
     public Integer getIdCobro() {

@@ -4,6 +4,7 @@ import com.lucasxyz.gestioncancha.Entities.Cliente;
 import com.lucasxyz.gestioncancha.Repositories.ClienteRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +29,9 @@ public class ClienteController {
     }
 
     @PostMapping
-    public Cliente createCliente(@RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+    public ResponseEntity<Cliente> guardarCliente(@RequestBody Cliente cliente) {
+        Cliente nuevoCliente = clienteRepository.save(cliente);
+        return ResponseEntity.ok(nuevoCliente);
     }
 
     @PutMapping("/{id}")
