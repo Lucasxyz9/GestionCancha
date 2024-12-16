@@ -14,20 +14,21 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SucursalesListComponent } from './sucursales-list/sucursales-list.component';
 import { StockService } from './stock.service';
-import { ReactiveFormsModule } from '@angular/forms'; // Importa ReactiveFormsModule
-import { FormsModule } from '@angular/forms';
-import { StockManyComponent } from './stock-many/stock-many.component'; // Para formularios basados en plantilla
+import { ReactiveFormsModule } from '@angular/forms'; // Correctly imported
+import { FormsModule } from '@angular/forms'; // Removed duplicate import
+import { StockManyComponent } from './stock-many/stock-many.component'; // For template-driven forms
 
-// Importa los módulos de Angular Material necesarios
+// Angular Material modules
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button'; // Added MatButtonModule
 import { VentasComponent } from './ventas/ventas.component';
 import { VideoayudaComponent } from './videoayuda/videoayuda.component';
-import { ClienteFormComponent } from './clientes-form/clientes-form.component'
-
+import { ClienteFormComponent } from './clientes-form/clientes-form.component';
+import { ClientesListComponent } from './clientes-list/clientes-list.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import { ClienteFormComponent } from './clientes-form/clientes-form.component'
     ProductoListComponent,
     ProductoFormComponent,
     ProductoDetailComponent,
-    StockListComponent, 
+    StockListComponent,
     StockFormComponent,
     SucursalFormComponent,
     SucursalesListComponent,
@@ -43,6 +44,7 @@ import { ClienteFormComponent } from './clientes-form/clientes-form.component'
     VentasComponent,
     VideoayudaComponent,
     ClienteFormComponent,
+    ClientesListComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,13 +53,13 @@ import { ClienteFormComponent } from './clientes-form/clientes-form.component'
     FormsModule,
     RouterModule,
     CommonModule,
-    ReactiveFormsModule, // Asegúrate de importar esto
-    FormsModule, // También importa FormsModule si usas [(ngModel)]
-    MatTableModule,  // Asegúrate de importar MatTableModule
-    MatPaginatorModule, // Y MatPaginatorModule para la paginación
+    ReactiveFormsModule, // Ensure it's correctly imported
+    MatTableModule, // Angular Material modules
+    MatPaginatorModule,
     MatSidenavModule,
     MatIconModule,
     MatListModule,
+    MatButtonModule, // Added MatButtonModule
     BrowserAnimationsModule
   ],
   providers: [StockService],

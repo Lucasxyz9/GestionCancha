@@ -1,6 +1,5 @@
 package com.lucasxyz.gestioncancha.Entities;
 
-import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +13,7 @@ public class Cliente {
     @Id
     @GeneratedValue
     @Column(name = "id_cliente")
-    private UUID idCliente;
+    private Integer idCliente;
 
     @Column(name = "nombre", length = 50)
     private String nombre;
@@ -35,11 +34,11 @@ public class Cliente {
     private String ruc;
     
 
-    public UUID getIdCliente() {
+    public Integer getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(UUID idCliente) {
+    public void setIdCliente(Integer idCliente) {
         this.idCliente = idCliente;
     }
 

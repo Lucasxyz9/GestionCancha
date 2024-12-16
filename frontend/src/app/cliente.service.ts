@@ -7,6 +7,7 @@ import { clientes } from './clientes.model'; // Importa tu modelo de Cliente
   providedIn: 'root'
 })
 export class ClienteService {
+ 
   private apiUrl = 'http://localhost:8080/api/clientes'; // URL del backend
 
   constructor(private http: HttpClient) {}
@@ -27,12 +28,17 @@ export class ClienteService {
   }
 
   // Método para actualizar un cliente
-  actualizarCliente(cliente: clientes): Observable<clientes> {
-    return this.http.put<clientes>(`${this.apiUrl}/${cliente.id_cliente}`, cliente);
+  actualizarCliente(cliente: clientes) {
+    return this.http.put(`http://localhost:8080/api/clientes/${cliente.idCliente}`, cliente);
+  }
+  
+  
+  eliminarCliente(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`); // Asegúrate de que la respuesta sea 'void'
   }
 
-  // Método para eliminar un cliente
-  eliminarCliente(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
+    // Método que retorna un Observable<Cliente[]>
+    getClientes(): Observable<clientes[]> {
+      return this.http.get<clientes[]>(this.apiUrl); // Este debe devolver un Observable de tipo Cliente[]
+    }
 }

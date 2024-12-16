@@ -4,12 +4,12 @@ import com.lucasxyz.gestioncancha.Entities.Cliente;
 import com.lucasxyz.gestioncancha.Repositories.ClienteRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -20,11 +20,11 @@ public class ClienteController {
 
     @GetMapping
     public List<Cliente> getAllClientes() {
-        return clienteRepository.findAll();
+        return (List<Cliente>) clienteRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public Optional<Cliente> getClienteById(@PathVariable UUID id) {
+    public Optional<Cliente> getClienteById(@PathVariable Integer id) {
         return clienteRepository.findById(id);
     }
 
@@ -35,13 +35,23 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public Cliente updateCliente(@PathVariable UUID id, @RequestBody Cliente clienteDetails) {
+    public Cliente updateCliente(@PathVariable Integer   id, @RequestBody Cliente clienteDetails) {
+        if (id == null || id == 0)  {
+            throw new IllegalArgumentException("ID is required");
+        }
         clienteDetails.setIdCliente(id);
         return clienteRepository.save(clienteDetails);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCliente(@PathVariable UUID id) {
-        clienteRepository.deleteById(id);
+    public ResponseEntity<List<Cliente>> eliminarCliente(@PathVariable Integer id) {
+        if (clienteRepository.existsById(id)) {
+            clienteRepository.deleteById(id);
+            // Devuelve la lista de clientes actualizada
+            List<Cliente> clientesActualizados = (List<Cliente>) clienteRepository.findAll();
+            return ResponseEntity.status(HttpStatus.OK).body(clientesActualizados);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

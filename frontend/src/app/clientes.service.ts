@@ -28,7 +28,7 @@ export class ClienteService {
 
   // Método para actualizar un cliente
   actualizarCliente(cliente: clientes): Observable<clientes> {
-    return this.http.put<clientes>(`${this.apiUrl}/${cliente.id_cliente}`, cliente);
+    return this.http.put<clientes>(`${this.apiUrl}/${cliente.idCliente}`, cliente);
   }
 
   // Método para eliminar un cliente

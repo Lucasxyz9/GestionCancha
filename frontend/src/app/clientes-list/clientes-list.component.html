@@ -1,0 +1,57 @@
+<div class="clientes-lista">
+  <h2>Lista de Clientes</h2>
+
+  <!-- Campo de búsqueda por CI -->
+  <div>
+    <input
+      type="text"
+      placeholder="Buscar por CI"
+      [(ngModel)]="ciBusqueda"
+      (input)="buscarClientePorCI()"
+    />
+  </div>
+
+  <!-- Mostrar los clientes filtrados -->
+  <ul>
+    <li *ngFor="let cliente of clientes">
+      <div class="cliente-item">
+        <p><strong>{{ cliente.nombre }} {{ cliente.apellido }}</strong></p>
+        <p>Correo: {{ cliente.email }}</p>
+        <p>Teléfono: {{ cliente.telefono }}</p>
+        <p>Cédula de Identidad: {{ cliente.ci }}</p>
+        <p>RUC: {{ cliente.ruc }}</p>
+        
+        <!-- Botones de acción -->
+        <button (click)="editarCliente(cliente)">Editar</button>
+        <button (click)="eliminarCliente(cliente.idCliente)">Eliminar</button>
+      </div>
+    </li>
+  </ul>
+
+  <!-- Formulario de edición de cliente -->
+  <div *ngIf="clienteEdicion">
+    <h3>Editar Cliente</h3>
+    <form (ngSubmit)="actualizarCliente()">
+      <label for="nombre">Nombre:</label>
+      <input [(ngModel)]="clienteEdicion.nombre" name="nombre" required />
+
+      <label for="apellido">Apellido:</label>
+      <input [(ngModel)]="clienteEdicion.apellido" name="apellido" required />
+
+      <label for="correo">Correo:</label>
+      <input [(ngModel)]="clienteEdicion.email" name="correo" required />
+
+      <label for="telefono">Teléfono:</label>
+      <input [(ngModel)]="clienteEdicion.telefono" name="telefono" required />
+
+      <label for="ci">Cédula de Identidad:</label>
+      <input [(ngModel)]="clienteEdicion.ci" name="ci" required />
+
+      <label for="ruc">RUC:</label>
+      <input [(ngModel)]="clienteEdicion.ruc" name="ruc" required />
+
+      <button type="submit">Guardar</button>
+      <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+    </form>
+  </div>
+</div>

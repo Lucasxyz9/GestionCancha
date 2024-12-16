@@ -1,5 +1,5 @@
 export interface clientes{
-    id_cliente:number;
+    idCliente:number;
     nombre:string;
     apellido:string;
     telefono:string;
