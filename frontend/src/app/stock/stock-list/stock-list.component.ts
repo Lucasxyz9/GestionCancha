@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StockList } from '../../stock-list.model';
 import { PageEvent } from '@angular/material/paginator';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-stock-list',
@@ -71,22 +72,39 @@ export class StockListComponent implements OnInit {
     const stockId = stock.idStock;
     if (stockId === undefined || stockId === null) {
       console.error('ID de stock no válido');
+      Swal.fire("Error", "El ID de stock no es válido.", "error");
       return;
     }
-    console.log(`ID de stock enviado al backend: ${stockId}`);
-    
-    this.http.delete(`http://localhost:8080/api/stock/${stockId}`)
-      .subscribe(
-        () => {
-          // Eliminar el stock de la lista original y de los stocks visibles
-          this.originalStocks = this.originalStocks.filter(s => s.idStock !== stockId);
-          this.stocks = this.getSortedStocks().slice(this.currentPage * this.pageSize, (this.currentPage + 1) * this.pageSize); // Actualizar stocks visibles
-          this.totalRecords = this.originalStocks.length; // Actualizar el total de registros
-          this.loadPageData(); // Recargar los datos de la página después de eliminar
-        },
-        (error) => {
-          console.error('Error al eliminar el stock:', error);
-        }
-      );
+  
+    Swal.fire({
+      title: "¿Está seguro de que desea eliminar este stock?",
+      text: `ID de Stock: ${stockId}`,
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: "Eliminar",
+      denyButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log(`ID de stock enviado al backend: ${stockId}`);
+        
+        this.http.delete(`http://localhost:8080/api/stock/${stockId}`).subscribe(
+          () => {
+            // Eliminar el stock de la lista original y de los stocks visibles
+            this.originalStocks = this.originalStocks.filter(s => s.idStock !== stockId);
+            this.stocks = this.getSortedStocks().slice(this.currentPage * this.pageSize, (this.currentPage + 1) * this.pageSize); // Actualizar stocks visibles
+            this.totalRecords = this.originalStocks.length; // Actualizar el total de registros
+            this.loadPageData(); // Recargar los datos de la página después de eliminar
+            Swal.fire("¡Eliminado!", "El stock ha sido eliminado exitosamente.", "success");
+          },
+          (error) => {
+            console.error('Error al eliminar el stock:', error);
+            Swal.fire("Error", "No se pudo eliminar el stock. Intente de nuevo más tarde.", "error");
+          }
+        );
+      } else if (result.isDenied) {
+        Swal.fire("Cancelado", "La operación fue cancelada.", "info");
+      }
+    });
   }
+  
 }

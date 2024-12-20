@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { clientes } from './../clientes.model'; // Mantén la importación correcta
 import { ClienteService } from './../cliente.service';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -65,16 +66,30 @@ export class ClientesListComponent implements OnInit {
   }
 
  // Método para eliminar un cliente
-eliminarCliente(id: number): void {
-  this.clienteService.eliminarCliente(id).subscribe(
-    () => {
-      // Si la eliminación es exitosa, actualizamos la lista localmente
-      this.clientes = this.clientes.filter(cliente => cliente.idCliente !== id);
-    },
-    (error) => {
-      console.error('Error al eliminar el cliente', error);
+ eliminarCliente(id: number): void {
+  Swal.fire({
+    title: "¿Está seguro de que desea eliminar el cliente?",
+    showDenyButton: true,
+    showCancelButton: false,
+    confirmButtonText: "Eliminar",
+    denyButtonText: "Cancelar"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.clienteService.eliminarCliente(id).subscribe(
+        () => {
+          // Eliminamos el cliente de la lista localmente
+          this.clientes = this.clientes.filter(cliente => cliente.idCliente !== id);
+          Swal.fire("¡Eliminado!", "El cliente ha sido eliminado exitosamente.", "success");
+        },
+        (error) => {
+          console.error('Error al eliminar el cliente', error);
+          Swal.fire("Error", "No se pudo eliminar el cliente. Intente de nuevo más tarde.", "error");
+        }
+      );
+    } else if (result.isDenied) {
+      Swal.fire("Cancelado", "La operación fue cancelada.", "info");
     }
-  );
+  });
 }
 
 
