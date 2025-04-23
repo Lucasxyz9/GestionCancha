@@ -1,10 +1,10 @@
 /* Estilos generales */
 body {
   font-family: 'Roboto', sans-serif; /* Fuente de Angular Material */
-  background-color: #fafafa; /* Fondo claro */
+  background-color: #f4f6f9; /* Fondo ligeramente gris claro */
   margin: 0;
   padding: 0;
-  color: white; /* Texto blanco */
+  color: #333; /* Texto oscuro para mayor legibilidad */
 }
 
 /* Contenedor principal */
@@ -13,18 +13,19 @@ body {
   margin: 30px auto;
   padding: 20px;
   background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Sombra más suave y amplia */
   max-width: 1200px;
 }
 
 /* Título principal */
 h1 {
   text-align: center;
-  font-size: 2rem;
-  color: white; /* Texto blanco */
+  font-size: 2.2rem;
+  color: #333; /* Color de texto más oscuro */
   margin-bottom: 20px;
   font-weight: 600;
+  text-transform: uppercase; /* Título en mayúsculas para más impacto */
 }
 
 /* Estilo para las listas de enlaces */
@@ -33,11 +34,12 @@ ul {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px; /* Espaciado más estrecho entre los elementos */
   justify-content: center;
   align-items: center;
 }
 
+/* Estilos de los elementos de lista */
 li {
   width: 100%;
   display: flex;
@@ -47,31 +49,34 @@ li {
 /* Estilos de los enlaces (botones) */
 a {
   text-decoration: none;
-  color: white; /* Color del texto blanco */
+  color: white;
   font-weight: bold;
-  background-color: #007BFF; /* Color azul brillante */
-  padding: 12px 25px;
+  background-color: #007bff; /* Azul brillante */
+  padding: 14px 30px;
   border-radius: 5px;
-  width: 250px;
+  width: 100%;
+  max-width: 250px; /* Ancho máximo fijo */
   text-align: center;
   display: block;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Efecto al pasar el ratón (hover) */
 a:hover {
-  background-color: #0056b3;
-  transform: translateY(-4px); /* Efecto de desplazamiento sutil */
+  background-color: #0056b3; /* Azul más oscuro */
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 86, 179, 0.2); /* Sombra al pasar el ratón */
 }
 
 /* Efecto al presionar (active) */
 a:active {
-  transform: translateY(1px); /* Presión del botón */
+  transform: translateY(1px); /* Desplazamiento hacia abajo al presionar */
+  box-shadow: none; /* Elimina la sombra al presionar */
 }
 
 /* Estilo para los botones secundarios o alternativos */
 a.secondary-button {
-  background-color: #28a745; /* Verde */
+  background-color: #28a745; /* Verde brillante */
 }
 
 a.secondary-button:hover {
@@ -80,11 +85,35 @@ a.secondary-button:hover {
 
 /* Estilo del menú hamburguesa (botón de icono) */
 button.mat-icon-button {
-  color: white; /* Icono del menú hamburguesa blanco */
+  color: white;
   margin-left: 16px;
   margin-top: 16px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 
+/* Efecto al pasar el ratón sobre el menú hamburguesa */
 button.mat-icon-button:hover {
-  color: #0056b3; /* Cambio de color del icono al pasar el ratón */
+  color: #0056b3; /* Cambiar color al pasar el ratón */
+}
+
+/* Agregar un efecto de transición para los botones del menú hamburguesa */
+button.mat-icon-button {
+  transition: color 0.3s ease;
+}
+
+/* Responsividad: cuando el ancho de pantalla es menor a 768px */
+@media (max-width: 768px) {
+  /* Ajustes para el contenedor de botones */
+  a {
+    width: 80%; /* Reducir el tamaño de los botones en pantallas más pequeñas */
+    max-width: none;
+  }
+
+  /* Ajustes para el menú hamburguesa */
+  button.mat-icon-button {
+    margin-left: 10px;
+    margin-top: 10px;
+  }
 }

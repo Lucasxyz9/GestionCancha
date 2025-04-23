@@ -8,13 +8,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Sucursal")
+@Table(name = "sucursal")  // La tabla se debe escribir en minúsculas por convención en base de datos
 public class Sucursal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_sucursal")
-    private int idSucursal;
+    @Column(name = "id_sucursal")  // Se mantiene el nombre de la columna para id_sucursal
+    private Integer idSucursal;  // Cambié 'int' por 'Integer' para permitir valores nulos
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
@@ -22,15 +22,15 @@ public class Sucursal {
     @Column(name = "ubicacion", nullable = false)
     private String ubicacion;
 
-    @Column(name = "timbrado", nullable = false)  // Cambio de 'ruc_sucursal' a 'timbrado'
+    @Column(name = "timbrado", nullable = false)  // Asegúrate de que 'timbrado' sea correcto en la base de datos
     private String timbrado;
 
     // Getters y Setters
-    public int getIdSucursal() {
+    public Integer getIdSucursal() {
         return idSucursal;
     }
 
-    public void setIdSucursal(int idSucursal) {
+    public void setIdSucursal(Integer idSucursal) {
         this.idSucursal = idSucursal;
     }
 
@@ -57,6 +57,4 @@ public class Sucursal {
     public void setTimbrado(String timbrado) {
         this.timbrado = timbrado;
     }
-
-    
 }

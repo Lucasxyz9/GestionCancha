@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -22,7 +21,7 @@ public class PedidoController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Pedido> getPedidoById(@PathVariable UUID id) {
+    public Optional<Pedido> getPedidoById(@PathVariable long id) {
         return pedidoRepository.findById(id);
     }
 
@@ -32,13 +31,13 @@ public class PedidoController {
     }
 
     @PutMapping("/{id}")
-    public Pedido updatePedido(@PathVariable UUID id, @RequestBody Pedido pedidoDetails) {
+    public Pedido updatePedido(@PathVariable long id, @RequestBody Pedido pedidoDetails) {
         pedidoDetails.setIdPedido(id);
         return pedidoRepository.save(pedidoDetails);
     }
 
     @DeleteMapping("/{id}")
-    public void deletePedido(@PathVariable UUID id) {
+    public void deletePedido(@PathVariable long id) {
         pedidoRepository.deleteById(id);
     }
 }

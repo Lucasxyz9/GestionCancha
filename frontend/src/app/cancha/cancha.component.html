@@ -1,0 +1,63 @@
+<div class="container">
+  <h2>Gestión de Canchas</h2>
+
+  <!-- Formulario -->
+  <form [formGroup]="canchaForm" (ngSubmit)="crearOActualizarCancha()" class="form-grid">
+    <input type="hidden" formControlName="idCancha" />
+
+    <div class="form-group">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" class="form-control" type="text" formControlName="nombre" />
+    </div>
+
+    <div class="form-group">
+      <label for="ubicacion">Ubicación</label>
+      <input id="ubicacion" class="form-control" type="text" formControlName="ubicacion" />
+    </div>
+
+    <div class="form-group">
+      <label for="estado">Estado</label>
+      <input id="estado" class="form-control" type="text" formControlName="estado" />
+    </div>
+
+    <div class="form-group">
+      <label for="idSucursal">Sucursal</label>
+      <select id="idSucursal" class="form-control" formControlName="idSucursal">
+        <option *ngFor="let sucursal of sucursales" [value]="sucursal.idSucursal">
+          {{ sucursal.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      {{ canchaForm.value.idCancha ? 'Actualizar' : 'Crear' }}
+    </button>
+  </form>
+
+  <hr />
+
+  <!-- Lista de canchas -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Ubicación</th>
+        <th>Estado</th>
+        <th>Sucursal</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cancha of canchas">
+        <td>{{ cancha.nombre }}</td>
+        <td>{{ cancha.ubicacion }}</td>
+        <td>{{ cancha.estado }}</td>
+        <td>{{ obtenerNombreSucursal(cancha.sucursal?.idSucursal) }}</td>
+        <td>
+          <button class="btn btn-sm btn-info" (click)="editarCancha(cancha)">Editar</button>
+          <button class="btn btn-sm btn-danger" (click)="eliminarCancha(cancha.idCancha)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

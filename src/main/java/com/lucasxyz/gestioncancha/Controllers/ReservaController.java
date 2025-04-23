@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/reservas")
@@ -22,7 +21,7 @@ public class ReservaController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Reserva> getReservaById(@PathVariable UUID id) {
+    public Optional<Reserva> getReservaById(@PathVariable long id) {
         return reservaRepository.findById(id);
     }
 
@@ -31,14 +30,15 @@ public class ReservaController {
         return reservaRepository.save(reserva);
     }
 
+
     @PutMapping("/{id}")
-    public Reserva updateReserva(@PathVariable UUID id, @RequestBody Reserva reservaDetails) {
+    public Reserva updateReserva(@PathVariable long id, @RequestBody Reserva reservaDetails) {
         reservaDetails.setIdReserva(id);
         return reservaRepository.save(reservaDetails);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteReserva(@PathVariable UUID id) {
+    public void deleteReserva(@PathVariable long id) {
         reservaRepository.deleteById(id);
     }
 }

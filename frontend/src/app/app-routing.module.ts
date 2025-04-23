@@ -14,12 +14,15 @@ import { VentasComponent } from './ventas/ventas.component';
 import { VideoayudaComponent } from './videoayuda/videoayuda.component';
 import { ClienteFormComponent } from './clientes-form/clientes-form.component';
 import { ClientesListComponent } from './clientes-list/clientes-list.component';
+import { UserFormComponent } from './user-form/user-form.component';
+import { CanchaComponent } from './cancha/cancha.component';
+import { ReservasComponent } from './reservas/reservas.component';
+
+// Importar el ReservaModalComponent para su ruta
 
 const routes: Routes = [
-  // Redirige a productos por defecto
-  { path: '', redirectTo: '/productos', pathMatch: 'full' },
-
-
+  // Redirige a reservas por defecto
+  { path: '', redirectTo: '/reservas', pathMatch: 'full' },
 
   // Rutas de productos
   { path: 'productos', component: ProductoListComponent },
@@ -38,15 +41,23 @@ const routes: Routes = [
   { path: 'sucursales/form', component: SucursalFormComponent },
 
   // Ruta de ventas
-  { path: 'ventas', component: VentasComponent }, // Ruta para VentasComponent
+  { path: 'ventas', component: VentasComponent },
 
-  //ruta para ayuda didactica
+  // Ruta de ayuda didáctica
   { path: 'ayuda', component: VideoayudaComponent },
 
-    //Rutas de clientes
-  { path: 'cliente/crear', component: ClienteFormComponent},
-  { path: 'clientes', component: ClientesListComponent}
+  // Rutas de clientes
+  { path: 'cliente/crear', component: ClienteFormComponent },
+  { path: 'clientes', component: ClientesListComponent },
 
+  // Ruta de usuario
+  { path: 'user', component: UserFormComponent },
+
+  // Ruta de cancha
+  { path: 'cancha', component: CanchaComponent },
+
+    // Ruta de cancha
+    { path: 'reserva', component: ReservasComponent },
 ];
 
 @NgModule({

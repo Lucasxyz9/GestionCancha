@@ -2,7 +2,6 @@ package com.lucasxyz.gestioncancha.Entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "usuarios")
@@ -11,7 +10,7 @@ public class Usuario {
     @Id
     @GeneratedValue
     @Column(name = "id_usuario", nullable = false, unique = true)
-    private UUID idUsuario;
+    private long idUsuario;
 
     @Column(name = "nombre", length = 50, nullable = false)
     private String nombre;
@@ -33,11 +32,11 @@ public class Usuario {
 
     // Getters y Setters
 
-    public UUID getIdUsuario() {
+    public long getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(UUID idUsuario) {
+    public void setIdUsuario(long idUsuario) {
         this.idUsuario = idUsuario;
     }
 
@@ -87,6 +86,11 @@ public class Usuario {
 
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
+    }
+
+    public void setId(long l) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setId'");
     }
 }
 

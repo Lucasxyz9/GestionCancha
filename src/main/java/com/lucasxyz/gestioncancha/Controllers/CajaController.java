@@ -37,6 +37,7 @@ public class CajaController {
     @Autowired
     private SucursalRepository sucursalRepository;
 
+
     // Endpoint para registrar la venta y actualizar stock
     @PostMapping("/registrar")
     public ResponseEntity<String> registrarVenta(@RequestBody RegistroVenta registroVenta) {

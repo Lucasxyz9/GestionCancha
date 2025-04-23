@@ -1,7 +1,6 @@
 package com.lucasxyz.gestioncancha.Entities;
 import jakarta.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table(name = "pedido")
@@ -11,7 +10,7 @@ import java.util.UUID;
         @Id
         @GeneratedValue
         @Column(name = "id_pedido", nullable = false, unique = true)
-        private UUID idPedido;
+        private long idPedido;
     
         @Column(name = "fecha", nullable = false)
         @Temporal(TemporalType.TIMESTAMP)
@@ -27,11 +26,11 @@ import java.util.UUID;
     
         // Getters y Setters
     
-        public UUID getIdPedido() {
+        public long getIdPedido() {
             return idPedido;
         }
     
-        public void setIdPedido(UUID idPedido) {
+        public void setIdPedido(long idPedido) {
             this.idPedido = idPedido;
         }
     

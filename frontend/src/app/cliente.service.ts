@@ -41,4 +41,28 @@ export class ClienteService {
     getClientes(): Observable<clientes[]> {
       return this.http.get<clientes[]>(this.apiUrl); // Este debe devolver un Observable de tipo Cliente[]
     }
+
+    buscarCliente(ci?: string, ruc?: string): Observable<clientes> {
+      let url = `${this.apiUrl}/buscar?`;
+      if (ci) {
+        url += `ci=${ci}`;
+      }
+      if (ruc) {
+        url += `ruc=${ruc}`;
+      }
+      return this.http.get<clientes>(url);
+    }
+
+    buscarCliente2(ci?: string, ruc?: string): Observable<clientes[]> {
+      let url = `${this.apiUrl}/buscar?`;
+      if (ci) {
+        url += `ci=${ci}`;
+      }
+      if (ruc) {
+        url += `ruc=${ruc}`;
+      }
+      return this.http.get<clientes[]>(url); // <- Cambiado de clientes a clientes[]
+    }
+    
+    
 }

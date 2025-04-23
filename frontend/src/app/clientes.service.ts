@@ -8,6 +8,8 @@ import { clientes } from './clientes.model'; // Importa tu modelo de Cliente
 })
 export class ClienteService {
   private apiUrl = 'http://localhost:8080/api/clientes'; // URL del backend
+  private baseUrl = 'http://localhost:8080/api/clientes'; // ⚠️ Cambia si tu backend tiene otra ruta
+
 
   constructor(private http: HttpClient) {}
 
@@ -35,4 +37,21 @@ export class ClienteService {
   eliminarCliente(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  buscar(ci?: string, ruc?: string): Observable<clientes> {
+    let url = `${this.apiUrl}/buscar`;
+    if (ci) {
+      url += `ci=${ci}`;
+    }
+    if (ruc) {
+      url += `ruc=${ruc}`;
+    }
+    return this.http.get<clientes>(url);
+  }
+
+  buscarCliente(ciOrRuc: string): Observable<clientes> {
+    return this.http.get<clientes>(`${this.baseUrl}/buscar?ci=${ciOrRuc}&ruc=${ciOrRuc}`);
+  }
+  
+  
 }

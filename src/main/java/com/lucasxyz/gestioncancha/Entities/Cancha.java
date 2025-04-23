@@ -1,33 +1,34 @@
 package com.lucasxyz.gestioncancha.Entities;
 
 import jakarta.persistence.Entity;
-
-import java.util.UUID;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-@Table(name = "Cancha")
 public class Cancha {
+
     @Id
-    @GeneratedValue
-    @Column(name = "id_cancha")
-    private UUID idCancha;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idCancha;
 
-    @Column(name = "nombre", length = 100)
     private String nombre;
-
-    @Column(name = "ubicacion", length = 100)
     private String ubicacion;
+    private String estado;
 
-    public UUID getIdCancha() {
+    // Relación ManyToOne con Sucursal
+    @ManyToOne
+    @JoinColumn(name = "id_sucursal")  // El nombre de la columna que hace referencia a Sucursal
+    private Sucursal sucursal;
+
+    // Getters y Setters
+    public Integer getIdCancha() {
         return idCancha;
     }
 
-    public void setIdCancha(UUID idCancha) {
+    public void setIdCancha(Integer idCancha) {
         this.idCancha = idCancha;
     }
 
@@ -47,5 +48,19 @@ public class Cancha {
         this.ubicacion = ubicacion;
     }
 
-    
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Sucursal getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(Sucursal sucursal) {
+        this.sucursal = sucursal;
+    }
 }

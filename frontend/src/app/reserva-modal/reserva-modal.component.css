@@ -1,0 +1,30 @@
+.full-width {
+  width: 100%;
+}
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 0;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+}
+
+button[mat-button] {
+  margin-left: 8px;
+}
+
+@media (max-width: 600px) {
+  mat-dialog-content {
+    padding: 16px 0;
+  }
+}

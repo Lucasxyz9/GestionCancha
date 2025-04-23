@@ -1,4 +1,20 @@
-/* You can add global styles to this file, and also import other style files */
-
+.app-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  mat-sidenav {
+    width: 250px;
+  }
+  
+  mat-sidenav-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  button[mat-icon-button] {
+    margin: 10px;
+  }
+  
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

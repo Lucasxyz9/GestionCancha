@@ -54,4 +54,45 @@ public class ClienteController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<Cliente> buscarCliente(@RequestParam(required = false) String ci,
+                                                @RequestParam(required = false) String ruc) {
+        if ((ci == null || ci.isEmpty()) && (ruc == null || ruc.isEmpty())) {
+            return ResponseEntity.badRequest().build(); // Retorna 400 Bad Request
+        }
+
+        Cliente cliente = null;
+        
+        // Si ambos parámetros son null o vacíos, no se realiza la búsqueda.
+        if (ci != null && !ci.isEmpty()) {
+            cliente = clienteRepository.findByCi(ci.trim());  // Usar trim() para limpiar valores
+        }
+        
+        if (cliente == null && ruc != null && !ruc.isEmpty()) {
+            cliente = clienteRepository.findByRuc(ruc.trim()); // Buscar por RUC si no se encontró por CI
+        }
+
+        if (cliente != null) {
+            return ResponseEntity.ok(cliente); // Retorna 200 OK con el cliente encontrado
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Retorna 404 Not Found
+    }
+
+
+    
+    @GetMapping("/probar")
+    public ResponseEntity<String> probar(@RequestParam String ci) {
+        ci = ci.trim();  // Elimina espacios y saltos de línea
+        Cliente cliente = clienteRepository.findByCi(ci);
+        if (cliente != null) {
+            return ResponseEntity.ok("Cliente encontrado: " + cliente.getNombre());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
+    }
+
+
+    
+
 }

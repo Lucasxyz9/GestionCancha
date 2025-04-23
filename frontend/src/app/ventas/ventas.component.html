@@ -1,45 +1,67 @@
 <div class="ventas-container">
-    <!-- Selección de sucursal -->
-    <div class="sucursal-selector">
-      <label for="sucursal">Sucursal:</label>
-      <select id="sucursal" [(ngModel)]="sucursalSeleccionada" (change)="cargarProductos()">
-        <option *ngFor="let sucursal of sucursales" [value]="sucursal.idSucursal">
-          {{ sucursal.nombre }}
-        </option>
-      </select>
-    </div>
-  
-    <!-- Buscador y productos -->
-    <div class="busqueda">
-      <input
-        type="text"
-        placeholder="Buscar productos..."
-        [(ngModel)]="busqueda"
-        (input)="filtrarProductos()"
-      />
-      <ul class="productos-filtrados">
-        <li *ngFor="let producto of productosFiltrados" (click)="seleccionarProducto(producto)">
-          {{ producto.nombre }} - ${{ producto.precio_unitario }}
-        </li>
-      </ul>
-    </div>
-  
-    <!-- Carrito -->
-    <div class="carrito">
-      <h3>Carrito</h3>
-      <ul>
-        <li *ngFor="let item of carrito">
-          {{ item.producto.nombre }} (x{{ item.cantidad }}) - 
-          ${{ item.producto.precio_unitario * item.cantidad }}
-          <button (click)="modificarCantidad(item, -1)">-</button>
-          <button (click)="modificarCantidad(item, 1)">+</button>
-          <button (click)="eliminarProducto(item)">Eliminar</button>
-        </li>
-      </ul>
-      <div *ngIf="carrito.length > 0">
-        <h4>Total: ${{ total }}</h4>
-        <button (click)="finalizarVenta()">Finalizar Venta</button>
-      </div>
+  <!-- Selección de sucursal -->
+  <div class="sucursal-selector">
+    <label for="sucursal">Sucursal:</label>
+    <select id="sucursal" [(ngModel)]="sucursalSeleccionada" (change)="cargarProductos()">
+      <option *ngFor="let sucursal of sucursales" [value]="sucursal.idSucursal">
+        {{ sucursal.nombre }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Buscador de cliente -->
+  <div class="busqueda-cliente">
+    <h3>Búsqueda de Cliente</h3>
+    <label for="ci">CI:</label>
+    <input
+      id="ci"
+      type="text"
+      placeholder="Ingrese CI del cliente"
+      [(ngModel)]="ciBusqueda"
+    />
+    <label for="ruc">RUC:</label>
+    <input
+      id="ruc"
+      type="text"
+      placeholder="Ingrese RUC del cliente"
+      [(ngModel)]="rucBusqueda"
+    />
+    <button (click)="buscarCliente()">Buscar Cliente</button>
+    <div *ngIf="clienteSeleccionado">
+      <p>Cliente: {{ clienteSeleccionado.nombre }}</p>
     </div>
   </div>
-  
+
+  <!-- Buscador y productos -->
+  <div class="busqueda">
+    <input
+      type="text"
+      placeholder="Buscar productos..."
+      [(ngModel)]="busqueda"
+      (input)="filtrarProductos()"
+    />
+    <ul class="productos-filtrados">
+      <li *ngFor="let producto of productosFiltrados" (click)="seleccionarProducto(producto)">
+        {{ producto.nombre }} - ${{ producto.precio_unitario }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Carrito -->
+  <div class="carrito">
+    <h3>Carrito</h3>
+    <ul>
+      <li *ngFor="let item of carrito">
+        {{ item.producto.nombre }} (x{{ item.cantidad }}) - 
+        ${{ item.producto.precio_unitario * item.cantidad }}
+        <button (click)="modificarCantidad(item, -1)">-</button>
+        <button (click)="modificarCantidad(item, 1)">+</button>
+        <button (click)="eliminarProducto(item)">Eliminar</button>
+      </li>
+    </ul>
+    <div *ngIf="carrito.length > 0">
+      <h4>Total: ${{ total }}</h4>
+      <button (click)="finalizarVenta()">Finalizar Venta</button>
+    </div>
+  </div>
+</div>

@@ -1,28 +1,29 @@
 package com.lucasxyz.gestioncancha.Entities;
 
 import jakarta.persistence.*;
-import java.util.Date;
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reserva")
 public class Reserva {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO) // Aseguramos que el UUID se genere automáticamente
     @Column(name = "id_reserva", nullable = false, unique = true)
-    private UUID idReserva;
+    private long idReserva;
 
     @Column(name = "fecha", nullable = false)
-    private Date fecha;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // Asegura que el formato de fecha sea consistente con LocalDateTime
+    private LocalDateTime fecha;
 
     @Column(name = "hora_inicio", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date horaInicio;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // Formato para horaInicio
+    private LocalDateTime horaInicio;
 
     @Column(name = "hora_fin", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date horaFin;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // Formato para horaFin
+    private LocalDateTime horaFin;
 
     @ManyToOne
     @JoinColumn(name = "cancha_id", nullable = false)
@@ -34,43 +35,43 @@ public class Reserva {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario; // Usuario que registró la reserva
+    private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id", nullable = false)
-    private Empresa empresa; // Relación con Empresa a través del Usuario
+    private Empresa empresa;
 
     // Getters y Setters
 
-    public UUID getIdReserva() {
+    public long getIdReserva() {
         return idReserva;
     }
 
-    public void setIdReserva(UUID idReserva) {
-        this.idReserva = idReserva;
+    public void setIdReserva(long id) {
+        this.idReserva = id;
     }
 
-    public Date getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
-    public Date getHoraInicio() {
+    public LocalDateTime getHoraInicio() {
         return horaInicio;
     }
 
-    public void setHoraInicio(Date horaInicio) {
+    public void setHoraInicio(LocalDateTime horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public Date getHoraFin() {
+    public LocalDateTime getHoraFin() {
         return horaFin;
     }
 
-    public void setHoraFin(Date horaFin) {
+    public void setHoraFin(LocalDateTime horaFin) {
         this.horaFin = horaFin;
     }
 
@@ -105,6 +106,4 @@ public class Reserva {
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
-
 }
-
