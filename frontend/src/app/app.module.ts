@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
@@ -23,8 +23,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
-// Ngx Material Timepicker
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 // Calendar
 import { CalendarModule, DateAdapter } from 'angular-calendar';
@@ -55,49 +53,53 @@ import { RouterModule } from '@angular/router';
 // Registrar localización española
 registerLocaleData(localeEs);
 
-@NgModule({ declarations: [
-        AppComponent,
-        ProductoListComponent,
-        ProductoFormComponent,
-        ProductoDetailComponent,
-        StockListComponent,
-        StockFormComponent,
-        SucursalFormComponent,
-        SucursalesListComponent,
-        StockManyComponent,
-        VentasComponent,
-        VideoayudaComponent,
-        ClienteFormComponent,
-        ClientesListComponent,
-        UserFormComponent,
-        CanchaComponent,
-        ReservasComponent,
-        ReservaModalComponent,
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
-        RouterModule,
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        // Angular Material Modules
-        MatTableModule,
-        MatPaginatorModule,
-        MatSidenavModule,
-        MatIconModule,
-        MatListModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        // NgxMaterial Timepicker
-        NgxMaterialTimepickerModule,
-        // Calendar
-        CalendarModule.forRoot({
-            provide: DateAdapter,
-            useFactory: adapterFactory,
-        })], providers: [StockService, provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // Esto permite componentes web personalizados
+  declarations: [
+    AppComponent,
+    ProductoListComponent,
+    ProductoFormComponent,
+    ProductoDetailComponent,
+    StockListComponent,
+    StockFormComponent,
+    SucursalFormComponent,
+    SucursalesListComponent,
+    StockManyComponent,
+    VentasComponent,
+    VideoayudaComponent,
+    ClienteFormComponent,
+    ClientesListComponent,
+    UserFormComponent,
+    CanchaComponent,
+    ReservasComponent,
+    ReservaModalComponent,
+  ],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    RouterModule,
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    // Angular Material Modules
+    MatTableModule,
+    MatPaginatorModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    })
+  ],  
+  providers: [StockService, provideHttpClient(withInterceptorsFromDi())]
+})
 export class AppModule { }

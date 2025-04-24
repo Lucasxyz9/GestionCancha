@@ -1,62 +1,27 @@
-<h2 mat-dialog-title>
-  {{ data.reserva.idReserva ? 'Editar Reserva' : 'Agregar Nueva Reserva' }}
-</h2>
+<div class="modal-background" *ngIf="isModalOpen" (click)="closeModal()"></div>
+<div class="modal" [ngClass]="{'show': isModalOpen}">
+  <h2>{{ reserva.idReserva ? 'Editar Reserva' : 'Agregar Nueva Reserva' }}</h2>
+  <form id="reservaForm">
+    <label for="fecha">Fecha:</label>
+    <input type="date" id="fecha" name="fecha" required>
 
-<mat-dialog-content>
-  <form [formGroup]="reservaForm">
-    <!-- Fecha -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Fecha</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="fecha" required />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+    <label for="horaInicio">Hora de Inicio:</label>
+    <input type="time" id="horaInicio" name="horaInicio" required>
 
-    <!-- Hora de Inicio -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Hora de Inicio</mat-label>
-      <input
-        matInput
-        [ngxMatTimepicker]="inicioPicker"
-        formControlName="horaInicio"
-        required
-      />
-      <ngx-mat-timepicker #inicioPicker></ngx-mat-timepicker>
-    </mat-form-field>
+    <label for="horaFin">Hora de Fin:</label>
+    <input type="time" id="horaFin" name="horaFin" required>
 
-    <!-- Hora de Fin -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Hora de Fin</mat-label>
-      <input
-        matInput
-        [ngxMatTimepicker]="finPicker"
-        formControlName="horaFin"
-        required
-      />
-      <ngx-mat-timepicker #finPicker></ngx-mat-timepicker>
-    </mat-form-field>
+    <label for="clienteId">Cliente:</label>
+    <input type="number" id="clienteId" name="clienteId" required>
 
-    <!-- Cliente -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Cliente</mat-label>
-      <input matInput type="number" formControlName="clienteId" required />
-    </mat-form-field>
+    <label for="canchaId">Cancha:</label>
+    <input type="number" id="canchaId" name="canchaId" required>
 
-    <!-- Cancha -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Cancha</mat-label>
-      <input matInput type="number" formControlName="canchaId" required />
-    </mat-form-field>
-
-    <!-- Sucursal -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Sucursal</mat-label>
-      <input matInput type="number" formControlName="sucursalId" required />
-    </mat-form-field>
+    <label for="sucursalId">Sucursal:</label>
+    <input type="number" id="sucursalId" name="sucursalId" required>
   </form>
-</mat-dialog-content>
-
-<mat-dialog-actions>
-  <button mat-button (click)="closeDialog()">Cancelar</button>
-  <button mat-button color="primary" (click)="saveReserva()" [disabled]="reservaForm.invalid">Guardar</button>
-</mat-dialog-actions>
+  <div class="modal-actions">
+    <button (click)="closeModal()">Cancelar</button>
+    <button (click)="saveReserva()">Guardar</button>
+  </div>
+</div>

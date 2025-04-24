@@ -1,54 +1,46 @@
-.full-width {
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  z-index: 999;
+  display: none; /* Hidden by default */
 }
 
-mat-form-field {
-  margin-top: 12px;
+.modal-background.show {
+  display: block; /* Show background when modal is open */
 }
 
-mat-dialog-content {
-  display: flex;
-  flex-direction: column;
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  width: 400px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: none;
 }
 
-mat-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
+.modal.show {
+  display: block;
 }
 
-button[mat-button] {
-  margin-left: 10px;
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-/* Ajusta el z-index y la posición del timepicker para asegurarse de que se muestre por encima del modal */
-::ng-deep ngx-material-timepicker {
-  position: absolute !important;
-  z-index: 9999 !important; /* Asegura que el timepicker se muestre por encima del modal */
-}
-
-/* Ajuste para evitar que el fondo se oscurezca demasiado */
-ngx-material-timepicker-overlay {
-  background: rgba(0, 0, 0, 0.3) !important;
-}
-
-/* Ajuste extra para asegurar visibilidad de los elementos dentro del timepicker */
-ngx-material-timepicker-container {
-  color: #fff; /* asegura contraste en tema oscuro */
-}
-
-ngx-material-timepicker-container .timepicker-button {
-  color: #fff; /* asegura que los botones sean visibles */
-}
-
-/* Asegura que el modal tenga un z-index mayor que el timepicker */
-.mat-dialog-container {
-  z-index: 10000 !important; /* Asegura que el modal tenga un z-index mayor que el timepicker */
-}
-
-/* Ajuste para el modal en pantallas grandes */
-@media (min-width: 600px) {
-  mat-dialog-content {
-    min-width: 400px;
-  }
+button:hover {
+  background-color: #0056b3;
 }
