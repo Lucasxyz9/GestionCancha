@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@angular/cdk": "^19.2.11",
-    "@angular/material": "^19.2.11"
+    "@angular/material": "^19.2.11",
+    "ngx-mat-timepicker": "^19.0.0"
   }
 }

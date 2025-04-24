@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, AfterViewInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReservaService } from '../reserva.service';
@@ -8,7 +8,7 @@ import { ReservaService } from '../reserva.service';
   templateUrl: './reserva-modal.component.html',
   styleUrls: ['./reserva-modal.component.css']
 })
-export class ReservaModalComponent {
+export class ReservaModalComponent implements AfterViewInit {
   reservaForm: FormGroup;
 
   constructor(
@@ -17,7 +17,7 @@ export class ReservaModalComponent {
     public dialogRef: MatDialogRef<ReservaModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    // Si existe reserva (modo edición)
+    // Inicializar el formulario
     this.reservaForm = this.fb.group({
       idReserva: [data.reserva.idReserva || ''],
       fecha: [data.reserva.fecha || '', Validators.required],
@@ -27,6 +27,18 @@ export class ReservaModalComponent {
       canchaId: [data.reserva.canchaId || '', Validators.required],
       sucursalId: [data.reserva.sucursalId || '', Validators.required]
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Ajustar el z-index del timepicker y el modal dinámicamente
+    setTimeout(() => {
+      const timepicker = document.querySelector('ngx-material-timepicker');
+      const modal = document.querySelector('.mat-dialog-container');
+      if (timepicker && modal) {
+        timepicker.setAttribute('style', 'z-index: 9999 !important; position: absolute;');
+        modal.setAttribute('style', 'z-index: 10000 !important;');
+      }
+    }, 0);
   }
 
   saveReserva(): void {

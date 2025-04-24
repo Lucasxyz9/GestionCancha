@@ -17,13 +17,15 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog'; // Añadido
-import { MatInputModule } from '@angular/material/input'; // Añadido
-import { MatFormFieldModule } from '@angular/material/form-field'; // Añadido
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { MatNativeDateModule } from '@angular/material/core'; // Necesario para el datepicker
-
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
+// Ngx Material Timepicker
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+
 // Calendar
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
@@ -43,12 +45,12 @@ import { UserFormComponent } from './user-form/user-form.component';
 import { CanchaComponent } from './cancha/cancha.component';
 import { VentasComponent } from './ventas/ventas.component';
 import { VideoayudaComponent } from './videoayuda/videoayuda.component';
+import { ReservasComponent } from './reservas/reservas.component';
+import { ReservaModalComponent } from './reserva-modal/reserva-modal.component';
 
 // Servicios
 import { StockService } from './stock.service';
 import { RouterModule } from '@angular/router';
-import { ReservasComponent } from './reservas/reservas.component';
-import { ReservaModalComponent } from './reserva-modal/reserva-modal.component';
 
 // Registrar localización española
 registerLocaleData(localeEs);
@@ -82,30 +84,24 @@ registerLocaleData(localeEs);
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    ReactiveFormsModule,
-
-    // Material
+    
+    // Angular Material Modules
     MatTableModule,
     MatPaginatorModule,
     MatSidenavModule,
     MatIconModule,
     MatListModule,
     MatButtonModule,
-    MatDialogModule, // Añadido
-    MatInputModule,  // Añadido
-    MatFormFieldModule, // Añadido
-    MatDatepickerModule,
+    MatDialogModule,
     MatInputModule,
-    NgxMaterialTimepickerModule,  // Asegúrate de agregar esto
-    
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
 
-    
-    // Calendario
+    // NgxMaterial Timepicker
+    NgxMaterialTimepickerModule,
+
+    // Calendar
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,

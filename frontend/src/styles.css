@@ -21,3 +21,21 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+:host ::ng-deep ngx-material-timepicker-overlay {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  z-index: 1051 !important;
+  position: fixed !important;
+}
+
+:host ::ng-deep ngx-material-timepicker-container {
+  background-color: #fff !important;
+  color: #000 !important;
+  z-index: 1052 !important;
+  position: fixed !important;
+}
+
+:host ::ng-deep ngx-material-timepicker {
+  z-index: 1053 !important;
+  position: fixed !important;
+}

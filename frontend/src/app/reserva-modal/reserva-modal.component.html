@@ -1,4 +1,6 @@
-<h2 mat-dialog-title>{{ data.reserva.idReserva ? 'Editar Reserva' : 'Agregar Nueva Reserva' }}</h2>
+<h2 mat-dialog-title>
+  {{ data.reserva.idReserva ? 'Editar Reserva' : 'Agregar Nueva Reserva' }}
+</h2>
 
 <mat-dialog-content>
   <form [formGroup]="reservaForm">
@@ -13,15 +15,25 @@
     <!-- Hora de Inicio -->
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Hora de Inicio</mat-label>
-      <input matInput type="time" formControlName="horaInicio" required />
-      <mat-icon matSuffix>schedule</mat-icon>
+      <input
+        matInput
+        [ngxMatTimepicker]="inicioPicker"
+        formControlName="horaInicio"
+        required
+      />
+      <ngx-mat-timepicker #inicioPicker></ngx-mat-timepicker>
     </mat-form-field>
 
     <!-- Hora de Fin -->
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Hora de Fin</mat-label>
-      <input matInput type="time" formControlName="horaFin" required />
-      <mat-icon matSuffix>schedule</mat-icon>
+      <input
+        matInput
+        [ngxMatTimepicker]="finPicker"
+        formControlName="horaFin"
+        required
+      />
+      <ngx-mat-timepicker #finPicker></ngx-mat-timepicker>
     </mat-form-field>
 
     <!-- Cliente -->

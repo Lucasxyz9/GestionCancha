@@ -2,29 +2,53 @@
   width: 100%;
 }
 
+mat-form-field {
+  margin-top: 12px;
+}
+
 mat-dialog-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 24px 0;
-}
-
-mat-form-field {
-  width: 100%;
 }
 
 mat-dialog-actions {
   display: flex;
   justify-content: flex-end;
-  padding-top: 16px;
+  margin-top: 20px;
 }
 
 button[mat-button] {
-  margin-left: 8px;
+  margin-left: 10px;
 }
 
-@media (max-width: 600px) {
+/* Ajusta el z-index y la posición del timepicker para asegurarse de que se muestre por encima del modal */
+::ng-deep ngx-material-timepicker {
+  position: absolute !important;
+  z-index: 9999 !important; /* Asegura que el timepicker se muestre por encima del modal */
+}
+
+/* Ajuste para evitar que el fondo se oscurezca demasiado */
+ngx-material-timepicker-overlay {
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Ajuste extra para asegurar visibilidad de los elementos dentro del timepicker */
+ngx-material-timepicker-container {
+  color: #fff; /* asegura contraste en tema oscuro */
+}
+
+ngx-material-timepicker-container .timepicker-button {
+  color: #fff; /* asegura que los botones sean visibles */
+}
+
+/* Asegura que el modal tenga un z-index mayor que el timepicker */
+.mat-dialog-container {
+  z-index: 10000 !important; /* Asegura que el modal tenga un z-index mayor que el timepicker */
+}
+
+/* Ajuste para el modal en pantallas grandes */
+@media (min-width: 600px) {
   mat-dialog-content {
-    padding: 16px 0;
+    min-width: 400px;
   }
 }
