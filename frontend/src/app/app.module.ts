@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 
@@ -55,59 +55,49 @@ import { RouterModule } from '@angular/router';
 // Registrar localización española
 registerLocaleData(localeEs);
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    ProductoListComponent,
-    ProductoFormComponent,
-    ProductoDetailComponent,
-    StockListComponent,
-    StockFormComponent,
-    SucursalFormComponent,
-    SucursalesListComponent,
-    StockManyComponent,
-    VentasComponent,
-    VideoayudaComponent,
-    ClienteFormComponent,
-    ClientesListComponent,
-    UserFormComponent,
-    CanchaComponent,
-    ReservasComponent,
-    ReservaModalComponent,
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    RouterModule,
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    
-    // Angular Material Modules
-    MatTableModule,
-    MatPaginatorModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-
-    // NgxMaterial Timepicker
-    NgxMaterialTimepickerModule,
-
-    // Calendar
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory,
-    }),
-  ],
-  providers: [StockService],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        ProductoListComponent,
+        ProductoFormComponent,
+        ProductoDetailComponent,
+        StockListComponent,
+        StockFormComponent,
+        SucursalFormComponent,
+        SucursalesListComponent,
+        StockManyComponent,
+        VentasComponent,
+        VideoayudaComponent,
+        ClienteFormComponent,
+        ClientesListComponent,
+        UserFormComponent,
+        CanchaComponent,
+        ReservasComponent,
+        ReservaModalComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        RouterModule,
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        // Angular Material Modules
+        MatTableModule,
+        MatPaginatorModule,
+        MatSidenavModule,
+        MatIconModule,
+        MatListModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        // NgxMaterial Timepicker
+        NgxMaterialTimepickerModule,
+        // Calendar
+        CalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory,
+        })], providers: [StockService, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
