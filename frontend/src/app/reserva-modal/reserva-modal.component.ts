@@ -8,42 +8,43 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class ReservaModalComponent implements OnInit {
   reserva: any = {};
-  isModalOpen = false;
+  
+  horaInicio: string = '';
+  horaFin: string = '';
+  
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { reserva: any },
-    private dialogRef: MatDialogRef<ReservaModalComponent>
+    public dialogRef: MatDialogRef<ReservaModalComponent>
   ) {}
 
   ngOnInit(): void {
-    this.reserva = this.data.reserva || {};
-  }
-
-  openModal() {
-    this.isModalOpen = true;
-  }
-  
-  closeModal() {
-    this.isModalOpen = false;
-  }
-  
-  saveReserva() {
-    const form = document.getElementById('reservaForm') as HTMLFormElement;
-    if (form.checkValidity()) {
-      // Simulación de guardado
-      console.log('Reserva guardada:', this.getFormData());
-      this.closeModal();
-    } else {
-      alert('Por favor complete todos los campos.');
+    this.reserva = this.data?.reserva || {};
+    
+    // Inicializar las horas si existen en la reserva
+    if (this.reserva.horaInicio) {
+      this.horaInicio = this.reserva.horaInicio;
+    }
+    
+    if (this.reserva.horaFin) {
+      this.horaFin = this.reserva.horaFin;
     }
   }
-
-  getFormData() {
-    const form = document.getElementById('reservaForm') as HTMLFormElement;
-    const formData: any = {};
-    new FormData(form).forEach((value, key) => {
-      formData[key] = value;
-    });
-    return formData;
+  
+  // ... resto de tus métodos
+  
+  saveReserva() {
+    // Asignar las horas seleccionadas al objeto reserva antes de guardar
+    this.reserva.horaInicio = this.horaInicio;
+    this.reserva.horaFin = this.horaFin;
+    
+    // Resto de tu lógica de guardado
+    console.log('Reserva guardada:', this.reserva);
+    this.dialogRef.close(this.reserva);
   }
+
+  cancel(): void {
+    this.dialogRef.close(); // Cierra el modal sin pasar datos
+  }
+  
 }
