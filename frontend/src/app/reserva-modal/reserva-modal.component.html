@@ -12,13 +12,14 @@
 
     <mat-form-field appearance="fill" class="w-full">
       <mat-label>Hora de inicio</mat-label>
-      <input matInput type="time" [(ngModel)]="horaInicio" required />
+      <input matInput type="time" [(ngModel)]="horaInicio" name="horaInicio" required />
     </mat-form-field>
     
     <mat-form-field appearance="fill" class="w-full">
       <mat-label>Hora de fin</mat-label>
-      <input matInput type="time" [(ngModel)]="horaFin" required />
+      <input matInput type="time" [(ngModel)]="horaFin" name="horaFin" required />
     </mat-form-field>
+    
     
 
     <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
