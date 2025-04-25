@@ -49,9 +49,19 @@ export class ClienteService {
     return this.http.get<clientes>(url);
   }
 
-  buscarCliente(ciOrRuc: string): Observable<clientes> {
-    return this.http.get<clientes>(`${this.baseUrl}/buscar?ci=${ciOrRuc}&ruc=${ciOrRuc}`);
+  buscar2(ci?: string, ruc?: string): Observable<clientes> {
+    let params = [];
+    if (ci) params.push(`ci=${ci}`);
+    if (ruc) params.push(`ruc=${ruc}`);
+    const url = `${this.apiUrl}/buscar?${params.join('&')}`;
+    return this.http.get<clientes>(url);
   }
   
+
+  buscarCliente(ciOrRuc: string): Observable<clientes> {
+    return this.http.get<clientes>(`${this.apiUrl}/buscar?ci=${ciOrRuc}&ruc=${ciOrRuc}`);
+  }
   
 }
+  
+  

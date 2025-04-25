@@ -10,28 +10,40 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
+    <!-- Hora de inicio -->
     <mat-form-field appearance="fill" class="w-full">
       <mat-label>Hora de inicio</mat-label>
-      <input matInput type="time" [(ngModel)]="horaInicio" name="horaInicio" required />
+      <input matInput [ngxMatTimepicker]="startPicker" [(ngModel)]="horaInicio" name="horaInicio" required>
+      <ngx-mat-timepicker #startPicker></ngx-mat-timepicker>
     </mat-form-field>
     
+    <!-- Hora de fin -->
     <mat-form-field appearance="fill" class="w-full">
       <mat-label>Hora de fin</mat-label>
-      <input matInput type="time" [(ngModel)]="horaFin" name="horaFin" required />
+      <input matInput [ngxMatTimepicker]="endPicker" [(ngModel)]="horaFin" name="horaFin" required>
+      <ngx-mat-timepicker #endPicker></ngx-mat-timepicker>
     </mat-form-field>
-    
-    
 
+    <!-- Campo para buscar cliente -->
     <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
-      <mat-label>Cliente</mat-label>
-      <input matInput type="number" name="clienteId" [(ngModel)]="reserva.clienteId" required>
+      <mat-label>Cliente (CI o RUC)</mat-label>
+      <input matInput [(ngModel)]="ciORuc" (input)="buscarClientes()" name="clienteId" required>
+      
+      <!-- Mat-autocomplete para mostrar los clientes -->
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="seleccionarCliente($event.option.value)">
+        <mat-option *ngFor="let cliente of clientes" [value]="cliente">
+          {{ cliente.nombre }} ({{ cliente.ci }})
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
 
+    <!-- Cancha -->
     <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
       <mat-label>Cancha</mat-label>
       <input matInput type="number" name="canchaId" [(ngModel)]="reserva.canchaId" required>
     </mat-form-field>
 
+    <!-- Sucursal -->
     <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
       <mat-label>Sucursal</mat-label>
       <input matInput type="number" name="sucursalId" [(ngModel)]="reserva.sucursalId" required>

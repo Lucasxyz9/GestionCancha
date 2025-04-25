@@ -22,7 +22,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
+
+//Timepicker NGX
+import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 
 // Calendar
 import { CalendarModule, DateAdapter } from 'angular-calendar';
@@ -84,6 +89,8 @@ registerLocaleData(localeEs);
     ReactiveFormsModule,
     FormsModule,
     // Angular Material Modules
+    MatAutocompleteModule,
+
     MatTableModule,
     MatPaginatorModule,
     MatSidenavModule,
@@ -94,12 +101,17 @@ registerLocaleData(localeEs);
     MatInputModule,
     MatFormFieldModule,
     MatDatepickerModule,
+    NgxMatTimepickerModule,
     MatNativeDateModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,
     })
   ],  
-  providers: [StockService, provideHttpClient(withInterceptorsFromDi())]
+  providers: [
+    StockService, 
+    provideHttpClient(withInterceptorsFromDi()),
+    { provide: MAT_DATE_LOCALE, useValue: 'es' } // Asegúrate de que esta línea esté aquí para configurar el locale español
+  ]
 })
 export class AppModule { }
