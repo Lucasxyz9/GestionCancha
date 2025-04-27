@@ -15,7 +15,7 @@ export class ClienteFormComponent {
   constructor(private fb: FormBuilder, private clienteService: ClienteService) {
     this.clienteForm = this.fb.group({
       nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
+      apellido: [''],
       telefono: ['', [Validators.required, Validators.pattern('[0-9]+')]],
       email: ['', [Validators.email]],
       ruc: [''],
