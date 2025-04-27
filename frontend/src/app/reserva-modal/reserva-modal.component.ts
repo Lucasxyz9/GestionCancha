@@ -4,10 +4,12 @@ import { ClienteService } from '../clientes.service';
 import { SucursalService } from '../sucursales.service';
 import { CanchaService } from '../cancha.service';
 import { Cliente } from '../clientes.model';
+import { ReservaService } from '../reserva.service';
+import { AuthService } from '../auth.service';
 
 interface Sucursal {
   id: number;
-  idSucursal?: number; // Para compatibilidad con backend que usa idSucursal
+  idSucursal?: number;
   nombre: string;
   ubicacion?: string;
   timbrado?: string;
@@ -36,16 +38,21 @@ export class ReservaModalComponent implements OnInit {
   sucursales: Sucursal[] = [];
   canchas: Cancha[] = [];
   selectedSucursal: Sucursal | null = null;
-  selectedCancha: Cancha | null | undefined = null;
+  selectedCancha: Cancha | null = null;
+  currentUserId: number = 1;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { reserva: any },
     public dialogRef: MatDialogRef<ReservaModalComponent>,
     private clienteService: ClienteService,
     private sucursalService: SucursalService,
-    private canchaService: CanchaService
+    private canchaService: CanchaService,
+    private authService: AuthService,
+    private reservaService: ReservaService,
   ) {}
 
   ngOnInit(): void {
+    this.currentUserId = this.authService.getCurrentUserId();
     this.loadSucursales();
     this.initializeFormData();
   }
@@ -59,12 +66,16 @@ export class ReservaModalComponent implements OnInit {
     if (this.reserva.horaFin) {
       this.horaFin = this.reserva.horaFin;
     }
+
+    if (this.data?.reserva) {
+      this.reserva.idEmpresa = this.reserva.idEmpresa || 1;
+      this.reserva.idUsuario = this.reserva.idUsuario || this.currentUserId;
+    }
   }
 
   loadSucursales(): void {
     this.sucursalService.getSucursales().subscribe({
       next: (sucursales: any[]) => {
-        // Normaliza las sucursales para usar id consistentemente
         this.sucursales = sucursales.map(s => ({
           id: s.id || s.idSucursal,
           nombre: s.nombre,
@@ -72,7 +83,6 @@ export class ReservaModalComponent implements OnInit {
           timbrado: s.timbrado
         }));
 
-        // Si estamos editando, seleccionar la sucursal existente
         if (this.reserva.sucursalId) {
           const sucursal = this.sucursales.find(s => s.id === this.reserva.sucursalId);
           if (sucursal) {
@@ -81,21 +91,12 @@ export class ReservaModalComponent implements OnInit {
           }
         }
       },
-      error: (error) => {
-        console.error('Error al cargar sucursales', error);
-      }
+      error: (error) => console.error('Error al cargar sucursales', error)
     });
   }
 
   onSucursalChange(event: any): void {
-    if (!event?.value) {
-      this.resetSucursalSelection();
-      return;
-    }
-
-    // Asegurarse de que tenemos un ID válido (ya normalizado en loadSucursales)
-    if (!event.value.id) {
-      console.warn('Sucursal sin ID válido', event.value);
+    if (!event?.value?.id) {
       this.resetSucursalSelection();
       return;
     }
@@ -123,10 +124,10 @@ export class ReservaModalComponent implements OnInit {
     this.canchaService.getCanchasBySucursal(sucursalId).subscribe({
       next: (canchas: any[]) => {
         this.canchas = canchas || [];
-        
-        // Si estamos editando, seleccionar la cancha existente
+
         if (this.reserva?.canchaId) {
-          this.selectedCancha = this.canchas.find(c => c.id === this.reserva.canchaId);
+          const cancha = this.canchas.find(c => c.id === this.reserva.canchaId);
+          this.selectedCancha = cancha || null;
           if (this.selectedCancha) {
             this.reserva.canchaId = this.selectedCancha.id;
           }
@@ -142,37 +143,40 @@ export class ReservaModalComponent implements OnInit {
   }
 
   onCanchaChange(event: any): void {
+    console.log('Cancha seleccionada:', event.value);
     if (event.value) {
       this.selectedCancha = event.value;
-      this.reserva.canchaId = event.value.id;
+      this.reserva.canchaId = event.value.idCancha;  // Asegúrate de que idCancha está presente
     } else {
       this.selectedCancha = null;
       this.reserva.canchaId = null;
     }
   }
+  
+  
 
   buscarClientePorCI(): void {
     if (this.ciBusqueda.length >= 6) {
       this.clienteService.buscarClientePorCI(this.ciBusqueda).subscribe({
-        next: (cliente: Cliente) => {
-          this.clientes = cliente ? [cliente] : [];
-        },
+        next: (cliente: Cliente) => this.clientes = cliente ? [cliente] : [],
         error: (error) => {
           console.error('Error al buscar cliente', error);
           this.clientes = [];
         }
       });
     } else {
-      this.clienteService.listarClientes().subscribe({
-        next: (clientes: Cliente[]) => {
-          this.clientes = clientes;
-        },
-        error: (error) => {
-          console.error('Error al listar clientes', error);
-          this.clientes = [];
-        }
-      });
+      this.loadAllClientes();
     }
+  }
+
+  private loadAllClientes(): void {
+    this.clienteService.listarClientes().subscribe({
+      next: (clientes: Cliente[]) => this.clientes = clientes,
+      error: (error) => {
+        console.error('Error al listar clientes', error);
+        this.clientes = [];
+      }
+    });
   }
 
   seleccionarCliente(cliente: Cliente): void {
@@ -181,39 +185,68 @@ export class ReservaModalComponent implements OnInit {
   }
 
   saveReserva(): void {
-    // Validación básica
-    if (!this.validateReserva()) {
-      return;
-    }
-
-    // Preparar datos
-    this.prepareReservaData();
-
-    console.log('Reserva guardada:', this.reserva);
-    this.dialogRef.close(this.reserva);
-  }
-
-  private validateReserva(): boolean {
-    if (!this.selectedSucursal) {
-      console.warn('Debe seleccionar una sucursal');
-      return false;
-    }
+    if (!this.validateReserva()) return;
+  
     if (!this.selectedCancha) {
-      console.warn('Debe seleccionar una cancha');
+      console.error('Debe seleccionar una cancha.');
+      return;  // Agregar esta validación adicional
+    }
+  
+    const reservaCompleta = {
+      ...this.reserva,
+      idEmpresa: 1,
+      idUsuario: this.authService.getCurrentUserId(),
+      fecha: this.reserva.fecha || new Date().toISOString(),
+      horaInicio: this.convertirHora24h(this.horaInicio),
+      horaFin: this.convertirHora24h(this.horaFin),
+      clienteId: this.clienteSeleccionado?.idCliente,
+      canchaId: this.selectedCancha.id, // Asegurarse de que selectedCancha tiene un id
+      sucursalId: this.selectedSucursal?.id
+    };
+  
+    const reservaObservable = this.reserva.idReserva
+      ? this.reservaService.updateReserva(reservaCompleta)
+      : this.reservaService.createReserva(reservaCompleta);
+  
+    reservaObservable.subscribe({
+      next: (reservaGuardada) => {
+        console.log('Reserva guardada exitosamente:', reservaGuardada);
+        this.dialogRef.close(reservaGuardada);
+      },
+      error: (err) => {
+        console.error('Error al guardar reserva:', err);
+      }
+    });
+  }
+  
+  private validateReserva(): boolean {
+    const errors = [];
+
+    if (!this.selectedSucursal) errors.push('Debe seleccionar una sucursal');
+    if (!this.selectedCancha) errors.push('Debe seleccionar una cancha');
+    if (!this.clienteSeleccionado) errors.push('Debe seleccionar un cliente');
+    if (!this.horaInicio || !this.horaFin) errors.push('Debe especificar horario');
+    if (!this.currentUserId) errors.push('Usuario no autenticado');
+
+    if (errors.length > 0) {
+      console.warn('Errores de validación:', errors.join(', '));
       return false;
     }
+
     return true;
   }
 
-  private prepareReservaData(): void {
-    this.reserva = {
-      ...this.reserva,
-      horaInicio: this.horaInicio,
-      horaFin: this.horaFin,
-      sucursalId: this.selectedSucursal?.id,
-      canchaId: this.selectedCancha?.id,
-      clienteId: this.clienteSeleccionado?.idCliente
-    };
+  private convertirHora24h(hora: string): string {
+    if (!hora) return '';
+
+    const [time, modifier] = hora.split(' ');
+    let [hours, minutes] = time.split(':');
+
+    if (modifier) {
+      hours = (modifier === 'PM' && hours !== '12' ? parseInt(hours, 10) + 12 : (modifier === 'AM' && hours === '12' ? '00' : hours)).toString();
+    }
+
+    return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
   }
 
   cancel(): void {

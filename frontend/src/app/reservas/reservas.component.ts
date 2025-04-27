@@ -26,7 +26,7 @@ export class ReservasComponent implements OnInit {
       this.events = reservas.map(reserva => ({
         start: new Date(reserva.fecha + ' ' + reserva.horaInicio),
         end: new Date(reserva.fecha + ' ' + reserva.horaFin),
-        title: `Reserva de ${reserva.clienteId}`,
+        title: `Reserva de ${reserva.cliente.idCliente}`,
         meta: reserva
       }));
     });

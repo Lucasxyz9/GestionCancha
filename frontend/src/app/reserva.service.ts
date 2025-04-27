@@ -8,7 +8,7 @@ import { Reserva } from './reserva.model';
   providedIn: 'root'
 })
 export class ReservaService {
-  private apiUrl = 'http://localhost:4200/api/reservas'; // Ajusta según tu API
+  private apiUrl = 'http://localhost:8080/api/reservas'; // Ajusta según tu API
 
   constructor(private http: HttpClient) {}
 
@@ -26,16 +26,46 @@ export class ReservaService {
   }
 
   createReserva(reserva: Reserva): Observable<Reserva> {
-    return this.http.post<Reserva>(this.apiUrl, reserva).pipe(
-      catchError(this.handleError<Reserva>('createReserva'))
-    );
+    const body = {
+      fecha: reserva.fecha,
+      horaInicio: reserva.horaInicio,
+      horaFin: reserva.horaFin,
+      cancha: {
+        idCancha: reserva.cancha.idCancha
+      },
+      cliente: {
+        idCliente: reserva.cliente.idCliente
+      },
+      usuario: {
+        idUsuario: reserva.usuario.idUsuario
+      },
+      empresa: {
+        idEmpresa: reserva.empresa.idEmpresa
+      }
+    };
+    return this.http.post<Reserva>(this.apiUrl, body);
   }
 
-  updateReserva(reserva: Reserva): Observable<any> {
-    const url = `${this.apiUrl}/${reserva.idReserva}`;
-    return this.http.put(url, reserva).pipe(
-      catchError(this.handleError<any>('updateReserva'))
-    );
+  // Método para actualizar una reserva existente
+  updateReserva(reserva: Reserva): Observable<Reserva> {
+    const body = {
+      fecha: reserva.fecha,
+      horaInicio: reserva.horaInicio,
+      horaFin: reserva.horaFin,
+      cancha: {
+        idCancha: reserva.cancha.idCancha
+      },
+      cliente: {
+        idCliente: reserva.cliente.idCliente
+      },
+      usuario: {
+        idUsuario: reserva.usuario.idUsuario
+      },
+      empresa: {
+        idEmpresa: reserva.empresa.idEmpresa
+      }
+    };
+    return this.http.put<Reserva>(`${this.apiUrl}/${reserva.idReserva}`, body);
   }
 
   deleteReserva(idReserva: string): Observable<any> {

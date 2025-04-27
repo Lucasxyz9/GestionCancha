@@ -1,12 +1,18 @@
 export interface Reserva {
-  idReserva?: string;
+  idReserva?: number;  // Usamos ? para indicar que puede ser opcional, ya que puede no estar disponible al crearla
   fecha: string;
   horaInicio: string;
   horaFin: string;
-  canchaId: number;
-  clienteId: number;
-  usuarioId: number;
-  empresaId: number;
-  estado?: string;
-  sucursalId: number; 
+  cancha: {
+    idCancha: number;
+  };
+  cliente: {
+    idCliente: number;
+  };
+  usuario: {
+    idUsuario: number;
+  };
+  empresa: {
+    idEmpresa: number;
+  };
 }

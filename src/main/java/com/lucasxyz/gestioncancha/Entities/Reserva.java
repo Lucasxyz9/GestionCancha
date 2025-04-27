@@ -15,21 +15,21 @@ public class Reserva {
     private long idReserva;
 
     @Column(name = "fecha", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")     
     private LocalDate fecha;
 
     @Column(name = "hora_inicio", nullable = false)
-    @JsonFormat(pattern = "HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime horaInicio;
 
     @Column(name = "hora_fin", nullable = false)
-    @JsonFormat(pattern = "HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime horaFin;
 
     @ManyToOne
     @JoinColumn(name = "cancha_id", nullable = false)
-    private Cancha cancha;
-
+    private Cancha cancha;  // Relación con la entidad Cancha
+    
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
