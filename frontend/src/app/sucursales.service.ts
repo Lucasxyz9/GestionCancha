@@ -37,4 +37,7 @@ export class SucursalService {
   deleteSucursal(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
+  listarSucursales(): Observable<Sucursal[]> {
+    return this.http.get<Sucursal[]>(this.apiUrl);
+  }
 }

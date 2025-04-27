@@ -1,6 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ClienteService } from '../clientes.service';
+import { SucursalService } from '../sucursales.service';
+import { CanchaService } from '../cancha.service';
+
 import { Cliente } from '../clientes.model';
 
 @Component({
@@ -17,10 +20,17 @@ export class ReservaModalComponent implements OnInit {
   clienteSeleccionado: Cliente | null = null;
   nombre: string = '';
 
+  sucursales: any[] = [];  // Lista de sucursales
+  canchas: any[] = [];  // Lista de canchas
+  selectedSucursal: any = null;  // Sucursal seleccionada
+  selectedCancha: any = null;  // Cancha seleccionada
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { reserva: any },
     public dialogRef: MatDialogRef<ReservaModalComponent>,
-    private clienteService: ClienteService
+    private clienteService: ClienteService,
+    private sucursalService: SucursalService,  // Inyectamos el servicio de sucursales
+    private canchaService: CanchaService  // Inyectamos el servicio de canchas
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +42,40 @@ export class ReservaModalComponent implements OnInit {
     if (this.reserva.horaFin) {
       this.horaFin = this.reserva.horaFin;
     }
+
+    this.loadSucursales();  // Cargar sucursales al iniciar el componente
+  }
+
+  // Cargar sucursales al iniciar el componente
+  loadSucursales() {
+    this.sucursalService.getSucursales().subscribe(
+      (sucursales) => {
+        this.sucursales = sucursales;
+      },
+      (error) => {
+        console.error('Error al cargar las sucursales', error);
+      }
+    );
+  }
+
+  // Al cambiar la sucursal, cargar las canchas correspondientes
+  onSucursalChange(event: any) {
+    const sucursalId = event.value;
+    if (sucursalId) {
+      this.loadCanchas(sucursalId);
+    }
+  }
+
+  // Cargar canchas según la sucursal seleccionada
+  loadCanchas(sucursalId: number) {
+    this.canchaService.getCanchasBySucursal(sucursalId).subscribe(
+      (canchas: any[]) => {
+        this.canchas = canchas;
+      },
+      (error: any) => {
+        console.error('Error al cargar las canchas', error);
+      }
+    );
   }
 
   // Método para guardar la reserva
@@ -43,6 +87,10 @@ export class ReservaModalComponent implements OnInit {
       this.reserva.clienteId = this.clienteSeleccionado.idCliente; // Asignamos el idCliente seleccionado
     }
 
+    if (this.selectedCancha) {
+      this.reserva.canchaId = this.selectedCancha.id;  // Asignamos el id de la cancha seleccionada
+    }
+
     console.log('Reserva guardada:', this.reserva);
     this.dialogRef.close(this.reserva);
   }
@@ -52,6 +100,7 @@ export class ReservaModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  // Buscar cliente por CI
   buscarClientePorCI(): void {
     if (this.ciBusqueda.length >= 6) {
       this.clienteService.buscarClientePorCI(this.ciBusqueda).subscribe(
@@ -73,7 +122,7 @@ export class ReservaModalComponent implements OnInit {
       );
     }
   }
-    
+
   // Seleccionar cliente de la lista
   seleccionarCliente(cliente: Cliente): void {
     this.clienteSeleccionado = cliente;

@@ -19,8 +19,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
     // Si quieres una búsqueda que permita encontrar un cliente con ambos parámetros, puedes hacerlo:
     Optional<Cliente> findByCiOrRuc(String ci, String ruc);
 
-    
-  
-    
+    List<Cliente> findByCiContaining(String ci);  // Busca clientes cuyo CI contenga el valor proporcionado
 }
 

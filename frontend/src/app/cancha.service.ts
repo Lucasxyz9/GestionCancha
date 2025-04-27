@@ -72,5 +72,8 @@ crearCancha(cancha: Cancha): Observable<Cancha> {
   buscarCanchas(nombre: string): Observable<Cancha[]> {
     return this.http.get<Cancha[]>(`${this.apiUrl}/buscar?nombre=${nombre}`);
   }
-  
+    // Método para obtener las canchas por sucursal
+    getCanchasBySucursal(sucursalId: number) {
+      return this.http.get<any[]>(`api/canchas/sucursal/${sucursalId}`);
+    }
 }
