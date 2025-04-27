@@ -37,7 +37,7 @@ export class CanchaComponent implements OnInit {
   }
 
   obtenerCanchas() {
-    this.canchaService.obtenerTodasLasCanchas().subscribe(
+    this.canchaService.getAllCanchas().subscribe(
       (canchas) => {
         this.canchas = canchas;
         console.log('Canchas obtenidas:', this.canchas);
@@ -67,7 +67,7 @@ export class CanchaComponent implements OnInit {
       console.log('Datos enviados:', cancha);
 
       if (cancha.idCancha) {
-        this.canchaService.actualizarCancha(cancha).subscribe(
+        this.canchaService.updateCancha(cancha).subscribe(
           (response) => {
             console.log('Respuesta al actualizar:', response);
             this.obtenerCanchas();
@@ -78,7 +78,7 @@ export class CanchaComponent implements OnInit {
           }
         );
       } else {
-        this.canchaService.crearCancha(cancha).subscribe(
+        this.canchaService.createCancha(cancha).subscribe(
           (response) => {
             console.log('Respuesta al crear:', response);
             this.obtenerCanchas();
@@ -106,7 +106,7 @@ export class CanchaComponent implements OnInit {
   }
 
   eliminarCancha(idCancha: number) {
-    this.canchaService.eliminarCancha(idCancha).subscribe(
+    this.canchaService.deleteCancha(idCancha).subscribe(
       () => this.obtenerCanchas(),
       (error) => console.error('Error al eliminar la cancha:', error)
     );

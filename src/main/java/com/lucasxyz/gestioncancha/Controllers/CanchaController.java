@@ -67,18 +67,17 @@ public class CanchaController {
             return new ResponseEntity<>("Error inesperado: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    // Método para obtener las canchas por sucursal
+    
     @GetMapping("/sucursal/{idSucursal}")
-    public ResponseEntity<?> obtenerCanchasPorSucursal(@PathVariable Integer idSucursal) {
-        Optional<List<Cancha>> canchas = Optional.ofNullable(canchaRepository.findBySucursal_IdSucursal(idSucursal));
-        if (canchas.isPresent() && !canchas.get().isEmpty()) {
-            return new ResponseEntity<>(canchas.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("No se encontraron canchas para esta sucursal", HttpStatus.NOT_FOUND);
+    public ResponseEntity<List<Cancha>> obtenerCanchasPorSucursal(@PathVariable Integer idSucursal) {
+        List<Cancha> canchas = canchaRepository.findBySucursal_IdSucursal(idSucursal);
+        
+        if (canchas == null || canchas.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
+        
+        return ResponseEntity.ok(canchas);
     }
-
     // Método para obtener todas las canchas
     @GetMapping
     public List<Cancha> obtenerTodasLasCanchas() {

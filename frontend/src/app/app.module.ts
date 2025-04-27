@@ -24,8 +24,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-
-
+import { MatSelectModule } from '@angular/material/select';
 //Timepicker NGX
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 
@@ -90,7 +89,7 @@ registerLocaleData(localeEs);
     FormsModule,
     // Angular Material Modules
     MatAutocompleteModule,
-
+    MatSelectModule,  // <-- Aquí agregas el módulo
     MatTableModule,
     MatPaginatorModule,
     MatSidenavModule,

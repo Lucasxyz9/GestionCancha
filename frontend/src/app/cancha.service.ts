@@ -1,79 +1,115 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Cancha } from './cancha.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CanchaService {
-  private apiUrl = 'http://localhost:8080/api/canchas'; // Cambiar según tu URL de API
-
+  private apiUrl = 'http://localhost:8080/api/canchas'; // Asegúrate que sea correcto
   constructor(private http: HttpClient) { }
 
-  // Obtener las canchas por sucursal
-  obtenerCanchasPorSucursal(idSucursal: number): Observable<Cancha[]> {
-    return this.http.get<Cancha[]>(`${this.apiUrl}/sucursal/${idSucursal}`);
+  // Configuración común de headers
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+  }
+
+  // Manejo centralizado de errores
+  private handleError(error: HttpErrorResponse) {
+    console.error('Error en el servicio Cancha:', error);
+    return throwError(() => new Error('Ocurrió un error al procesar la solicitud. Por favor, inténtelo nuevamente.'));
+  }
+
+  // Obtener canchas por sucursal (versión unificada)
+  getCanchasBySucursal(sucursalId: number): Observable<Cancha[]> {
+    if (!sucursalId) {
+      return throwError(() => new Error('ID de sucursal no proporcionado'));
+    }
+    // Elimina la duplicación de '/canchas' en la URL
+    return this.http.get<Cancha[]>(`${this.apiUrl}/sucursal/${sucursalId}`).pipe(
+      catchError(this.handleError)
+    );
   }
 
   // Obtener todas las canchas
-  obtenerTodasLasCanchas(): Observable<Cancha[]> {
-    return this.http.get<Cancha[]>(this.apiUrl);
+  getAllCanchas(): Observable<Cancha[]> {
+    return this.http.get<Cancha[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  // Obtener los estados de las canchas
-  getEstadoCanchas(): Observable<any[]> {
-    return this.http.get<any[]>('/api/canchas/estado');
+  // Obtener estados de canchas
+  getEstadosCancha(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/estados`).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  // Eliminar una cancha por id
-  eliminarCancha(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  // Eliminar una cancha
+  deleteCancha(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
   }
 
   // Crear una nueva cancha
-// Crear una nueva cancha
-crearCancha(cancha: Cancha): Observable<Cancha> {
-  const headers = new HttpHeaders().set('Content-Type', 'application/json');
-  console.log('Datos de la cancha antes de enviar:', cancha); // Verifica qué datos se están enviando
+  createCancha(cancha: Cancha): Observable<Cancha> {
+    if (!this.validateCancha(cancha)) {
+      return throwError(() => new Error('Datos incompletos para crear cancha'));
+    }
 
-  // Validar si los campos esenciales están presentes antes de enviar la petición
-  if (
-    !cancha.nombre ||
-    !cancha.ubicacion ||
-    !cancha.estado ||
-    !cancha.sucursal ||
-    !cancha.sucursal.idSucursal
-  ) {
-    throw new Error('Faltan campos requeridos para crear la cancha.');
+    return this.http.post<Cancha>(this.apiUrl, cancha, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
-
-  return this.http.post<Cancha>(this.apiUrl, cancha, { headers });
-}
-
 
   // Actualizar una cancha
-  actualizarCancha(cancha: Cancha): Observable<Cancha> {
-    console.log('Datos de la cancha antes de enviar:', cancha); // Verifica los datos
-
-    // Validar si los campos esenciales están presentes antes de enviar la petición
-    if (!cancha.idCancha || !cancha.nombre || !cancha.ubicacion || !cancha.estado || !cancha.idSucursal) {
-      throw new Error('Faltan campos requeridos para actualizar la cancha.');
+  updateCancha(cancha: Cancha): Observable<Cancha> {
+    if (!cancha.idCancha || !this.validateCancha(cancha)) {
+      return throwError(() => new Error('Datos incompletos para actualizar cancha'));
     }
 
-    return this.http.put<Cancha>(`${this.apiUrl}/${cancha.idCancha}`, cancha);
+    return this.http.put<Cancha>(`${this.apiUrl}/${cancha.idCancha}`, cancha, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  // Obtener una cancha por id
-  obtenerCanchaPorId(idCancha: number): Observable<Cancha> {
-    return this.http.get<Cancha>(`${this.apiUrl}/${idCancha}`);
-  }
-
-  buscarCanchas(nombre: string): Observable<Cancha[]> {
-    return this.http.get<Cancha[]>(`${this.apiUrl}/buscar?nombre=${nombre}`);
-  }
-    // Método para obtener las canchas por sucursal
-    getCanchasBySucursal(sucursalId: number) {
-      return this.http.get<any[]>(`api/canchas/sucursal/${sucursalId}`);
+  // Obtener cancha por ID
+  getCanchaById(id: number): Observable<Cancha> {
+    if (!id) {
+      return throwError(() => new Error('ID de cancha no proporcionado'));
     }
+    
+    return this.http.get<Cancha>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Buscar canchas por nombre
+  searchCanchas(nombre: string): Observable<Cancha[]> {
+    if (!nombre || nombre.trim().length < 2) {
+      return throwError(() => new Error('El término de búsqueda debe tener al menos 2 caracteres'));
+    }
+    
+    return this.http.get<Cancha[]>(`${this.apiUrl}/search?nombre=${encodeURIComponent(nombre)}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Validación común para cancha
+  private validateCancha(cancha: Cancha): boolean {
+    return !!cancha.nombre && 
+           !!cancha.ubicacion && 
+           !!cancha.estado && 
+           (!!cancha.sucursal?.idSucursal || !!cancha.idSucursal);
+  }
 }
