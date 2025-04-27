@@ -1,10 +1,10 @@
-export interface clientes{
-    idCliente:number;
-    nombre:string;
-    apellido:string;
-    telefono:string;
-    email:string;
-    ci:string;
-    ruc:string;
-    
-}
+export interface Cliente {
+    idCliente: number;
+    nombre: string;
+    apellido: string;
+    ci: string;
+    email: string;
+    ruc: string;
+    telefono: string;
+  }
+  

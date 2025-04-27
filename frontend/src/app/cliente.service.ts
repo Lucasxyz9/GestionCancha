@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { clientes } from './clientes.model'; // Importa tu modelo de Cliente
+import { Cliente } from './clientes.model'; // Importa tu modelo de Cliente
 
 @Injectable({
   providedIn: 'root'
@@ -13,22 +13,22 @@ export class ClienteService {
   constructor(private http: HttpClient) {}
 
   // Método para guardar un cliente
-  guardarCliente(cliente: clientes): Observable<clientes> {
-    return this.http.post<clientes>(this.apiUrl, cliente);
+  guardarCliente(cliente: Cliente): Observable<Cliente> {
+    return this.http.post<Cliente>(this.apiUrl, cliente);
   }
 
   // Método para obtener todos los clientes
-  listarClientes(): Observable<clientes[]> {
-    return this.http.get<clientes[]>(this.apiUrl);
+  listarClientes(): Observable<Cliente[]> {
+    return this.http.get<Cliente[]>(this.apiUrl);
   }
 
   // Método para obtener un cliente por ID
-  obtenerCliente(id: number): Observable<clientes> {
-    return this.http.get<clientes>(`${this.apiUrl}/${id}`);
+  obtenerCliente(id: number): Observable<Cliente> {
+    return this.http.get<Cliente>(`${this.apiUrl}/${id}`);
   }
 
   // Método para actualizar un cliente
-  actualizarCliente(cliente: clientes) {
+  actualizarCliente(cliente: Cliente) {
     return this.http.put(`http://localhost:8080/api/clientes/${cliente.idCliente}`, cliente);
   }
   
@@ -38,11 +38,11 @@ export class ClienteService {
   }
 
     // Método que retorna un Observable<Cliente[]>
-    getClientes(): Observable<clientes[]> {
-      return this.http.get<clientes[]>(this.apiUrl); // Este debe devolver un Observable de tipo Cliente[]
+    getClientes(): Observable<Cliente[]> {
+      return this.http.get<Cliente[]>(this.apiUrl); // Este debe devolver un Observable de tipo Cliente[]
     }
 
-    buscarCliente(ci?: string, ruc?: string): Observable<clientes> {
+    buscarCliente(ci?: string, ruc?: string): Observable<Cliente> {
       let url = `${this.apiUrl}/buscar?`;
       if (ci) {
         url += `ci=${ci}`;
@@ -50,10 +50,10 @@ export class ClienteService {
       if (ruc) {
         url += `ruc=${ruc}`;
       }
-      return this.http.get<clientes>(url);
+      return this.http.get<Cliente>(url);
     }
 
-    buscarCliente2(ci?: string, ruc?: string): Observable<clientes[]> {
+    buscarCliente2(ci?: string, ruc?: string): Observable<Cliente[]> {
       let url = `${this.apiUrl}/buscar?`;
       if (ci) {
         url += `ci=${ci}`;
@@ -61,8 +61,11 @@ export class ClienteService {
       if (ruc) {
         url += `ruc=${ruc}`;
       }
-      return this.http.get<clientes[]>(url); // <- Cambiado de clientes a clientes[]
+      return this.http.get<Cliente[]>(url); // <- Cambiado de clientes a clientes[]
     }
     
+    buscarClientePorCI(ci: string): Observable<Cliente> {
+      return this.http.get<Cliente>(`http://localhost:8080/api/clientes/buscar2?ci=${ci}`);
+    }
     
 }

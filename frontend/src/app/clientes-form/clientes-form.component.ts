@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClienteService } from 'src/app/cliente.service'; // Importa el servicio
-import { clientes } from 'src/app/clientes.model'; // Importa el modelo
+import { Cliente } from 'src/app/clientes.model'; // Importa el modelo
 import Swal from 'sweetalert2'; // Importar SweetAlert2
 
 @Component({
@@ -26,7 +26,7 @@ export class ClienteFormComponent {
   // Método para guardar un cliente
   guardarCliente() {
     if (this.clienteForm.valid) {
-      const clienteData: clientes = this.clienteForm.value; // Mapear al modelo Clientes
+      const clienteData: Cliente = this.clienteForm.value; // Mapear al modelo Clientes
       console.log('Enviando datos del cliente al backend:', clienteData);
 
       // Llama al servicio para guardar el cliente

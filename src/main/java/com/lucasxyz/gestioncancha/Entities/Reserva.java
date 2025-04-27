@@ -2,28 +2,29 @@ package com.lucasxyz.gestioncancha.Entities;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "reserva")
 public class Reserva {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // Aseguramos que el UUID se genere automáticamente
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_reserva", nullable = false, unique = true)
     private long idReserva;
 
     @Column(name = "fecha", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // Asegura que el formato de fecha sea consistente con LocalDateTime
-    private LocalDateTime fecha;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fecha;
 
     @Column(name = "hora_inicio", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // Formato para horaInicio
-    private LocalDateTime horaInicio;
+    @JsonFormat(pattern = "HH:mm:ss")
+    private LocalTime horaInicio;
 
     @Column(name = "hora_fin", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // Formato para horaFin
-    private LocalDateTime horaFin;
+    @JsonFormat(pattern = "HH:mm:ss")
+    private LocalTime horaFin;
 
     @ManyToOne
     @JoinColumn(name = "cancha_id", nullable = false)
@@ -42,36 +43,35 @@ public class Reserva {
     private Empresa empresa;
 
     // Getters y Setters
-
     public long getIdReserva() {
         return idReserva;
     }
 
-    public void setIdReserva(long id) {
-        this.idReserva = id;
+    public void setIdReserva(long idReserva) {
+        this.idReserva = idReserva;
     }
 
-    public LocalDateTime getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDateTime fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
-    public LocalDateTime getHoraInicio() {
+    public LocalTime getHoraInicio() {
         return horaInicio;
     }
 
-    public void setHoraInicio(LocalDateTime horaInicio) {
+    public void setHoraInicio(LocalTime horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public LocalDateTime getHoraFin() {
+    public LocalTime getHoraFin() {
         return horaFin;
     }
 
-    public void setHoraFin(LocalDateTime horaFin) {
+    public void setHoraFin(LocalTime horaFin) {
         this.horaFin = horaFin;
     }
 

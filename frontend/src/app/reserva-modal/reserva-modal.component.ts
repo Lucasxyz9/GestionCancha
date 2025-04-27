@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ClienteService } from '../clientes.service';  // Importa el servicio de cliente
-import { clientes } from '../clientes.model';  // Importa correctamente el modelo clientes
+import { ClienteService } from '../clientes.service';
+import { Cliente } from '../clientes.model';
 
 @Component({
   selector: 'app-reserva-modal',
@@ -9,28 +9,26 @@ import { clientes } from '../clientes.model';  // Importa correctamente el model
   styleUrls: ['./reserva-modal.component.scss']
 })
 export class ReservaModalComponent implements OnInit {
-  reserva: any = {};
+  reserva: any = {};  // Datos de la reserva
   horaInicio: string = '';
   horaFin: string = '';
-  ciORuc: string = '';  // CI o RUC ingresado por el usuario
-  clientes: clientes[] = [];  // Lista de clientes encontrados
-  clienteSeleccionado: clientes | null = null;  // Cliente seleccionado
-  nombre: string = '';  // Nombre del cliente seleccionado
+  ciBusqueda: string = '';
+  clientes: Cliente[] = [];
+  clienteSeleccionado: Cliente | null = null;
+  nombre: string = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { reserva: any },
     public dialogRef: MatDialogRef<ReservaModalComponent>,
-    private clienteService: ClienteService  // Asegúrate de inyectar el servicio
+    private clienteService: ClienteService
   ) {}
 
   ngOnInit(): void {
-    this.reserva = this.data?.reserva || {};  // Inicializa reserva desde los datos del modal
-    
-    // Inicializar las horas si existen en la reserva
+    this.reserva = this.data?.reserva || {};
+
     if (this.reserva.horaInicio) {
       this.horaInicio = this.reserva.horaInicio;
     }
-    
     if (this.reserva.horaFin) {
       this.horaFin = this.reserva.horaFin;
     }
@@ -38,42 +36,47 @@ export class ReservaModalComponent implements OnInit {
 
   // Método para guardar la reserva
   saveReserva(): void {
-    // Asignar las horas seleccionadas al objeto reserva antes de guardarla
     this.reserva.horaInicio = this.horaInicio;
     this.reserva.horaFin = this.horaFin;
     
+    if (this.clienteSeleccionado) {
+      this.reserva.clienteId = this.clienteSeleccionado.idCliente; // Asignamos el idCliente seleccionado
+    }
+
     console.log('Reserva guardada:', this.reserva);
-    this.dialogRef.close(this.reserva);  // Cierra el modal y pasa la reserva
+    this.dialogRef.close(this.reserva);
   }
 
-  // Método para cancelar el modal
+  // Método para cancelar
   cancel(): void {
-    this.dialogRef.close();  // Cierra el modal sin pasar datos
+    this.dialogRef.close();
   }
 
-  // Método para buscar clientes por CI o RUC
-  buscarClientes(): void {
-    if (this.ciORuc.trim() !== '') {
-      this.clienteService.buscarCliente(this.ciORuc).subscribe(
-        (cliente: clientes) => {
-          this.clientes = cliente ? [cliente] : [];  // Convertimos el objeto en array
+  buscarClientePorCI(): void {
+    if (this.ciBusqueda.length >= 6) {
+      this.clienteService.buscarClientePorCI(this.ciBusqueda).subscribe(
+        (cliente: Cliente) => {
+          if (cliente) {
+            this.clientes = [cliente];  // Ponemos el cliente encontrado dentro de un array
+          } else {
+            this.clientes = [];
+          }
         },
-        (error) => {
-          console.error('Error al buscar clientes', error);
-          this.clientes = [];
-        }
-      );      
-
+        (error) => console.error('Error al buscar cliente', error)
+      );
     } else {
-      this.clientes = [];  // Limpiar la lista si no hay texto en el input
+      this.clienteService.listarClientes().subscribe(
+        (clientes: Cliente[]) => {
+          this.clientes = clientes;
+        },
+        (error) => console.error('Error al listar clientes', error)
+      );
     }
   }
-
-  // Método para seleccionar un cliente de la lista
-  seleccionarCliente(cliente: clientes): void {
-    this.clienteSeleccionado = cliente;  // Establecer cliente seleccionado
-    this.nombre = cliente.nombre;  // Asignar el nombre del cliente
-    this.ciORuc = cliente.ci;  // Asignar el CI o RUC del cliente
-    this.clientes = [];  // Limpiar la lista de clientes
+    
+  // Seleccionar cliente de la lista
+  seleccionarCliente(cliente: Cliente): void {
+    this.clienteSeleccionado = cliente;
+    this.nombre = cliente.nombre;
   }
 }

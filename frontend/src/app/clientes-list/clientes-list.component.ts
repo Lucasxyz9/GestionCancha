@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { clientes } from './../clientes.model'; // Mantén la importación correcta
+import { Cliente } from './../clientes.model'; // Mantén la importación correcta
 import { ClienteService } from './../cliente.service';
 import Swal from 'sweetalert2';
 
@@ -11,8 +11,8 @@ import Swal from 'sweetalert2';
 })
 export class ClientesListComponent implements OnInit {
 
-  clientes: clientes[] = [];
-  clienteEdicion: clientes | null = null;
+  clientes: Cliente[] = [];
+  clienteEdicion: Cliente | null = null;
   ciBusqueda: string = ''; 
 
   constructor(private clienteService: ClienteService) { }
@@ -29,7 +29,7 @@ export class ClientesListComponent implements OnInit {
     );
   }
 
-  editarCliente(cliente: clientes): void {
+  editarCliente(cliente: Cliente): void {
     // Hacemos una copia del cliente a editar
     this.clienteEdicion = { ...cliente };
   }
@@ -56,7 +56,7 @@ export class ClientesListComponent implements OnInit {
   // Método para obtener la lista de clientes
   obtenerClientes(): void {
     this.clienteService.getClientes().subscribe(
-      (clientes: clientes[]) => {
+      (clientes: Cliente[]) => {
         this.clientes = clientes;
       },
       (error: any) => {

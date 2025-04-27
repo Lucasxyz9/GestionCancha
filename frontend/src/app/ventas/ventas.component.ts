@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { Caja } from '../Caja.model';
 import { ClienteService } from '../cliente.service'; // Importa ClienteService
 import { ventas } from '../ventas.model';
-import { clientes } from '../clientes.model';
+import { Cliente } from '../clientes.model';
 
 @Component({
   selector: 'app-ventas',
@@ -231,7 +231,7 @@ export class VentasComponent implements OnInit {
     }
 
     this.clienteService.buscarCliente(this.ciBusqueda, this.rucBusqueda).subscribe({
-      next: (cliente: clientes | null) => {
+      next: (cliente: Cliente | null) => {
         if (cliente) {
           // Adaptar el formato del cliente para mostrar los detalles
           this.clienteSeleccionado = {

@@ -80,7 +80,15 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Retorna 404 Not Found
     }
 
-
+    @GetMapping("/buscar2")
+    public ResponseEntity<Cliente> getClienteByCi(@RequestParam String ci) {
+        Cliente cliente = clienteRepository.findByCi(ci);
+        if (cliente == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(cliente);
+    }
+    
     
     @GetMapping("/probar")
     public ResponseEntity<String> probar(@RequestParam String ci) {
