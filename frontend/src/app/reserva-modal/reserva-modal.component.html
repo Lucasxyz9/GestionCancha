@@ -59,10 +59,12 @@
     <!-- Cancha - Dropdown -->
     <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
       <mat-label>Cancha</mat-label>
-      <mat-select [(ngModel)]="selectedCancha" name="cancha" [disabled]="!selectedSucursal" required
-                  (selectionChange)="onCanchaChange($event)">
+      <mat-select [(ngModel)]="selectedCancha" name="cancha" 
+                  [disabled]="!selectedSucursal" required
+                  (selectionChange)="onCanchaChange($event)"
+                  [compareWith]="compareCanchas">
         <mat-option *ngFor="let cancha of canchas" [value]="cancha">
-          {{ cancha.nombre }} <!-- Solo muestra el nombre -->
+          {{ cancha.nombre }} (ID: {{cancha.idCancha}})
         </mat-option>
       </mat-select>
     </mat-form-field>

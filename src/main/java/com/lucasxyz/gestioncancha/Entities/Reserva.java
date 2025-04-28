@@ -19,11 +19,11 @@ public class Reserva {
     private LocalDate fecha;
 
     @Column(name = "hora_inicio", nullable = false)
-    @JsonFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime horaInicio;
 
     @Column(name = "hora_fin", nullable = false)
-    @JsonFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime horaFin;
 
     @ManyToOne

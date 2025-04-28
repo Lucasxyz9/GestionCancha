@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CalendarEvent, CalendarView } from 'angular-calendar';  // No es necesario importar MonthViewDay
+import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { ReservaService } from '../reserva.service';
 import { Reserva } from '../reserva.model';
 import { MatDialog } from '@angular/material/dialog';
@@ -35,12 +35,14 @@ export class ReservasComponent implements OnInit {
   addEvent(): void {
     const dialogRef = this.dialog.open(ReservaModalComponent, {
       width: '400px',
-      data: { reserva: {} }
+      data: { reserva: {} }  // Pasa un objeto vacío si es una nueva reserva
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        // Si el modal devuelve un resultado (reserva creada o editada)
         this.loadReservas();
+        this.reservaService.setReserva(result);  // Notifica a otros componentes (por ejemplo, ReservaComponent)
       }
     });
   }
@@ -48,12 +50,14 @@ export class ReservasComponent implements OnInit {
   editEvent(event: CalendarEvent): void {
     const dialogRef = this.dialog.open(ReservaModalComponent, {
       width: '400px',
-      data: { reserva: event.meta }
+      data: { reserva: event.meta }  // Pasa la reserva a editar
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        // Si el modal devuelve un resultado (reserva editada)
         this.loadReservas();
+        this.reservaService.setReserva(result);  // Notifica a otros componentes (por ejemplo, ReservaComponent)
       }
     });
   }
@@ -61,19 +65,18 @@ export class ReservasComponent implements OnInit {
   deleteEvent(event: CalendarEvent): void {
     if (confirm('¿Estás seguro de que quieres eliminar esta reserva?')) {
       this.reservaService.deleteReserva(event.meta.idReserva).subscribe(() => {
+        // Una vez eliminada, recarga las reservas
         this.loadReservas();
       });
     }
   }
 
-  // Implementación de eventClicked
   eventClicked({ event }: { event: CalendarEvent }): void {
-    this.editEvent(event);  // Abre el modal de edición de la reserva
+    this.editEvent(event);  // Abre el modal para editar la reserva
   }
 
-  // Eliminar la dependencia de MonthViewDay y usar la propiedad 'date' directamente
   dayClicked({ day }: { day: { date: Date } }): void {
-    const selectedDate = day.date; // Usar la fecha directamente
-    this.addEvent();  // Abrir el modal para agregar una nueva reserva
+    const selectedDate = day.date;  // Usamos directamente la fecha seleccionada
+    this.addEvent();  // Abre el modal para agregar una nueva reserva
   }
 }
