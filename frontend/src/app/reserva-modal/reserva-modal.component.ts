@@ -6,7 +6,7 @@ import { CanchaService } from '../cancha.service';
 import { Cliente } from '../clientes.model';
 import { ReservaService } from '../reserva.service';
 import { AuthService } from '../auth.service';
-
+import Swal from 'sweetalert2';
 interface Sucursal {
   id: number;
   idSucursal?: number;
@@ -135,6 +135,7 @@ export class ReservaModalComponent implements OnInit {
   }
   
 
+
   saveReserva(): void {
     if (!this.validateReserva()) return;
   
@@ -165,26 +166,71 @@ export class ReservaModalComponent implements OnInit {
       ? this.reservaService.updateReserva(reservaPayload)
       : this.reservaService.crearReserva(reservaPayload);
   
-      reservaObservable.subscribe({
-        next: (reservaGuardada) => {
-          // Verifica si es una respuesta de éxito antes de mostrar la consola
-          if (reservaGuardada) {
-            console.log('Reserva guardada exitosamente');
-            // Actualiza el estado en el servicio
-            this.reservaService.setReserva(reservaGuardada);
-        
-            // Cierra el modal y pasa la reserva guardada
-            this.dialogRef.close(reservaGuardada);
-          }
-        },
-        
-
-        
-      });
-    
-      
+    reservaObservable.subscribe({
+      next: (reservaGuardada) => {
+        if (reservaGuardada) {
+          console.log('Reserva guardada exitosamente');
+  
+          // Muestra el SweetAlert de éxito
+          Swal.fire({
+            title: '¡Éxito!',
+            text: 'Reserva creada correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Limpiar campos para nueva reserva
+              this.resetForm();
+              // O si prefieres, redirigir a la página de reservas (por ejemplo, usando router)
+              // this.router.navigate(['/reservas']);
+            }
+          });
+  
+          // Actualiza el estado en el servicio
+          this.reservaService.setReserva(reservaGuardada);
+  
+          // Cierra el modal y pasa la reserva guardada
+          this.dialogRef.close(reservaGuardada);
+        }
+      },
+      error: (error) => {
+        // Este bloque maneja el error general de la reserva, pero no debe considerar 201 como error
+        if (error.status === 201) {
+          // Si el error es 201, significa que la reserva fue creada correctamente
+          Swal.fire({
+            title: '¡Éxito!',
+            text: 'Reserva creada correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+          });
+        }
+        else {
+          // Muestra el SweetAlert de error si el código no es 201 o 200
+          Swal.fire({
+            title: '¡Error!',
+            text: 'Hubo un problema al guardar la reserva.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+          });
+        }
+      }
+    });
   }
   
+  
+
+  private resetForm(): void {
+    // Vaciar campos del formulario
+    this.reserva = {};
+    this.horaInicio = '';
+    this.horaFin = '';
+    this.ciBusqueda = '';
+    this.clientes = [];
+    this.clienteSeleccionado = null;
+    this.nombre = '';
+    this.selectedSucursal = null;
+    this.selectedCancha = null;
+  }
 
   // Resto de los métodos permanecen igual...
   onSucursalChange(event: any): void {
@@ -298,3 +344,11 @@ export class ReservaModalComponent implements OnInit {
     return c1 && c2 ? c1.idCancha === c2.idCancha : c1 === c2;
   }
 }
+
+function resetForm() {
+  throw new Error('Function not implemented.');
+}
+function saveReserva() {
+  throw new Error('Function not implemented.');
+}
+

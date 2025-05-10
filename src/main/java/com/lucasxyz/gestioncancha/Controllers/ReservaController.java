@@ -4,13 +4,13 @@ import com.lucasxyz.gestioncancha.Entities.Cancha;
 import com.lucasxyz.gestioncancha.Entities.Reserva;
 import com.lucasxyz.gestioncancha.Repositories.CanchaRepository;
 import com.lucasxyz.gestioncancha.Repositories.ReservaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -21,7 +21,6 @@ public class ReservaController {
     private final CanchaRepository canchaRepository;
 
     // Inyección de dependencias para los repositorios
-    @Autowired
     public ReservaController(ReservaRepository reservaRepository, CanchaRepository canchaRepository) {
         this.reservaRepository = reservaRepository;
         this.canchaRepository = canchaRepository;
@@ -43,32 +42,49 @@ public class ReservaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createReserva(@RequestBody Reserva reserva) {
-        // Validar que la cancha no sea nula
+        public ResponseEntity<Map<String, String>> createReserva(@RequestBody Reserva reserva) {
+            Map<String, String> response = new HashMap<>();
+
+        // Validaciones
         if (reserva.getCancha() == null || reserva.getCancha().getIdCancha() == 0) {
-            return ResponseEntity.badRequest().body("La cancha es obligatoria.");
+            response.put("mensaje", "La cancha es obligatoria.");
+            return ResponseEntity.badRequest().body(response);
         }
 
-        // Verificar si la cancha existe en la base de datos
+        if (reserva.getCliente() == null || reserva.getCliente().getIdCliente() == 0) {
+            response.put("mensaje", "El cliente es obligatorio.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (reserva.getUsuario() == null || reserva.getUsuario().getIdUsuario() == 0) {
+            response.put("mensaje", "El usuario es obligatorio.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (reserva.getFecha() == null) {
+            response.put("mensaje", "La fecha es obligatoria.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // Verificar existencia de la cancha
         Optional<Cancha> canchaOptional = canchaRepository.findById(reserva.getCancha().getIdCancha());
         if (!canchaOptional.isPresent()) {
-            return ResponseEntity.badRequest().body("La cancha seleccionada no existe.");
+            response.put("mensaje", "La cancha seleccionada no existe.");
+            return ResponseEntity.badRequest().body(response);
         }
 
-        // Establecer la cancha válida en la reserva
+        // Establecer cancha válida
         reserva.setCancha(canchaOptional.get());
 
-        // Guardar la reserva en la base de datos
+        // Guardar reserva
         reservaRepository.save(reserva);
 
-        return ResponseEntity.ok("Reserva creada con éxito.");
+        response.put("mensaje", "Reserva creada con éxito.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-        @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleTimeParseError(HttpMessageNotReadableException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: formato de hora incorrecto. Asegúrate de enviar el formato correcto.");
-    }
-
+    
+    
     @PutMapping("/{id}")
     public ResponseEntity<?> updateReserva(@PathVariable long id, @RequestBody Reserva reservaDetails) {
         Optional<Reserva> reservaOptional = reservaRepository.findById(id);
