@@ -5,7 +5,6 @@ import { catchError, map } from 'rxjs/operators';
 import { Reserva } from './reserva.model';
 import { BehaviorSubject } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -120,4 +119,7 @@ export class ReservaService {
       return throwError(() => error);
     };
   }
+
+
+  
 }

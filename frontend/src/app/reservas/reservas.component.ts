@@ -76,7 +76,23 @@ export class ReservasComponent implements OnInit {
   }
 
   dayClicked({ day }: { day: { date: Date } }): void {
-    const selectedDate = day.date;  // Usamos directamente la fecha seleccionada
-    this.addEvent();  // Abre el modal para agregar una nueva reserva
+    const selectedDate = day.date;
+
+    const dialogRef = this.dialog.open(ReservaModalComponent, {
+      width: '400px',
+      data: {
+        reserva: {
+          fecha: selectedDate.toISOString().split('T')[0]  // formato yyyy-MM-dd
+        }
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadReservas();
+        this.reservaService.setReserva(result);
+      }
+    });
   }
+
 }

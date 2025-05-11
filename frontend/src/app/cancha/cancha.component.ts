@@ -57,43 +57,48 @@ export class CanchaComponent implements OnInit {
     });
   }
 
-  crearOActualizarCancha() {
-    if (this.canchaForm.valid) {
-      const cancha = this.canchaForm.value;
+crearOActualizarCancha() {
+  if (this.canchaForm.valid) {
+    const canchaFormValue = this.canchaForm.value;
 
-      cancha.sucursal = { idSucursal: cancha.idSucursal };
-      delete cancha.idSucursal;
+    const cancha = {
+      ...canchaFormValue,
+      sucursal: { idSucursal: canchaFormValue.idSucursal }
+    };
+    delete cancha.idSucursal;
 
-      console.log('Datos enviados:', cancha);
+    console.log('Datos enviados:', cancha);
 
-      if (cancha.idCancha) {
-        this.canchaService.updateCancha(cancha).subscribe(
-          (response) => {
-            console.log('Respuesta al actualizar:', response);
-            this.obtenerCanchas();
-            this.canchaForm.reset();
-          },
-          (error) => {
-            console.error('Error al actualizar la cancha:', error);
+    if (cancha.idCancha) {
+      this.canchaService.updateCancha(cancha).subscribe(
+        (response) => {
+          console.log('Respuesta al actualizar:', response);
+          this.obtenerCanchas();
+          this.canchaForm.reset();
+        },
+        (error) => {
+          console.error('Error al actualizar la cancha:', error);
+        }
+      );
+    } else {
+      this.canchaService.createCancha(cancha).subscribe(
+        (response) => {
+          console.log('Respuesta al crear:', response);
+          this.obtenerCanchas();
+          this.canchaForm.reset();
+        },
+        (error) => {
+          console.error('Error al crear la cancha:', error);
+          if (error.error) {
+            console.error('Detalles del error:', error.error);
           }
-        );
-      } else {
-        this.canchaService.createCancha(cancha).subscribe(
-          (response) => {
-            console.log('Respuesta al crear:', response);
-            this.obtenerCanchas();
-            this.canchaForm.reset();
-          },
-          (error) => {
-            console.error('Error al crear la cancha:', error);
-            if (error.error) {
-              console.error('Detalles del error:', error.error);
-            }
-          }
-        );
-      }
+        }
+      );
     }
+  } else {
+    console.warn('Formulario inválido, verifique los campos.');
   }
+}
 
   editarCancha(cancha: Cancha) {
     this.canchaForm.patchValue({

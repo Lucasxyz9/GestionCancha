@@ -78,6 +78,7 @@ public class CanchaController {
         
         return ResponseEntity.ok(canchas);
     }
+
     // Método para obtener todas las canchas
     @GetMapping
     public List<Cancha> obtenerTodasLasCanchas() {
@@ -111,4 +112,70 @@ public class CanchaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Devuelve un 404 si la cancha no se encuentra
         }
     }
+
+
+        /*@PutMapping("/{id}")
+        public ResponseEntity<Cancha> actualizarCancha(@PathVariable Integer id, @RequestBody Cancha canchaActualizada) {
+            Optional<Cancha> optionalCancha = canchaRepository.findById(id);
+            if (optionalCancha.isPresent()) {
+                Cancha canchaExistente = optionalCancha.get();
+
+                // Actualizar los campos necesarios
+                canchaExistente.setNombre(canchaActualizada.getNombre());
+                canchaExistente.setUbicacion(canchaActualizada.getUbicacion());
+                canchaExistente.setEstado(canchaActualizada.getEstado());
+                canchaExistente.setSucursal(canchaActualizada.getSucursal());
+
+                Cancha canchaGuardada = canchaRepository.save(canchaExistente);
+                return ResponseEntity.ok(canchaGuardada);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        }*/
+
+                @PutMapping("/{id}")
+        public ResponseEntity<?> actualizarCancha(@PathVariable Integer id, @RequestBody Cancha cancha) {
+            try {
+                Optional<Cancha> optionalCancha = canchaRepository.findById(id);
+                if (!optionalCancha.isPresent()) {
+                    return new ResponseEntity<>("Cancha no encontrada", HttpStatus.NOT_FOUND);
+                }
+
+                Cancha canchaExistente = optionalCancha.get();
+
+                // Validaciones similares al POST
+                if (cancha.getNombre() == null || cancha.getNombre().isEmpty()) {
+                    return new ResponseEntity<>("El nombre de la cancha es obligatorio", HttpStatus.BAD_REQUEST);
+                }
+
+                if (cancha.getUbicacion() == null || cancha.getUbicacion().isEmpty()) {
+                    return new ResponseEntity<>("La ubicación de la cancha es obligatoria", HttpStatus.BAD_REQUEST);
+                }
+
+                if (cancha.getSucursal() == null || cancha.getSucursal().getIdSucursal() == null || cancha.getSucursal().getIdSucursal() == -1) {
+                    return new ResponseEntity<>("El idSucursal es obligatorio", HttpStatus.BAD_REQUEST);
+                }
+
+                Optional<Sucursal> sucursalOptional = sucursalRepository.findById(cancha.getSucursal().getIdSucursal());
+                if (!sucursalOptional.isPresent()) {
+                    return new ResponseEntity<>("Sucursal no encontrada", HttpStatus.BAD_REQUEST);
+                }
+
+                Sucursal sucursal = sucursalOptional.get();
+
+                // Actualizar campos
+                canchaExistente.setNombre(cancha.getNombre());
+                canchaExistente.setUbicacion(cancha.getUbicacion());
+                canchaExistente.setEstado(cancha.getEstado());
+                canchaExistente.setSucursal(sucursal);
+
+                Cancha actualizada = canchaRepository.save(canchaExistente);
+                return new ResponseEntity<>(actualizada, HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>("Error inesperado: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+
+
 }

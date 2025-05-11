@@ -53,10 +53,32 @@ export class ReservaModalComponent implements OnInit {
     private reservaService: ReservaService,
   ) {}
 
+
+
   ngOnInit(): void {
     this.initializeFormData();
     this.loadSucursales();
+      this.setFechaSiguiente();  // Asigna la fecha siguiente al abrir el modal
+
+
   }
+
+  private sumarUnDia(fecha: Date): Date {
+  const fechaSiguiente = new Date(fecha);
+  fechaSiguiente.setDate(fechaSiguiente.getDate() + 1); // Sumar un día
+  return fechaSiguiente;
+}
+
+private setFechaSiguiente(): void {
+  // Si ya existe una fecha en la reserva, asigna el día siguiente
+  if (this.reserva.fecha) {
+    this.reserva.fecha = this.sumarUnDia(new Date(this.reserva.fecha));
+  } else {
+    // Si no hay fecha en la reserva, asigna el día siguiente a la fecha actual
+    this.reserva.fecha = this.sumarUnDia(new Date());
+  }
+}
+
 
   private initializeFormData(): void {
     this.reserva = this.data?.reserva || {};
@@ -64,6 +86,12 @@ export class ReservaModalComponent implements OnInit {
     // Asegurar valores hardcodeados
     this.reserva.idEmpresa = this.empresaId;
     this.reserva.idUsuario = this.currentUserId;
+
+      // Preseleccionar fecha si está disponible
+    if (!this.reserva.fecha) {
+      this.reserva.fecha = new Date();
+    }
+
 
     if (this.data?.reserva) {
       // Normalizamos el ID de cancha
@@ -216,9 +244,6 @@ export class ReservaModalComponent implements OnInit {
       }
     });
   }
-  
-  
-
   private resetForm(): void {
     // Vaciar campos del formulario
     this.reserva = {};
@@ -299,9 +324,12 @@ export class ReservaModalComponent implements OnInit {
     this.nombre = cliente.nombre;
   }
 
-  private formatDate(date: any): string {
-    return date ? new Date(date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
-  }
+ private formatDate(date: Date): string {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
 
   private validateReserva(): boolean {
     const errors = [];

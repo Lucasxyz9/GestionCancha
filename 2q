@@ -1,0 +1,261 @@
+[33mcommit 10cae0e92c73940df5639487953b4af28e1b25c5[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Sat May 10 13:06:28 2025 -0300
+
+    agregado sweet alert a crear reserva
+
+[33mcommit d1c3edb724b19b926a02df58c376f3938c5ef9c0[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Mon Apr 28 13:18:12 2025 -0300
+
+     Reserva casi completo ya inserta todo
+
+[33mcommit f4ef76490736ec49aec6c50acbb4cb6b47e8f6d5[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Sun Apr 27 18:36:50 2025 -0300
+
+     el backend ya inserta reserva
+
+[33mcommit 5ab4a96900a450d2695c291a66cab44bad42f881[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Sun Apr 27 16:13:23 2025 -0300
+
+     Selector completo del modal incluido del dropdown en sucursal y la cancha se elige por sucursal
+
+[33mcommit 85367faf68000132fe38928d36aad10068a26846[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Sun Apr 27 15:01:46 2025 -0300
+
+    Modal reserva agregado servicios procurando implementar sucursal dropdown y cancha tambien
+
+[33mcommit 15e43a82e94e409d9b45a710b141cdf9238bd8d3[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Sun Apr 27 14:16:10 2025 -0300
+
+    Arregle la busqueda de clientes en el modal reserva
+
+[33mcommit 2c15ee47238fd7441ba55c03a78460ff2c2131c0[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Sun Apr 27 11:53:19 2025 -0300
+
+    Revertir cambios en reserva-modal a commit 9af764591be1db40d524cfa8eacecac8a93c176c
+
+[33mcommit 9af764591be1db40d524cfa8eacecac8a93c176c[m
+Author: Lucasxyz9 <mrxyzgo@gmail.com>
+Date:   Fri Apr 25 17:56:26 2025 -0300
+
+    corregi el reloj para el time picker ya funciona probando elector de clientes
+
+[33mcommit 46431c97daf5a30e8a140b90ce92a6de9a1cea9f[m
+Author: Lucasxyz9 <mrxyzgo@gmail.com>
+Date:   Fri Apr 25 10:23:06 2025 -0300
+
+    agregado name al modal reserva
+
+[33mcommit bb7ef99590692184af8902e2fdbecf29a69279c1[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Fri Apr 25 07:22:12 2025 -0300
+
+    Ya se ve el modal y el date picker falta el time picker
+
+[33mcommit b6eb25178ce2366dea1401cb3d648a7da8c948c6[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Thu Apr 24 00:04:23 2025 -0300
+
+    quilombo
+
+[33mcommit bd9452fa47b5bf61d00f14ee6b0831527ef99617[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Wed Apr 23 23:06:38 2025 -0300
+
+    actualize angular
+
+[33mcommit c4f1112f32ad7bdfaa0740444c6ee5715c9fec08[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Wed Apr 23 23:01:54 2025 -0300
+
+    actualize angular
+
+[33mcommit f917d568171651685a2530e1714c7a639ab990e4[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Wed Apr 23 21:59:59 2025 -0300
+
+    actualize angular
+
+[33mcommit dae3254275db8969e220dbb99d17bf2b520f879d[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Wed Apr 23 21:52:14 2025 -0300
+
+    actualizare angular
+
+[33mcommit 20c0c090d7814fc2050103699d58bbc49acc505a[m
+Merge: 2e76e9d 49488d6
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Wed Apr 23 21:16:48 2025 -0300
+
+    ignrado el backup
+
+[33mcommit 2e76e9d08ccaa1edc06130a90b3fd4fcacca36d0[m
+Author: Lucas González <ymrxysgo@gmail.com>
+Date:   Wed Apr 23 21:15:56 2025 -0300
+
+    Remover archivos de PostgreSQL del control de versiones
+
+[33mcommit 49488d65282420031d99501e118eaf811597b941[m
+Author: Lucasxyz9 <mrxyzgo@gmail.com>
+Date:   Wed Apr 23 21:11:23 2025 -0300
+
+    Agrego .gitkeep para subir carpeta java
+
+[33mcommit 7c1349f36461d12fe57525fd47668a6bd1929e97[m
+Author: Lucasxyz9 <mrxyzgo@gmail.com>
+Date:   Wed Apr 23 20:50:17 2025 -0300
+
+    subi porfa todo de una vez
+
+[33mcommit adcf9457399a44ce8309ffdd0c43a4c9fdc3afcc[m
+Author: Lucasxyz9 <mrxyzgo@gmail.com>
+Date:   Wed Apr 23 19:23:03 2025 -0300
+
+    Subo todo
+
+[33mcommit 10b9a8bc7c5ad4756293613d28739bf6180482b3[m
+Author: Lucasxyz9 <mrxyzgo@gmail.com>
+Date:   Wed Apr 23 18:56:13 2025 -0300
+
+    debug front con agenda incluida
+
+[33mcommit 8d0867e6f0ffd4ee5284f289d0debb056f368f0c[m
+Merge: 13ebd9a d678375
+Author: Lucasxyz9 <mrxyzgo@gmail.com>
+Date:   Fri Dec 20 10:17:07 2024 -0300
+
+            Merge branch 'master' of github.com:Lucasxyz9/GestionCancha
+
+[33mcommit 13ebd9a63d5f0f700b2717efd657e37625fb0d7b[m
+Author: Lucasxyz9 <mrxyzgo@gmail.com>
+Date:   Fri Dec 20 10:07:49 2024 -0300
+
+    Agregue al ignore los videos puesto que son muy pesados y anadi sweet alerts al proyecto
+
+[33mcommit 96c489bc1de24059951058ee2d45414502287812[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Fri Dec 20 09:32:25 2024 -0300
+
+    Anadi alertas antes de eliminar registros
+
+[33mcommit 8a257237d06b354e81596d641fc7c6912d1d4ec9[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Mon Dec 16 10:00:13 2024 -0300
+
+    Agregado tutorial.mp4 a Git LFS
+
+[33mcommit c966f8abd6d5617372939a2d67a9d1391ad8f23b[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Mon Dec 16 09:53:01 2024 -0300
+
+    Ignorado archivo grande tutorial.mp4
+
+[33mcommit 7e969eb94a38ac83ac1b90d9b9d50dd9133f3486[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Mon Dec 16 09:51:08 2024 -0300
+
+    Ignorado archivo grande tutorial.mp4
+
+[33mcommit 8b411c5865995b128c29c9fd91c460aa7c7d3186[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Mon Dec 16 09:42:49 2024 -0300
+
+    Agregado clientes y lista de clientes
+
+[33mcommit 1d46080715cb84c0deac3f1abecf105fd49b5e7f[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Mon Dec 9 12:40:00 2024 -0300
+
+    Agregado servicio y formulario para gestionar clientes
+
+[33mcommit a5a90786519a3aa46e699521dcfe76ce5c8bf009[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Sat Dec 7 10:57:13 2024 -0300
+
+    volvi a donde todo funciona antes del examen
+
+[33mcommit ec838a82f1e0f82fcb84220aa7bee0ebd6371405[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Fri Dec 6 09:35:32 2024 -0300
+
+    mejore stock many y corregi algunos mensajes de  errores incorpore sweet alert
+
+[33mcommit 0d838cae5996ce7956ee9eac1ce8a948ca8d3280[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Fri Dec 6 09:25:49 2024 -0300
+
+    mejore stock y corregi algunos errores
+
+[33mcommit 637d78205d873a9eba88c38950b5919bd7303d50[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Fri Dec 6 08:53:57 2024 -0300
+
+    mejore la seccion de ventas y el flujo tambien
+
+[33mcommit d678375f98e4f0917e33f36669f7f8414b37578a[m
+Merge: c8892aa 9978148
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Thu Dec 5 18:46:02 2024 -0300
+
+     commit necesario
+
+[33mcommit 6e55c25e9e9c3c54e7751292a966938a6640cd4c[m
+Merge: c8892aa 034e7c9
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Thu Dec 5 18:46:02 2024 -0300
+
+     commit necesario
+
+[33mcommit c8892aae4a21b267f7cc8378f386ad47ff19d735[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Thu Dec 5 18:40:44 2024 -0300
+
+    Agregue un video tutorial con un place holder
+
+[33mcommit 99781486aa44622e72bb5217ac19e91098cebcc9[m
+Author: Lucasxyz9 <53893770+Lucasxyz9@users.noreply.github.com>
+Date:   Thu Dec 5 18:08:08 2024 -0300
+
+    Update README.md
+
+[33mcommit 034e7c9ca7d3bb6af33889085b326f7f8116458f[m
+Author: Lucasxyz9 <53893770+Lucasxyz9@users.noreply.github.com>
+Date:   Thu Dec 5 18:08:08 2024 -0300
+
+    Update README.md
+
+[33mcommit 60fa147813394adb014c900057953abfc093d1ef[m
+Author: Lucasxyz9 <53893770+Lucasxyz9@users.noreply.github.com>
+Date:   Thu Dec 5 13:17:57 2024 -0300
+
+    Create README.md
+
+[33mcommit 799a70b7b88c93466e8fb81d985643f18c206f98[m
+Author: Lucasxyz9 <53893770+Lucasxyz9@users.noreply.github.com>
+Date:   Thu Dec 5 13:17:57 2024 -0300
+
+    Create README.md
+
+[33mcommit 418f91bfc5f0f3afba7afa65ae27ec8de9864015[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Thu Dec 5 12:59:41 2024 -0300
+
+    Fix: Backend stock decremento y frontend venta flow
+
+[33mcommit 7225ebb8101162cce1c676f9aed5038acfa45dc6[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Wed Dec 4 09:41:32 2024 -0300
+
+    Arreglar errores en eliminación de stock y actualizar la paginación
+
+[33mcommit 9d598e7a8b25659c4a3d463b95b26110dec9df52[m
+Author: Lucasxyz9 <lucasrubeng@gmail.com>
+Date:   Tue Dec 3 19:50:47 2024 -0300
+
+    Fix: corregido uso de idStock 
