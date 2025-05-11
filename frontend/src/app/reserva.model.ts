@@ -1,3 +1,4 @@
+
 export interface Reserva {
   idReserva?: number;  // Usamos ? para indicar que puede ser opcional, ya que puede no estar disponible al crearla
   fecha: string;
@@ -8,6 +9,8 @@ export interface Reserva {
   };
   cliente: {
     idCliente: number;
+    nombre: string;
+    apellido : string;
   };
   usuario: {
     idUsuario: number;

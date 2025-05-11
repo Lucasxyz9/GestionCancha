@@ -53,6 +53,7 @@ import { ReservaModalComponent } from './reserva-modal/reserva-modal.component';
 // Servicios
 import { StockService } from './stock.service';
 import { RouterModule } from '@angular/router';
+import { CourtAvailabilityComponent } from './court-availability/court-availability.component';
 
 // Registrar localización española
 registerLocaleData(localeEs);
@@ -77,6 +78,7 @@ registerLocaleData(localeEs);
     CanchaComponent,
     ReservasComponent,
     ReservaModalComponent,
+    CourtAvailabilityComponent
   ],
   bootstrap: [AppComponent],
   imports: [

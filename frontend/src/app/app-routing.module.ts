@@ -17,6 +17,7 @@ import { ClientesListComponent } from './clientes-list/clientes-list.component';
 import { UserFormComponent } from './user-form/user-form.component';
 import { CanchaComponent } from './cancha/cancha.component';
 import { ReservasComponent } from './reservas/reservas.component';
+import { CourtAvailabilityComponent } from './court-availability/court-availability.component';
 
 // Importar el ReservaModalComponent para su ruta
 
@@ -56,8 +57,10 @@ const routes: Routes = [
   // Ruta de cancha
   { path: 'cancha', component: CanchaComponent },
 
-    // Ruta de cancha
-    { path: 'reserva', component: ReservasComponent },
+    // Ruta de reserva y disponibilidad
+  { path: 'reserva', component: ReservasComponent },
+  { path: 'disponibilidad', component: CourtAvailabilityComponent },
+
 ];
 
 @NgModule({

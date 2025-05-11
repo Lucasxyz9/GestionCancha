@@ -119,7 +119,13 @@ export class ReservaService {
       return throwError(() => error);
     };
   }
+  getDisponibilidad(fecha: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/disponibilidad?fecha=${fecha}`);
+  }
 
+   createReserva(reserva: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reservas`, reserva);
+  }
 
   
 }
