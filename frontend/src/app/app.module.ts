@@ -11,6 +11,7 @@ import localeEs from '@angular/common/locales/es';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 // Angular Material modules
+
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -54,6 +55,7 @@ import { ReservaModalComponent } from './reserva-modal/reserva-modal.component';
 import { StockService } from './stock.service';
 import { RouterModule } from '@angular/router';
 import { CourtAvailabilityComponent } from './court-availability/court-availability.component';
+import { ReservaDetalleModalComponent } from './reserva-detalle-modal/reserva-detalle-modal.component';
 
 // Registrar localización española
 registerLocaleData(localeEs);
@@ -78,7 +80,9 @@ registerLocaleData(localeEs);
     CanchaComponent,
     ReservasComponent,
     ReservaModalComponent,
-    CourtAvailabilityComponent
+    CourtAvailabilityComponent,
+    ReservaDetalleModalComponent
+
   ],
   bootstrap: [AppComponent],
   imports: [
@@ -104,6 +108,8 @@ registerLocaleData(localeEs);
     MatDatepickerModule,
     NgxMatTimepickerModule,
     MatNativeDateModule,
+    MatDialogModule,
+    MatButtonModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,

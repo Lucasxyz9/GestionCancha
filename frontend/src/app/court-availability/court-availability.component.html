@@ -31,14 +31,5 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <!-- Panel de detalles de reserva -->
-  <div *ngIf="mostrarDetalle && reservasSeleccionadas.length > 0" class="detalle-reservas">
-    <h3>Detalles de reserva</h3>
-    <div *ngFor="let r of reservasSeleccionadas" class="reserva-item">
-      <strong>Cliente:</strong> {{ r.cliente.nombre }}<br>
-      <strong>Cancha:</strong> {{ r.cancha.canchaNombre }}<br>
-      <strong>Hora:</strong> {{ r.horaInicio }} - {{ r.horaFin }}<br>
-      <strong>Usuario:</strong> {{ r.usuario.nombre }}<br>
-    </div>
-  </div>
-</div>
+
+

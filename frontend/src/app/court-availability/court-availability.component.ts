@@ -3,6 +3,9 @@ import { ReservaService } from 'src/app/reserva.service';
 import { CanchaService } from 'src/app/cancha.service';
 import { Cancha } from '../cancha.model';
 import { formatDate } from '@angular/common';
+import { ReservaDetalleModalComponent } from '../reserva-detalle-modal/reserva-detalle-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-court-availability',
@@ -23,7 +26,10 @@ export class CourtAvailabilityComponent implements OnInit {
 
   constructor(
     private reservaService: ReservaService,
-    private canchaService: CanchaService
+    private canchaService: CanchaService,
+    private dialog: MatDialog
+
+    
   ) {}
 
   ngOnInit(): void {
@@ -44,17 +50,26 @@ export class CourtAvailabilityComponent implements OnInit {
     }
   }
 
-  cargarDatos() {
-    this.canchaService.getAllCanchas().subscribe(canchas => {
-      this.canchas = canchas;
-      this.displayedColumns = ['hora', ...this.canchas.map(c => 'cancha-' + c.idCancha)];
-      const fechaStr = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US');
-      this.reservaService.getReservasPorFecha(fechaStr).subscribe(reservas => {
-        this.reservas = reservas;
-        this.mostrarDetalle = false;
-      });
+cargarDatos() {
+  this.canchaService.getAllCanchas().subscribe(canchas => {
+    this.canchas = canchas;
+    this.displayedColumns = ['hora', ...this.canchas.map(c => 'cancha-' + c.idCancha)];
+
+const fechaStr = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US').trim();
+
+    this.reservaService.getReservasPorFecha(fechaStr).subscribe(reservas => {
+      this.reservas = reservas;
+      this.mostrarDetalle = false;
+    this.reservaService.getReservasPorFecha(fechaStr).subscribe(reservas => {
+    console.log('Reservas recibidas:', reservas); // <- ¿aparece esto?
+    this.reservas = reservas;
+    this.mostrarDetalle = false;
+});
+  
     });
-  }
+  });
+}
+
 
   isEnMantenimiento(c: Cancha): boolean {
     return c.estado.toLowerCase() === 'mantenimiento';
@@ -97,24 +112,29 @@ export class CourtAvailabilityComponent implements OnInit {
     return 'Disponible';
   }
 
-  mostrarReservas(canchaId: number, hora: string) {
-    if (!this.isOcupada(canchaId, hora)) {
-      this.mostrarDetalle = false;
-      this.reservasSeleccionadas = [];
-      return;
+mostrarReservas(canchaId: number, hora: string) {
+  const horaMin = this.horaAMinutos(hora);
+  const fechaFormateada = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US').trim();
+
+  const reservasSeleccionadas = this.reservas.filter(r => {
+    return (
+      r.cancha.idCancha === canchaId &&
+      r.fecha === fechaFormateada &&
+      horaMin >= this.horaAMinutos(r.horaInicio) &&
+      horaMin < this.horaAMinutos(r.horaFin)
+    );
+  });
+
+  this.dialog.open(ReservaDetalleModalComponent, {
+    width: '500px',
+    data: {
+      reservas: reservasSeleccionadas
     }
-    const horaMin = this.horaAMinutos(hora);
-    this.reservasSeleccionadas = this.reservas.filter(r => {
-      if (r.cancha.idCancha !== canchaId) return false;
-      if (r.fecha !== formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US')) return false;
+  });
+}
 
-      const inicioMin = this.horaAMinutos(r.horaInicio);
-      const finMin = this.horaAMinutos(r.horaFin);
 
-      return horaMin >= inicioMin && horaMin < finMin;
-    });
 
-    this.mostrarDetalle = true;
-  }
+
 
 }

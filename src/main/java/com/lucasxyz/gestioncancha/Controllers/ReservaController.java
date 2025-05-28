@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,10 +131,23 @@ public class ReservaController {
     }
 
 
-        @GetMapping("/por-fecha")
-    public ResponseEntity<List<Reserva>> getReservasPorFecha(@RequestParam String fecha) {
-        List<Reserva> reservas = reservaRepository.findByFecha(LocalDate.parse(fecha));
-        return ResponseEntity.ok(reservas);
-    }
+
+
+
+                @GetMapping("/por-fecha")
+        public ResponseEntity<?> getReservasPorFecha(@RequestParam String fecha) {
+            try {
+                String fechaLimpia = fecha.trim();  // Elimina espacios y saltos de línea al inicio y final
+                LocalDate fechaParseada = LocalDate.parse(fechaLimpia);
+                List<Reserva> reservas = reservaRepository.findByFecha(fechaParseada);
+                return ResponseEntity.ok(reservas);
+            } catch (DateTimeParseException e) {
+                return ResponseEntity.badRequest().body("Formato de fecha inválido. Use yyyy-MM-dd.");
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno: " + e.getMessage());
+            }
+        }
+
+
 
 }

@@ -4,6 +4,8 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Reserva } from './reserva.model';
 import { BehaviorSubject } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
+
 
 @Injectable({
   providedIn: 'root'
@@ -127,8 +129,11 @@ export class ReservaService {
     return this.http.post(`${this.apiUrl}/reservas`, reserva);
   }
 
+
+
 getReservasPorFecha(fecha: string): Observable<Reserva[]> {
-  return this.http.get<Reserva[]>(`http://localhost:8080/api/reservas/por-fecha?fecha=${fecha}`);
+  const params = new HttpParams().set('fecha', fecha);
+  return this.http.get<Reserva[]>(`http://localhost:8080/api/reservas/por-fecha`, { params });
 }
 
 

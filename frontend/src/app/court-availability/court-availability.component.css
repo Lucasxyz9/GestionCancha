@@ -32,3 +32,6 @@
 .reserva-item {
   margin-bottom: 10px;
 }
+.ocupada, .disponible {
+  cursor: pointer;
+}
