@@ -1,87 +1,120 @@
 import { Component, OnInit } from '@angular/core';
-import { DateAdapter } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ReservaService } from '../reserva.service';
+import { ReservaService } from 'src/app/reserva.service';
+import { CanchaService } from 'src/app/cancha.service';
+import { Cancha } from '../cancha.model';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-court-availability',
   templateUrl: './court-availability.component.html',
-  styleUrls: ['./court-availability.component.css']  // Cambiado a .css
+  styleUrls: ['./court-availability.component.css']
 })
 export class CourtAvailabilityComponent implements OnInit {
+
   selectedDate: Date = new Date();
-  displayedColumns: string[] = ['hora', 'cancha1', 'cancha2', 'cancha3'];
-  
-  timeSlots: any[] = [
-    { hora: '08:00', cancha1: true, cancha2: true, cancha3: false },
-    { hora: '09:00', cancha1: true, cancha2: false, cancha3: false },
-    { hora: '10:00', cancha1: false, cancha2: true, cancha3: true },
-    { hora: '11:00', cancha1: true, cancha2: true, cancha3: false },
-    { hora: '12:00', cancha1: true, cancha2: false, cancha3: true },
-    { hora: '13:00', cancha1: false, cancha2: true, cancha3: true },
-    { hora: '14:00', cancha1: true, cancha2: true, cancha3: false },
-    { hora: '15:00', cancha1: false, cancha2: false, cancha3: true },
-    { hora: '16:00', cancha1: true, cancha2: true, cancha3: true },
-    { hora: '17:00', cancha1: true, cancha2: false, cancha3: false },
-    { hora: '18:00', cancha1: false, cancha2: true, cancha3: true },
-    { hora: '19:00', cancha1: true, cancha2: true, cancha3: false },
-    { hora: '20:00', cancha1: true, cancha2: true, cancha3: true },
-  ];
+  canchas: Cancha[] = [];
+  reservas: any[] = [];
+  horas: string[] = [];
+
+  displayedColumns: string[] = [];
+
+  reservasSeleccionadas: any[] = [];
+  mostrarDetalle: boolean = false;
 
   constructor(
-    private dateAdapter: DateAdapter<Date>,
-    private snackBar: MatSnackBar,
-    private reservaService: ReservaService
-  ) {
-    this.dateAdapter.setLocale('es-ES');
-  }
+    private reservaService: ReservaService,
+    private canchaService: CanchaService
+  ) {}
 
   ngOnInit(): void {
-    this.loadAvailability();
+    this.generarHoras();
+    this.cargarDatos();
   }
 
-  onDateChange(): void {
-    this.loadAvailability();
+  onDateChange(event: any) {
+    this.selectedDate = event.value;
+    this.cargarDatos();
+    this.mostrarDetalle = false;
   }
 
-  loadAvailability(): void {
-    const fecha = this.selectedDate.toISOString().split('T')[0];
-    this.reservaService.getDisponibilidad(fecha).subscribe(
-      data => {
-        this.timeSlots = data;
-      },
-      error => {
-        this.snackBar.open('Error al cargar disponibilidad', 'Cerrar', {
-          duration: 3000
-        });
-      }
-    );
+  generarHoras() {
+    this.horas = [];
+    for (let h = 8; h <= 22; h++) {
+      this.horas.push(h.toString().padStart(2, '0') + ':00');
+    }
   }
 
-  reservar(cancha: string, hora: string): void {
-    const reserva = {
-      fecha: this.selectedDate,
-      cancha: cancha,
-      hora: hora,
-      usuario: 'currentUser'
-    };
-
-    this.reservaService.createReserva(reserva).subscribe(
-      response => {
-        this.snackBar.open(`Reserva para ${cancha} a las ${hora} confirmada`, 'Cerrar', {
-          duration: 3000
-        });
-        this.loadAvailability();
-      },
-      error => {
-        this.snackBar.open('Error al realizar reserva', 'Cerrar', {
-          duration: 3000
-        });
-      }
-    );
+  cargarDatos() {
+    this.canchaService.getAllCanchas().subscribe(canchas => {
+      this.canchas = canchas;
+      this.displayedColumns = ['hora', ...this.canchas.map(c => 'cancha-' + c.idCancha)];
+      const fechaStr = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US');
+      this.reservaService.getReservasPorFecha(fechaStr).subscribe(reservas => {
+        this.reservas = reservas;
+        this.mostrarDetalle = false;
+      });
+    });
   }
 
-  getAvailabilityClass(isAvailable: boolean): string {
-    return isAvailable ? 'disponible' : 'ocupada';
+  isEnMantenimiento(c: Cancha): boolean {
+    return c.estado.toLowerCase() === 'mantenimiento';
   }
+
+  private horaAMinutos(hora: string): number {
+    const [h, m] = hora.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  isOcupada(canchaId: number, hora: string): boolean {
+    const horaMin = this.horaAMinutos(hora);
+    return this.reservas.some(r => {
+      if (r.cancha.idCancha !== canchaId) return false;
+      if (r.fecha !== formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US')) return false;
+
+      const inicioMin = this.horaAMinutos(r.horaInicio);
+      const finMin = this.horaAMinutos(r.horaFin);
+      return horaMin >= inicioMin && horaMin < finMin;
+    });
+  }
+
+  getClaseCelda(canchaId: number, hora: string): string {
+    const cancha = this.canchas.find(c => c.idCancha === canchaId);
+    if (!cancha) return '';
+
+    if (this.isEnMantenimiento(cancha)) return 'no-disponible';
+    if (this.isOcupada(canchaId, hora)) return 'ocupada';
+
+    return 'disponible';
+  }
+
+  getTextoEstado(canchaId: number, hora: string): string {
+    const cancha = this.canchas.find(c => c.idCancha === canchaId);
+    if (!cancha) return '';
+
+    if (this.isEnMantenimiento(cancha)) return 'No disponible';
+    if (this.isOcupada(canchaId, hora)) return 'Ocupada';
+
+    return 'Disponible';
+  }
+
+  mostrarReservas(canchaId: number, hora: string) {
+    if (!this.isOcupada(canchaId, hora)) {
+      this.mostrarDetalle = false;
+      this.reservasSeleccionadas = [];
+      return;
+    }
+    const horaMin = this.horaAMinutos(hora);
+    this.reservasSeleccionadas = this.reservas.filter(r => {
+      if (r.cancha.idCancha !== canchaId) return false;
+      if (r.fecha !== formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US')) return false;
+
+      const inicioMin = this.horaAMinutos(r.horaInicio);
+      const finMin = this.horaAMinutos(r.horaFin);
+
+      return horaMin >= inicioMin && horaMin < finMin;
+    });
+
+    this.mostrarDetalle = true;
+  }
+
 }

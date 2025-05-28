@@ -11,5 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CanchaRepository extends JpaRepository<Cancha, Integer> {
     public List<Cancha> findBySucursal_IdSucursal(Integer idSucursal);
+    List<Cancha> findByEstado(String estado);
+
 
 }

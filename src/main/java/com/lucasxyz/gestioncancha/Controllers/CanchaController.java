@@ -176,6 +176,10 @@ public class CanchaController {
             }
         }
 
+        @GetMapping("/canchas-habilitadas")
+            public ResponseEntity<List<Cancha>> getCanchasHabilitadas() {
+            return ResponseEntity.ok(canchaRepository.findByEstado("Disponible"));
+        }
 
 
 }

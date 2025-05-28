@@ -127,5 +127,9 @@ export class ReservaService {
     return this.http.post(`${this.apiUrl}/reservas`, reserva);
   }
 
-  
+getReservasPorFecha(fecha: string): Observable<Reserva[]> {
+  return this.http.get<Reserva[]>(`http://localhost:8080/api/reservas/por-fecha?fecha=${fecha}`);
+}
+
+
 }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,4 +128,12 @@ public class ReservaController {
 
         return ResponseEntity.ok("Reserva eliminada con éxito.");
     }
+
+
+        @GetMapping("/por-fecha")
+    public ResponseEntity<List<Reserva>> getReservasPorFecha(@RequestParam String fecha) {
+        List<Reserva> reservas = reservaRepository.findByFecha(LocalDate.parse(fecha));
+        return ResponseEntity.ok(reservas);
+    }
+
 }
