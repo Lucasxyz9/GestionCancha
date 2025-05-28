@@ -81,7 +81,7 @@ registerLocaleData(localeEs);
     ReservasComponent,
     ReservaModalComponent,
     CourtAvailabilityComponent,
-    ReservaDetalleModalComponent
+    ReservaDetalleModalComponent  
 
   ],
   bootstrap: [AppComponent],
