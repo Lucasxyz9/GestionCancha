@@ -11,6 +11,7 @@ import localeEs from '@angular/common/locales/es';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 // Angular Material modules
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -95,6 +96,8 @@ registerLocaleData(localeEs);
     FormsModule,
     // Angular Material Modules
     MatAutocompleteModule,
+    MatCheckboxModule,
+
     MatSelectModule,  // <-- Aquí agregas el módulo
     MatTableModule,
     MatPaginatorModule,

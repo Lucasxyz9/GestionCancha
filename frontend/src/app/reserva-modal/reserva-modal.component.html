@@ -1,38 +1,66 @@
 <h2 mat-dialog-title>{{ reserva.idReserva ? 'Editar Reserva' : 'Agregar Nueva Reserva' }}</h2>
 
-<div mat-dialog-content>
-  <form id="reservaForm">
+<form #reservaForm="ngForm" (ngSubmit)="saveReserva()" style="width: 100%;">
+  <div mat-dialog-content>
+
     <!-- Fecha -->
-    <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Fecha</mat-label>
-      <input matInput [matDatepicker]="picker" [(ngModel)]="reserva.fecha" name="fecha" required>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [(ngModel)]="reserva.fecha"
+        name="fecha"
+        required
+        #fecha="ngModel"
+        autocomplete="off"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="fecha.invalid && fecha.touched">La fecha es obligatoria</mat-error>
     </mat-form-field>
 
     <!-- Hora de inicio -->
-    <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Hora de inicio</mat-label>
-      <input matInput [ngxMatTimepicker]="startPicker" [(ngModel)]="horaInicio" name="horaInicio" required>
+      <input
+        matInput
+        [ngxMatTimepicker]="startPicker"
+        [(ngModel)]="reserva.horaInicio"
+        name="horaInicio"
+        required
+        #hInicio="ngModel"
+        autocomplete="off"
+      />
       <ngx-mat-timepicker-toggle matSuffix [for]="startPicker"></ngx-mat-timepicker-toggle>
       <ngx-mat-timepicker #startPicker></ngx-mat-timepicker>
+      <mat-error *ngIf="hInicio.invalid && hInicio.touched">La hora de inicio es obligatoria</mat-error>
     </mat-form-field>
 
     <!-- Hora de fin -->
-    <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Hora de fin</mat-label>
-      <input matInput [ngxMatTimepicker]="endPicker" [(ngModel)]="horaFin" name="horaFin" required>
+      <input
+        matInput
+        [ngxMatTimepicker]="endPicker"
+        [(ngModel)]="reserva.horaFin"
+        name="horaFin"
+        required
+        #hFin="ngModel"
+        autocomplete="off"
+      />
       <ngx-mat-timepicker-toggle matSuffix [for]="endPicker"></ngx-mat-timepicker-toggle>
       <ngx-mat-timepicker #endPicker></ngx-mat-timepicker>
+      <mat-error *ngIf="hFin.invalid && hFin.touched">La hora de fin es obligatoria</mat-error>
     </mat-form-field>
 
     <!-- Búsqueda de cliente -->
     <div style="display: flex; gap: 10px; align-items: center; margin: 10px 0;">
       <mat-form-field appearance="fill" style="flex: 1;">
         <mat-label>Buscar por CI o RUC</mat-label>
-        <input matInput type="text" [(ngModel)]="ciBusqueda" name="ciBusqueda">
+        <input matInput type="text" [(ngModel)]="ciBusqueda" name="ciBusqueda" autocomplete="off" />
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="buscarClientePorCI()" type="button">
+      <button mat-raised-button color="primary" type="button" (click)="buscarClientePorCI()">
         Buscar
       </button>
     </div>
@@ -40,36 +68,112 @@
     <!-- Lista de clientes encontrados -->
     <div *ngIf="clientes.length > 0" style="margin-bottom: 15px;">
       <mat-selection-list>
-        <mat-list-option *ngFor="let cliente of clientes" (click)="seleccionarCliente(cliente)">
+        <mat-list-option
+          *ngFor="let cliente of clientes"
+          [selected]="reserva.cliente?.idCliente === cliente.idCliente"
+          (click)="seleccionarCliente(cliente)"
+        >
           {{ cliente.nombre }} - {{ cliente.ci }}
         </mat-list-option>
       </mat-selection-list>
     </div>
 
-    <!-- Sucursal - Dropdown -->
-    <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
+    <!-- Sucursal -->
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Sucursal</mat-label>
-      <mat-select [(ngModel)]="selectedSucursal" name="sucursal" (selectionChange)="onSucursalChange($event)" required>
+      <mat-select
+        [(ngModel)]="selectedSucursal"
+        name="sucursal"
+        (selectionChange)="onSucursalChange($event)"
+        required
+        #sucursal="ngModel"
+      >
         <mat-option *ngFor="let sucursal of sucursales" [value]="sucursal">
           {{ sucursal.nombre }}
         </mat-option>
       </mat-select>
+      <mat-error *ngIf="sucursal.invalid && sucursal.touched">Seleccione una sucursal</mat-error>
     </mat-form-field>
 
-    <!-- Cancha - Dropdown -->
-    <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
+    <!-- Cancha -->
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Cancha</mat-label>
-      <mat-select [(ngModel)]="selectedCancha" name="cancha" 
-                  [disabled]="!selectedSucursal" required
-                  (selectionChange)="onCanchaChange($event)"
-                  [compareWith]="compareCanchas">
+      <mat-select
+        [(ngModel)]="selectedCancha"
+        name="cancha"
+        [disabled]="!selectedSucursal"
+        required
+        (selectionChange)="onCanchaChange($event)"
+        [compareWith]="compareCanchas"
+        #cancha="ngModel"
+      >
         <mat-option *ngFor="let cancha of canchas" [value]="cancha">
-          {{ cancha.nombre }} (ID: {{cancha.idCancha}})
+          {{ cancha.nombre }} (ID: {{ cancha.idCancha }})
         </mat-option>
       </mat-select>
+      <mat-error *ngIf="cancha.invalid && cancha.touched">Seleccione una cancha</mat-error>
     </mat-form-field>
 
-<div mat-dialog-actions style="justify-content: flex-end; margin-top: 15px;">
-  <button mat-button (click)="cancel()">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="saveReserva()">Guardar</button>
+   <!-- Indumentaria -->
+<div class="full-width">
+  <label style="font-weight: 500; display: block; margin-bottom: 5px;">Indumentaria</label>
+
+  <mat-checkbox [(ngModel)]="equipoA" name="equipoA" style="margin-right: 20px;">
+    Equipo A
+  </mat-checkbox>
+
+  <mat-checkbox [(ngModel)]="equipoB" name="equipoB">
+    Equipo B
+  </mat-checkbox>
 </div>
+
+
+    <!-- Checkbox para mostrar/ocultar Reclamos -->
+    <mat-checkbox [(ngModel)]="mostrarReclamos" name="mostrarReclamos">
+      ¿Agregar reclamos?
+    </mat-checkbox>
+
+    <!-- Reclamos, sólo si mostrarReclamos es true -->
+    <mat-form-field *ngIf="mostrarReclamos" appearance="fill" class="full-width">
+      <mat-label>Reclamos</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="reserva.reclamos"
+        name="reclamos"
+        rows="3"
+        placeholder="Detalle de reclamos"
+      ></textarea>
+    </mat-form-field>
+
+<!-- Checkbox para mostrar/ocultar Sanciones -->
+<mat-checkbox [(ngModel)]="mostrarSanciones" name="mostrarSanciones" class="full-width">
+  ¿Agregar sanción?
+</mat-checkbox>
+
+<!-- Campo de texto para sanciones (solo si mostrarSanciones es true) -->
+<mat-form-field *ngIf="mostrarSanciones" appearance="fill" class="full-width">
+  <mat-label>Sanciones</mat-label>
+  <textarea
+    matInput
+    [(ngModel)]="reserva.sanciones"
+    name="sanciones"
+    rows="3"
+    placeholder="Detalle de sanciones"
+  ></textarea>
+</mat-form-field>
+
+
+  </div>
+
+  <div mat-dialog-actions style="justify-content: flex-end; margin-top: 15px;">
+    <button mat-button type="button" (click)="cancel()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="reservaForm.invalid">Guardar</button>
+  </div>
+</form>
+
+<style>
+  .full-width {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+</style>

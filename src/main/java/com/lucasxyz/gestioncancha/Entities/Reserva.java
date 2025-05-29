@@ -28,8 +28,8 @@ public class Reserva {
 
     @ManyToOne
     @JoinColumn(name = "cancha_id", nullable = false)
-    private Cancha cancha;  // Relación con la entidad Cancha
-    
+    private Cancha cancha;
+
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
@@ -42,7 +42,18 @@ public class Reserva {
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
+    // 🟢 Nuevos campos opcionales
+    @Column(name = "indumentaria", columnDefinition = "TEXT", nullable = true)
+    private String indumentaria;
+
+    @Column(name = "reclamos", columnDefinition = "TEXT", nullable = true)
+    private String reclamos;
+
+    @Column(name = "sanciones", columnDefinition = "TEXT", nullable = true)
+    private String sanciones;
+
     // Getters y Setters
+
     public long getIdReserva() {
         return idReserva;
     }
@@ -105,5 +116,29 @@ public class Reserva {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
+    }
+
+    public String getIndumentaria() {
+        return indumentaria;
+    }
+
+    public void setIndumentaria(String indumentaria) {
+        this.indumentaria = indumentaria;
+    }
+
+    public String getReclamos() {
+        return reclamos;
+    }
+
+    public void setReclamos(String reclamos) {
+        this.reclamos = reclamos;
+    }
+
+    public String getSanciones() {
+        return sanciones;
+    }
+
+    public void setSanciones(String sanciones) {
+        this.sanciones = sanciones;
     }
 }

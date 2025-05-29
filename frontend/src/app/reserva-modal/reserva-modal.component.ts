@@ -7,6 +7,7 @@ import { Cliente } from '../clientes.model';
 import { ReservaService } from '../reserva.service';
 import { AuthService } from '../auth.service';
 import Swal from 'sweetalert2';
+
 interface Sucursal {
   id: number;
   idSucursal?: number;
@@ -39,9 +40,13 @@ export class ReservaModalComponent implements OnInit {
   canchas: Cancha[] = [];
   selectedSucursal: Sucursal | null = null;
   selectedCancha: Cancha | null = null;
-  // Valores hardcodeados
   currentUserId: number = 1;
   empresaId: number = 1;
+
+  mostrarReclamos: boolean = false;  // <-- VARIABLE para mostrar textarea reclamos
+  equipoA: boolean = false;
+  equipoB: boolean = false;
+  mostrarSanciones: boolean = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { reserva: any },
@@ -53,50 +58,42 @@ export class ReservaModalComponent implements OnInit {
     private reservaService: ReservaService,
   ) {}
 
-
-
   ngOnInit(): void {
     this.initializeFormData();
     this.loadSucursales();
-      this.setFechaSiguiente();  // Asigna la fecha siguiente al abrir el modal
-
-
+    this.setFechaSiguiente();
   }
 
   private sumarUnDia(fecha: Date): Date {
-  const fechaSiguiente = new Date(fecha);
-  fechaSiguiente.setDate(fechaSiguiente.getDate() + 1); // Sumar un día
-  return fechaSiguiente;
-}
-
-private setFechaSiguiente(): void {
-  // Si ya existe una fecha en la reserva, asigna el día siguiente
-  if (this.reserva.fecha) {
-    this.reserva.fecha = this.sumarUnDia(new Date(this.reserva.fecha));
-  } else {
-    // Si no hay fecha en la reserva, asigna el día siguiente a la fecha actual
-    this.reserva.fecha = this.sumarUnDia(new Date());
+    const fechaSiguiente = new Date(fecha);
+    fechaSiguiente.setDate(fechaSiguiente.getDate() + 1);
+    return fechaSiguiente;
   }
-}
 
+  private setFechaSiguiente(): void {
+    if (this.reserva.fecha) {
+      this.reserva.fecha = this.sumarUnDia(new Date(this.reserva.fecha));
+    } else {
+      this.reserva.fecha = this.sumarUnDia(new Date());
+    }
+  }
 
   private initializeFormData(): void {
     this.reserva = this.data?.reserva || {};
+    this.reserva.indumentaria = this.reserva.indumentaria || '';
+    this.reserva.reclamos = this.reserva.reclamos || '';
+    this.reserva.sanciones = this.reserva.sanciones || '';
     
-    // Asegurar valores hardcodeados
     this.reserva.idEmpresa = this.empresaId;
     this.reserva.idUsuario = this.currentUserId;
 
-      // Preseleccionar fecha si está disponible
     if (!this.reserva.fecha) {
       this.reserva.fecha = new Date();
     }
 
-
     if (this.data?.reserva) {
-      // Normalizamos el ID de cancha
       this.reserva.idCancha = this.reserva.canchaId || this.reserva.idCancha;
-      delete this.reserva.canchaId; // Eliminamos la propiedad duplicada
+      delete this.reserva.canchaId;
     }
   }
 
@@ -111,7 +108,6 @@ private setFechaSiguiente(): void {
             timbrado: s.timbrado || ''
           }));
   
-          // Si hay sucursalId en la reserva, selecciona la sucursal y carga las canchas
           if (this.reserva.sucursalId) {
             const sucursal = this.sucursales.find(s => s.id === this.reserva.sucursalId);
             if (sucursal) {
@@ -143,7 +139,6 @@ private setFechaSiguiente(): void {
       next: (canchas: any[]) => {
         if (Array.isArray(canchas)) {
           this.canchas = canchas || [];
-          // Si hay idCancha en la reserva, selecciona la cancha
           if (this.reserva?.idCancha) {
             const cancha = this.canchas.find(c => c.idCancha === this.reserva.idCancha);
             this.selectedCancha = cancha || null;
@@ -161,91 +156,93 @@ private setFechaSiguiente(): void {
       }
     });
   }
-  
 
+ saveReserva(): void {
+    console.log('saveReserva llamado');
 
-  saveReserva(): void {
-    if (!this.validateReserva()) return;
-  
-    const reservaPayload = {
-      ...this.reserva,
-      idEmpresa: this.empresaId, // Usamos el valor hardcodeado
-      idUsuario: this.currentUserId, // Usamos el valor hardcodeado
-      fecha: this.formatDate(this.reserva.fecha),
-      horaInicio: this.convertirHora24h(this.horaInicio),
-      horaFin: this.convertirHora24h(this.horaFin),
-      cliente: {
-        idCliente: this.clienteSeleccionado?.idCliente
-      },
-      cancha: {
-        idCancha: this.selectedCancha?.idCancha
-      },
-      empresa: {
-        idEmpresa: this.empresaId // Añadido para consistencia con el servicio
-      },
-      usuario: {
-        idUsuario: this.currentUserId // Añadido para consistencia con el servicio
-      }
-    };
-  
-    console.log('Datos a enviar:', reservaPayload);
-  
-    const reservaObservable = this.reserva.idReserva
-      ? this.reservaService.updateReserva(reservaPayload)
-      : this.reservaService.crearReserva(reservaPayload);
-  
-    reservaObservable.subscribe({
-      next: (reservaGuardada) => {
-        if (reservaGuardada) {
-          console.log('Reserva guardada exitosamente');
-  
-          // Muestra el SweetAlert de éxito
-          Swal.fire({
-            title: '¡Éxito!',
-            text: 'Reserva creada correctamente.',
-            icon: 'success',
-            confirmButtonText: 'Aceptar',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // Limpiar campos para nueva reserva
-              this.resetForm();
-              // O si prefieres, redirigir a la página de reservas (por ejemplo, usando router)
-              // this.router.navigate(['/reservas']);
-            }
-          });
-  
-          // Actualiza el estado en el servicio
-          this.reservaService.setReserva(reservaGuardada);
-  
-          // Cierra el modal y pasa la reserva guardada
-          this.dialogRef.close(reservaGuardada);
-        }
-      },
-      error: (error) => {
-        // Este bloque maneja el error general de la reserva, pero no debe considerar 201 como error
-        if (error.status === 201) {
-          // Si el error es 201, significa que la reserva fue creada correctamente
-          Swal.fire({
-            title: '¡Éxito!',
-            text: 'Reserva creada correctamente.',
-            icon: 'success',
-            confirmButtonText: 'Aceptar',
-          });
-        }
-        else {
-          // Muestra el SweetAlert de error si el código no es 201 o 200
-          Swal.fire({
-            title: '¡Error!',
-            text: 'Hubo un problema al guardar la reserva.',
-            icon: 'error',
-            confirmButtonText: 'Aceptar',
-          });
-        }
-      }
-    });
+  if (!this.validateReserva()) return;
+
+  // 👇 Nueva lógica para setear campo indumentaria según clics
+  let indumentariaTexto = '';
+  if (this.equipoA && this.equipoB) {
+    indumentariaTexto = 'Indumentaria para equipo A y B solicitada';
+  } else if (this.equipoA) {
+    indumentariaTexto = 'Indumentaria para equipo A solicitada';
+  } else if (this.equipoB) {
+    indumentariaTexto = 'Indumentaria para equipo B solicitada';
   }
+
+  if (indumentariaTexto) {
+    this.reserva.indumentaria = indumentariaTexto;
+  }
+
+  const reservaPayload = {
+    ...this.reserva,
+    idEmpresa: this.empresaId,
+    idUsuario: this.currentUserId,
+    fecha: this.formatDate(this.reserva.fecha),
+    horaInicio: this.convertirHora24h(this.horaInicio),
+    horaFin: this.convertirHora24h(this.horaFin),
+    cliente: {
+      idCliente: this.clienteSeleccionado?.idCliente
+    },
+    cancha: {
+      idCancha: this.selectedCancha?.idCancha
+    },
+    empresa: {
+      idEmpresa: this.empresaId
+    },
+    usuario: {
+      idUsuario: this.currentUserId
+    }
+  };
+
+  console.log('Datos a enviar:', reservaPayload);
+
+  const reservaObservable = this.reserva.idReserva
+    ? this.reservaService.updateReserva(reservaPayload)
+    : this.reservaService.crearReserva(reservaPayload);
+
+  reservaObservable.subscribe({
+    next: (reservaGuardada) => {
+      if (reservaGuardada) {
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Reserva creada correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.resetForm();
+          }
+        });
+        this.reservaService.setReserva(reservaGuardada);
+        this.dialogRef.close(reservaGuardada);
+      }
+    },
+    error: (error) => {
+      if (error.status === 201) {
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Reserva creada correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+        });
+      } else {
+        Swal.fire({
+          title: '¡Error!',
+          text: 'Hubo un problema al guardar la reserva.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+        });
+      }
+    }
+  });
+}
+
+
+
   private resetForm(): void {
-    // Vaciar campos del formulario
     this.reserva = {};
     this.horaInicio = '';
     this.horaFin = '';
@@ -255,15 +252,14 @@ private setFechaSiguiente(): void {
     this.nombre = '';
     this.selectedSucursal = null;
     this.selectedCancha = null;
+    this.mostrarReclamos = false;  // Reseteamos checkbox también
   }
 
-  // Resto de los métodos permanecen igual...
   onSucursalChange(event: any): void {
     if (!event?.value?.id) {
       this.resetSucursalSelection();
       return;
     }
-
     this.selectedSucursal = event.value;
     this.selectedCancha = null;
     this.reserva.idCancha = null;
@@ -277,13 +273,10 @@ private setFechaSiguiente(): void {
     this.reserva.idCancha = null;
   }
 
-  
-
   onCanchaChange(event: any): void {
     if (event?.value) {
       this.selectedCancha = event.value;
       this.reserva.idCancha = event.value.idCancha;
-      console.log('Cancha seleccionada:', this.selectedCancha);
     } else {
       this.selectedCancha = null;
       this.reserva.idCancha = null;
@@ -295,7 +288,6 @@ private setFechaSiguiente(): void {
       this.loadAllClientes();
       return;
     }
-
     this.clienteService.buscarClientePorCI(this.ciBusqueda).subscribe({
       next: (cliente: Cliente) => {
         this.clientes = cliente ? [cliente] : [];
@@ -324,34 +316,30 @@ private setFechaSiguiente(): void {
     this.nombre = cliente.nombre;
   }
 
- private formatDate(date: Date): string {
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const dd = String(date.getDate()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
-}
+  private formatDate(date: Date): string {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
 
   private validateReserva(): boolean {
     const errors = [];
-  
     if (!this.selectedSucursal) errors.push('Debe seleccionar una sucursal');
     if (!this.selectedCancha?.idCancha) errors.push('Debe seleccionar una cancha válida');
     if (!this.clienteSeleccionado?.idCliente) errors.push('Debe seleccionar un cliente válido');
-    if (!this.horaInicio || !this.horaFin) errors.push('Debe especificar horario completo');
+    //if (!this.horaInicio || !this.horaFin) errors.push('Debe especificar horario completo');
     if (!this.reserva.fecha) errors.push('Debe seleccionar una fecha');
-  
+
     if (errors.length > 0) {
       console.warn('Errores de validación:', errors.join(', '));
-      // Aquí podrías mostrar estos errores al usuario
       return false;
     }
-  
     return true;
   }
 
   private convertirHora24h(hora: string): string {
     if (!hora) return '00:00:00';
-
     const [time, modifier] = hora.split(' ');
     let [hours, minutes] = time.split(':');
 
@@ -360,7 +348,6 @@ private setFechaSiguiente(): void {
         (parseInt(hours, 10) + 12).toString() : 
         (modifier === 'AM' && hours === '12' ? '00' : hours));
     }
-
     return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
   }
 
@@ -368,15 +355,7 @@ private setFechaSiguiente(): void {
     this.dialogRef.close();
   }
 
-  public compareCanchas(c1: Cancha, c2: Cancha): boolean {
+  compareCanchas(c1: Cancha, c2: Cancha): boolean {
     return c1 && c2 ? c1.idCancha === c2.idCancha : c1 === c2;
   }
 }
-
-function resetForm() {
-  throw new Error('Function not implemented.');
-}
-function saveReserva() {
-  throw new Error('Function not implemented.');
-}
-

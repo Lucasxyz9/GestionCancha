@@ -21,16 +21,19 @@ export class ReservasComponent implements OnInit {
     this.loadReservas();
   }
 
-  loadReservas(): void {
-    this.reservaService.getReservas().subscribe((reservas: Reserva[]) => {
-      this.events = reservas.map(reserva => ({
-        start: new Date(reserva.fecha + ' ' + reserva.horaInicio),
-        end: new Date(reserva.fecha + ' ' + reserva.horaFin),
-        title: `Reserva de ${reserva.cliente.idCliente}`,
-        meta: reserva
-      }));
-    });
-  }
+loadReservas(): void {
+  this.reservaService.getReservas().subscribe((reservas: Reserva[]) => {
+  this.events = reservas.map(reserva => ({
+    start: new Date(reserva.fecha + ' ' + reserva.horaInicio),
+    end: new Date(reserva.fecha + ' ' + reserva.horaFin),
+    title: `Reserva de Cliente: ${reserva.cliente.nombre} ${reserva.cliente.apellido}`,
+    meta: reserva,
+  }));
+
+  });
+}
+
+
 
   addEvent(): void {
     const dialogRef = this.dialog.open(ReservaModalComponent, {

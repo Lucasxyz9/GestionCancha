@@ -1,6 +1,5 @@
-
 export interface Reserva {
-  idReserva?: number;  // Usamos ? para indicar que puede ser opcional, ya que puede no estar disponible al crearla
+  idReserva?: number;  // Opcional para cuando se crea nueva reserva
   fecha: string;
   horaInicio: string;
   horaFin: string;
@@ -10,7 +9,7 @@ export interface Reserva {
   cliente: {
     idCliente: number;
     nombre: string;
-    apellido : string;
+    apellido: string;
   };
   usuario: {
     idUsuario: number;
@@ -18,4 +17,9 @@ export interface Reserva {
   empresa: {
     idEmpresa: number;
   };
+
+  // Nuevos campos opcionales
+  reclamos?: string;
+  sanciones?: string;
+  indumentaria?: string;
 }
