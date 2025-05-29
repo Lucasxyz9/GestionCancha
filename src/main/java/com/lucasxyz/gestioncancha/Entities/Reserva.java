@@ -42,7 +42,6 @@ public class Reserva {
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
-    // 🟢 Nuevos campos opcionales
     @Column(name = "indumentaria", columnDefinition = "TEXT", nullable = true)
     private String indumentaria;
 
@@ -52,7 +51,6 @@ public class Reserva {
     @Column(name = "sanciones", columnDefinition = "TEXT", nullable = true)
     private String sanciones;
 
-    // Getters y Setters
 
     public long getIdReserva() {
         return idReserva;
