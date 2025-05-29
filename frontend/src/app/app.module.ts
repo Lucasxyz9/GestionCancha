@@ -10,6 +10,7 @@ import localeEs from '@angular/common/locales/es';
 
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
+
 // Angular Material modules
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
@@ -61,6 +62,7 @@ import { ReservaDetalleModalComponent } from './reserva-detalle-modal/reserva-de
 // Registrar localización española
 registerLocaleData(localeEs);
 
+
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // Esto permite componentes web personalizados
   declarations: [
@@ -97,7 +99,7 @@ registerLocaleData(localeEs);
     // Angular Material Modules
     MatAutocompleteModule,
     MatCheckboxModule,
-
+    
     MatSelectModule,  // <-- Aquí agregas el módulo
     MatTableModule,
     MatPaginatorModule,

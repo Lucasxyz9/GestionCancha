@@ -1,4 +1,5 @@
 <h2 mat-dialog-title>Detalles de Reservas</h2>
+
 <mat-dialog-content>
   <ul *ngIf="data.reservas.length > 0; else sinReservas">
     <li *ngFor="let reserva of data.reservas">
@@ -6,13 +7,16 @@
       Fecha: {{ reserva.fecha }} -
       Hora Inicio: {{ reserva.horaInicio }} -
       Hora Fin: {{ reserva.horaFin }} -
-      Cliente: {{ reserva.cliente?.nombre || 'Desconocido' }} {{ reserva.cliente?.apellido || '' }}
+      Cliente: {{ reserva.cliente?.nombre || 'Desconocido' }} {{ reserva.cliente?.apellido || '' }} -
+      Indumentaria: {{ reserva.indumentaria || 'No especificada' }}
     </li>
   </ul>
+
   <ng-template #sinReservas>
     <p>No hay reservas para esta hora.</p>
   </ng-template>
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
   <button mat-button (click)="dialogRef.close()">Cerrar</button>
 </mat-dialog-actions>

@@ -60,9 +60,7 @@
         <mat-label>Buscar por CI o RUC</mat-label>
         <input matInput type="text" [(ngModel)]="ciBusqueda" name="ciBusqueda" autocomplete="off" />
       </mat-form-field>
-      <button mat-raised-button color="primary" type="button" (click)="buscarClientePorCI()">
-        Buscar
-      </button>
+      <button mat-raised-button color="primary" type="button" (click)="buscarClientePorCI()">Buscar</button>
     </div>
 
     <!-- Lista de clientes encontrados -->
@@ -114,19 +112,19 @@
       <mat-error *ngIf="cancha.invalid && cancha.touched">Seleccione una cancha</mat-error>
     </mat-form-field>
 
-   <!-- Indumentaria -->
-<div class="full-width">
-  <label style="font-weight: 500; display: block; margin-bottom: 5px;">Indumentaria</label>
+    <!-- Indumentaria -->
 
-  <mat-checkbox [(ngModel)]="equipoA" name="equipoA" style="margin-right: 20px;">
-    Equipo A
-  </mat-checkbox>
-
-  <mat-checkbox [(ngModel)]="equipoB" name="equipoB">
-    Equipo B
-  </mat-checkbox>
-</div>
-
+    <div class="form-group">
+      <label for="indumentaria">Indumentaria</label>
+      <input
+        id="indumentaria"
+        type="text"
+        class="form-control"
+        [(ngModel)]="indumentariaTexto"
+        name="indumentaria"
+        placeholder="Ej. Pelotas, redes, conos"
+      />
+    </div>
 
     <!-- Checkbox para mostrar/ocultar Reclamos -->
     <mat-checkbox [(ngModel)]="mostrarReclamos" name="mostrarReclamos">
@@ -145,29 +143,30 @@
       ></textarea>
     </mat-form-field>
 
-<!-- Checkbox para mostrar/ocultar Sanciones -->
-<mat-checkbox [(ngModel)]="mostrarSanciones" name="mostrarSanciones" class="full-width">
-  ¿Agregar sanción?
-</mat-checkbox>
+    <!-- Checkbox para mostrar/ocultar Sanciones -->
+    <mat-checkbox [(ngModel)]="mostrarSanciones" name="mostrarSanciones" class="full-width">
+      ¿Agregar sanción?
+    </mat-checkbox>
 
-<!-- Campo de texto para sanciones (solo si mostrarSanciones es true) -->
-<mat-form-field *ngIf="mostrarSanciones" appearance="fill" class="full-width">
-  <mat-label>Sanciones</mat-label>
-  <textarea
-    matInput
-    [(ngModel)]="reserva.sanciones"
-    name="sanciones"
-    rows="3"
-    placeholder="Detalle de sanciones"
-  ></textarea>
-</mat-form-field>
-
+    <!-- Campo de texto para sanciones (solo si mostrarSanciones es true) -->
+    <mat-form-field *ngIf="mostrarSanciones" appearance="fill" class="full-width">
+      <mat-label>Sanciones</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="reserva.sanciones"
+        name="sanciones"
+        rows="3"
+        placeholder="Detalle de sanciones"
+      ></textarea>
+    </mat-form-field>
 
   </div>
 
   <div mat-dialog-actions style="justify-content: flex-end; margin-top: 15px;">
     <button mat-button type="button" (click)="cancel()">Cancelar</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="reservaForm.invalid">Guardar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="reservaForm.invalid">
+      Guardar
+    </button>
   </div>
 </form>
 
@@ -175,5 +174,8 @@
   .full-width {
     width: 100%;
     margin-bottom: 15px;
+  }
+  .mt-2 {
+    margin-top: 8px;
   }
 </style>

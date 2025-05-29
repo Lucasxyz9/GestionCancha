@@ -80,17 +80,26 @@ const fechaStr = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US').trim();
     return h * 60 + m;
   }
 
-  isOcupada(canchaId: number, hora: string): boolean {
-    const horaMin = this.horaAMinutos(hora);
-    return this.reservas.some(r => {
-      if (r.cancha.idCancha !== canchaId) return false;
-      if (r.fecha !== formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US')) return false;
+isOcupada(canchaId: number, hora: string): boolean {
+  const horaMin = this.horaAMinutos(hora);
+  const fechaFormateada = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US').trim();
 
-      const inicioMin = this.horaAMinutos(r.horaInicio);
-      const finMin = this.horaAMinutos(r.horaFin);
-      return horaMin >= inicioMin && horaMin < finMin;
-    });
-  }
+  return this.reservas.some(r => {
+    if (r.cancha.idCancha !== canchaId) return false;
+    if (r.fecha.trim() !== fechaFormateada) return false;
+
+    const inicioMin = this.horaAMinutos(r.horaInicio);
+    const finMin = this.horaAMinutos(r.horaFin);
+
+    // Para debug, puedes imprimir estos valores en consola
+    console.log(`Comparando horaMin=${horaMin} con rango ${inicioMin} - ${finMin}`);
+
+    // Aquí chequeamos si horaMin está dentro del rango [inicioMin, finMin)
+    return horaMin >= inicioMin && horaMin < finMin;
+  });
+}
+
+
 
   getClaseCelda(canchaId: number, hora: string): string {
     const cancha = this.canchas.find(c => c.idCancha === canchaId);
@@ -117,21 +126,24 @@ mostrarReservas(canchaId: number, hora: string) {
   const fechaFormateada = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US').trim();
 
   const reservasSeleccionadas = this.reservas.filter(r => {
-    return (
-      r.cancha.idCancha === canchaId &&
-      r.fecha === fechaFormateada &&
-      horaMin >= this.horaAMinutos(r.horaInicio) &&
-      horaMin < this.horaAMinutos(r.horaFin)
-    );
+    if (r.cancha.idCancha !== canchaId) return false;
+    if (r.fecha.trim() !== fechaFormateada) return false;
+
+    const inicioMin = this.horaAMinutos(r.horaInicio);
+    const finMin = this.horaAMinutos(r.horaFin);
+    return horaMin >= inicioMin && horaMin < finMin;
   });
 
+  // Mostrar el modal solo si hay reservas
   this.dialog.open(ReservaDetalleModalComponent, {
-    width: '500px',
-    data: {
-      reservas: reservasSeleccionadas
-    }
+    width: '400px',
+    data: { reservas: reservasSeleccionadas }
   });
 }
+
+
+
+
 
 
 

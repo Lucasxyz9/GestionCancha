@@ -44,8 +44,8 @@ export class ReservaModalComponent implements OnInit {
   empresaId: number = 1;
 
   mostrarReclamos: boolean = false;  // <-- VARIABLE para mostrar textarea reclamos
-  equipoA: boolean = false;
-  equipoB: boolean = false;
+mostrarIndumentaria = false;
+indumentariaTexto: string = '';
   mostrarSanciones: boolean = false;
 
   constructor(
@@ -60,8 +60,12 @@ export class ReservaModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeFormData();
+
     this.loadSucursales();
     this.setFechaSiguiente();
+
+      this.indumentariaTexto = this.reserva.indumentaria || '';
+
   }
 
   private sumarUnDia(fecha: Date): Date {
@@ -86,6 +90,14 @@ export class ReservaModalComponent implements OnInit {
     
     this.reserva.idEmpresa = this.empresaId;
     this.reserva.idUsuario = this.currentUserId;
+
+    if (this.reserva.horaInicio) {
+    this.reserva.horaInicio = this.convertirHoraAMPM(this.reserva.horaInicio);
+  }
+    if (this.reserva.horaFin) {
+    this.reserva.horaFin = this.convertirHoraAMPM(this.reserva.horaFin);
+  }
+
 
     if (!this.reserva.fecha) {
       this.reserva.fecha = new Date();
@@ -157,88 +169,96 @@ export class ReservaModalComponent implements OnInit {
     });
   }
 
- saveReserva(): void {
-    console.log('saveReserva llamado');
+private convertirHoraAMPM(hora24: string): string {
+  if (!hora24) return '';
 
-  if (!this.validateReserva()) return;
+  // Separar la hora por ":"
+  const parts = hora24.split(':');
+  if (parts.length < 2) return hora24; // fallback
 
-  // 👇 Nueva lógica para setear campo indumentaria según clics
-  let indumentariaTexto = '';
-  if (this.equipoA && this.equipoB) {
-    indumentariaTexto = 'Indumentaria para equipo A y B solicitada';
-  } else if (this.equipoA) {
-    indumentariaTexto = 'Indumentaria para equipo A solicitada';
-  } else if (this.equipoB) {
-    indumentariaTexto = 'Indumentaria para equipo B solicitada';
+  let hour = parseInt(parts[0], 10);
+  const minute = parts[1];
+
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+
+  hour = hour % 12;
+  if (hour === 0) hour = 12;
+
+  return `${hour.toString().padStart(2, '0')}:${minute} ${ampm}`;
+}
+
+
+
+saveReserva(): void {
+
+  // Asignar indumentaria del campo de texto
+  this.reserva.indumentaria = this.indumentariaTexto;
+
+  // Verificar que cliente y cancha estén seleccionados
+  if (!this.clienteSeleccionado?.idCliente || !this.selectedCancha?.idCancha) {
+    Swal.fire({
+      title: 'Datos incompletos',
+      text: 'Debe seleccionar un cliente y una cancha.',
+      icon: 'warning',
+      confirmButtonText: 'Aceptar',
+    });
+    return;
   }
 
-  if (indumentariaTexto) {
-    this.reserva.indumentaria = indumentariaTexto;
-  }
+  console.log('Indumentaria:', this.indumentariaTexto);
 
-  const reservaPayload = {
-    ...this.reserva,
-    idEmpresa: this.empresaId,
-    idUsuario: this.currentUserId,
-    fecha: this.formatDate(this.reserva.fecha),
-    horaInicio: this.convertirHora24h(this.horaInicio),
-    horaFin: this.convertirHora24h(this.horaFin),
-    cliente: {
-      idCliente: this.clienteSeleccionado?.idCliente
-    },
-    cancha: {
-      idCancha: this.selectedCancha?.idCancha
-    },
-    empresa: {
-      idEmpresa: this.empresaId
-    },
-    usuario: {
-      idUsuario: this.currentUserId
-    }
-  };
+  // Preparar el payload de la reserva
+const reservaPayload = {
+  ...this.reserva,
+  fecha: this.formatDate(this.reserva.fecha),
+  horaInicio: this.convertirHora24h(this.reserva.horaInicio),
+  horaFin: this.convertirHora24h(this.reserva.horaFin),
+  cliente: { idCliente: this.clienteSeleccionado.idCliente },
+  cancha: { idCancha: this.selectedCancha.idCancha },
+  empresa: { idEmpresa: this.empresaId },
+  usuario: { idUsuario: this.currentUserId },
+  indumentaria: this.indumentariaTexto || "",  // Si quieres que nunca sea undefined
+};
+
+
 
   console.log('Datos a enviar:', reservaPayload);
 
-  const reservaObservable = this.reserva.idReserva
+  const isEdit = !!this.reserva.idReserva;
+  const reservaObservable = isEdit
     ? this.reservaService.updateReserva(reservaPayload)
     : this.reservaService.crearReserva(reservaPayload);
 
   reservaObservable.subscribe({
-    next: (reservaGuardada) => {
-      if (reservaGuardada) {
-        Swal.fire({
-          title: '¡Éxito!',
-          text: 'Reserva creada correctamente.',
-          icon: 'success',
-          confirmButtonText: 'Aceptar',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.resetForm();
-          }
-        });
-        this.reservaService.setReserva(reservaGuardada);
-        this.dialogRef.close(reservaGuardada);
-      }
+    next: (reservaGuardada) =>{
+      Swal.fire({
+        title: '¡Éxito!',
+        text: isEdit ? 'Reserva actualizada correctamente.' : 'Reserva creada correctamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.resetForm();
+        }
+      });
+
+      this.reservaService.setReserva(reservaGuardada);
+      this.dialogRef.close(reservaGuardada);
     },
     error: (error) => {
-      if (error.status === 201) {
-        Swal.fire({
-          title: '¡Éxito!',
-          text: 'Reserva creada correctamente.',
-          icon: 'success',
-          confirmButtonText: 'Aceptar',
-        });
-      } else {
-        Swal.fire({
-          title: '¡Error!',
-          text: 'Hubo un problema al guardar la reserva.',
-          icon: 'error',
-          confirmButtonText: 'Aceptar',
-        });
-      }
-    }
+      console.error('Error al guardar la reserva:', error);
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Hubo un problema al guardar la reserva.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
+    },
   });
 }
+
+
+
 
 
 

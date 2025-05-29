@@ -110,11 +110,13 @@ public class ReservaController {
         reserva.setCliente(reservaDetails.getCliente());
         reserva.setUsuario(reservaDetails.getUsuario());
         reserva.setEmpresa(reservaDetails.getEmpresa());
+        reserva.setIndumentaria(reservaDetails.getIndumentaria());
 
         // Guardar la reserva actualizada en la base de datos
         reservaRepository.save(reserva);
 
-        return ResponseEntity.ok("Reserva actualizada con éxito.");
+        Reserva reservaActualizada = reservaRepository.save(reserva);
+        return ResponseEntity.ok(reservaActualizada);
     }
 
     @DeleteMapping("/{id}")

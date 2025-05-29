@@ -1,5 +1,5 @@
 export interface Reserva {
-  idReserva?: number;  // Opcional para cuando se crea nueva reserva
+  idReserva?: number;  // Opcional, porque al crear no se tiene todavía
   fecha: string;
   horaInicio: string;
   horaFin: string;
@@ -18,7 +18,7 @@ export interface Reserva {
     idEmpresa: number;
   };
 
-  // Nuevos campos opcionales
+  // Campos opcionales
   reclamos?: string;
   sanciones?: string;
   indumentaria?: string;

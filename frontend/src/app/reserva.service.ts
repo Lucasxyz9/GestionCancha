@@ -65,15 +65,17 @@ export class ReservaService {
       return throwError(() => new Error('Fecha y horarios son requeridos'));
     }
 
-    const reservaBody = {
-      fecha: reserva.fecha,
-      horaInicio: reserva.horaInicio,
-      horaFin: reserva.horaFin,
-      cancha: { idCancha: reserva.cancha.idCancha },
-      cliente: { idCliente: reserva.cliente.idCliente },
-      usuario: { idUsuario: reserva.usuario.idUsuario },
-      empresa: { idEmpresa: reserva.empresa.idEmpresa }
-    };
+const reservaBody = {
+  fecha: reserva.fecha,
+  horaInicio: reserva.horaInicio,
+  horaFin: reserva.horaFin,
+  indumentaria: reserva.indumentaria,
+
+  cancha: { idCancha: reserva.cancha.idCancha },
+  cliente: { idCliente: reserva.cliente.idCliente },
+  usuario: { idUsuario: reserva.usuario.idUsuario },
+  empresa: { idEmpresa: reserva.empresa.idEmpresa },
+};
 
     return this.http.post<Reserva>(this.apiUrl, reservaBody).pipe(
       catchError(error => {
@@ -83,25 +85,34 @@ export class ReservaService {
     );
   }
 
-  updateReserva(reserva: Reserva): Observable<Reserva> {
-    if (!reserva?.idReserva) {
-      return throwError(() => new Error('ID de reserva es requerido para actualización'));
-    }
-
-    const body = {
-      fecha: reserva.fecha,
-      horaInicio: reserva.horaInicio,
-      horaFin: reserva.horaFin,
-      cancha: { idCancha: reserva.cancha?.idCancha },
-      cliente: { idCliente: reserva.cliente?.idCliente },
-      usuario: { idUsuario: reserva.usuario?.idUsuario },
-      empresa: { idEmpresa: reserva.empresa?.idEmpresa }
-    };
-
-    return this.http.put<Reserva>(`${this.apiUrl}/${reserva.idReserva}`, body).pipe(
-      catchError(this.handleError<Reserva>('updateReserva'))
-    );
+ updateReserva(reserva: Reserva): Observable<Reserva> {
+  if (!reserva?.idReserva) {
+    return throwError(() => new Error('ID de reserva es requerido para actualización'));
   }
+
+  const body = {
+    fecha: reserva.fecha,
+    horaInicio: reserva.horaInicio,
+    horaFin: reserva.horaFin,
+    indumentaria: reserva.indumentaria,
+    cancha: { idCancha: reserva.cancha?.idCancha },
+    cliente: { idCliente: reserva.cliente?.idCliente },
+    usuario: { idUsuario: reserva.usuario?.idUsuario },
+    empresa: { idEmpresa: reserva.empresa?.idEmpresa }
+  };
+
+  return this.http.put(`${this.apiUrl}/${reserva.idReserva}`, body, { observe: 'response' }).pipe(
+    map(response => {
+      // Si es 204 No Content, simplemente devolvemos la reserva original
+      if (response.status === 204 || !response.body) {
+        return reserva;
+      }
+      // Si hay cuerpo en la respuesta (por ejemplo, reserva actualizada), lo devolvemos
+      return response.body as Reserva;
+    }),
+    catchError(this.handleError<Reserva>('updateReserva'))
+  );
+}
 
   deleteReserva(idReserva: string): Observable<any> {
     if (!idReserva) {
