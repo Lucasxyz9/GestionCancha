@@ -10,7 +10,7 @@ import java.time.LocalTime;
 public class Reserva {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_reserva", nullable = false, unique = true)
     private long idReserva;
 
