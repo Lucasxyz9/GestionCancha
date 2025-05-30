@@ -17,7 +17,7 @@ export class CourtAvailabilityComponent implements OnInit {
   selectedDate: Date = new Date();
   canchas: Cancha[] = [];
   reservas: any[] = [];
-  horas: string[] = [];
+  horas: string[] = []; 
 
   displayedColumns: string[] = [];
 
