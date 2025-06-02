@@ -44,50 +44,6 @@ public class CajaController {
     private SucursalRepository sucursalRepository;
 
 
-    // Endpoint para registrar la venta y actualizar stock
-    @PostMapping("/registrar")
-    public ResponseEntity<String> registrarVenta(@RequestBody RegistroVenta registroVenta) {
-        try {
-            // 1. Obtener la instancia de la sucursal por su id
-            Sucursal sucursal = sucursalRepository.findById(registroVenta.getIdSucursal())
-                    .orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
-
-            // 2. Crear una nueva entrada en la tabla `caja`
-            Caja nuevaCaja = new Caja();
-            nuevaCaja.setSucursal(sucursal);  // Establecer la sucursal correctamente
-            nuevaCaja.setMonto(BigDecimal.valueOf(registroVenta.getMonto()));  // Convertir monto a BigDecimal
-            nuevaCaja.setFecha(registroVenta.getFecha());  // Usar LocalDate directamente
-            cajaRepository.save(nuevaCaja);
-
-            // 3. Registrar cada detalle en `detalle_caja` y descontar el stock
-            for (DetalleCaja detalle : registroVenta.getDetalles()) {
-                // 3.1 Obtener el Stock de un Producto
-                Stock stock = stockRepository.findByProducto(detalle.getProducto())  // Usar el método para encontrar Stock por Producto
-                        .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-                if (stock.getCantidad() < detalle.getCantidad()) {
-                    return ResponseEntity.badRequest().body("Stock insuficiente para el producto ID: " + stock.getProducto().getId_producto());
-                }
-
-                // Descontar el stock
-                stock.setCantidad(stock.getCantidad() - detalle.getCantidad());
-                stockRepository.save(stock); // Guardar cambios en el stock
-
-                // 3.2 Registrar el detalle en `detalle_caja`
-                DetalleCaja detalleCaja = new DetalleCaja();
-                detalleCaja.setCaja(nuevaCaja); // Establecer el objeto Caja completo
-                detalleCaja.setProducto(detalle.getProducto());  // Asegúrate de que esté correctamente relacionado
-                detalleCaja.setCantidad(detalle.getCantidad());
-                detalleCajaRepository.save(detalleCaja); // Aquí se guarda el detalle
-            }
-
-            return ResponseEntity.ok("Venta registrada y stock actualizado correctamente.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al registrar la venta: " + e.getMessage());
-        }
-    }
-
-
 @PostMapping("/registrarVenta")
 public ResponseEntity<Map<String, Object>> registrarVenta(@RequestBody Map<String, Object> datosVenta) {
     Map<String, Object> response = new HashMap<>();
