@@ -35,6 +35,9 @@ public class Caja {
     @OneToMany(mappedBy = "caja")
     private List<Cobros> cobros;
 
+    private boolean activa;
+
+
     public Long getIdCaja() {
         return idCaja;
     }
@@ -74,5 +77,23 @@ public class Caja {
     public void setCobros(List<Cobros> cobros) {
         this.cobros = cobros;
     }
+
+    public Cliente getCliente() {
+    return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public boolean isActiva() {
+        return activa;
+    }
+
+    public void setActiva(boolean activa) {
+        this.activa = activa;
+    }
+    
+
 }
 

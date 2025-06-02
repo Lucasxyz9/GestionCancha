@@ -3,11 +3,13 @@ package com.lucasxyz.gestioncancha.Controllers;
 import org.springframework.web.bind.annotation.*;
 
 import com.lucasxyz.gestioncancha.Entities.Caja;
+import com.lucasxyz.gestioncancha.Entities.Cliente;
 import com.lucasxyz.gestioncancha.Entities.DetalleCaja;
 import com.lucasxyz.gestioncancha.Entities.RegistroVenta;
 import com.lucasxyz.gestioncancha.Entities.Stock;
 import com.lucasxyz.gestioncancha.Entities.Sucursal;
 import com.lucasxyz.gestioncancha.Repositories.CajaRepository;
+import com.lucasxyz.gestioncancha.Repositories.ClienteRepository;
 import com.lucasxyz.gestioncancha.Repositories.DetalleCajaRepository;
 import com.lucasxyz.gestioncancha.Repositories.StockRepository;
 import com.lucasxyz.gestioncancha.Repositories.SucursalRepository;
@@ -17,13 +19,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/caja")
 public class CajaController {
+    @Autowired
+    private ClienteRepository clienteRepository ;
 
     @Autowired
     private CajaRepository cajaRepository;
@@ -81,73 +87,230 @@ public class CajaController {
         }
     }
 
-    @PostMapping("/registrarVenta")
+
+@PostMapping("/registrarVenta")
 public ResponseEntity<Map<String, Object>> registrarVenta(@RequestBody Map<String, Object> datosVenta) {
     Map<String, Object> response = new HashMap<>();
     try {
-        // Extraer datos del JSON recibido
-        Long cajaId = ((Number) datosVenta.get("cajaId")).longValue();
+        // Validar idSucursal
+        final Integer sucursalId;
+        Object idSucursalObj = datosVenta.get("idSucursal");
+        if (idSucursalObj == null) {
+            throw new RuntimeException("El campo 'idSucursal' es requerido y no puede ser null");
+        }
+        if (idSucursalObj instanceof Number) {
+            sucursalId = ((Number) idSucursalObj).intValue();
+        } else if (idSucursalObj instanceof String) {
+            try {
+                sucursalId = Integer.parseInt((String) idSucursalObj);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("El campo 'idSucursal' debe ser numérico");
+            }
+        } else {
+            throw new RuntimeException("El campo 'idSucursal' debe ser numérico");
+        }
+
+        // Validar clienteId
+        Object clienteIdObj = datosVenta.get("clienteId");
+        if (clienteIdObj == null) {
+            throw new RuntimeException("El campo 'clienteId' es requerido");
+        }
+
+        Long clienteId;
+        if (clienteIdObj instanceof Number) {
+            clienteId = ((Number) clienteIdObj).longValue();
+        } else if (clienteIdObj instanceof String) {
+            try {
+                clienteId = Long.parseLong((String) clienteIdObj);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("El campo 'clienteId' debe ser numérico");
+            }
+        } else {
+            throw new RuntimeException("El campo 'clienteId' debe ser numérico");
+        }
+
+        // Validar que el cliente existe
+        Cliente cliente = clienteRepository.findById(clienteId.intValue())
+            .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
+
+
+        // Validar productos
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> productos = (List<Map<String, Object>>) datosVenta.get("productos");
-        double total = ((Number) datosVenta.get("total")).doubleValue();
+        if (productos == null || productos.isEmpty()) {
+            throw new RuntimeException("La lista de productos está vacía o es nula");
+        }
 
-        // 1. Actualizar el monto de la caja
-        Caja caja = cajaRepository.findById(cajaId)
-                .orElseThrow(() -> new RuntimeException("Caja no encontrada"));
+        // Validar total
+        Object totalObj = datosVenta.get("total");
+        double total;
+        if (totalObj == null) {
+            throw new RuntimeException("El campo 'total' es requerido y no puede ser null");
+        }
+        if (totalObj instanceof Number) {
+            total = ((Number) totalObj).doubleValue();
+        } else if (totalObj instanceof String) {
+            try {
+                total = Double.parseDouble((String) totalObj);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("El campo 'total' debe ser numérico");
+            }
+        } else {
+            throw new RuntimeException("El campo 'total' debe ser numérico");
+        }
 
-        // Convertir el total de double a BigDecimal antes de sumarlo
-        caja.setMonto(caja.getMonto().add(BigDecimal.valueOf(total))); // Usar add() para sumar BigDecimal
+        // Buscar la caja activa para la sucursal
+        Caja caja = cajaRepository.findBySucursal_IdSucursalAndActivaTrue(sucursalId)
+                .orElseThrow(() -> new RuntimeException("No hay caja activa para la sucursal con ID: " + sucursalId));
+
+        // Actualizar el monto de la caja
+        caja.setMonto(caja.getMonto().add(BigDecimal.valueOf(total)));
+        caja.setCliente(cliente);
+
         cajaRepository.save(caja);
 
-        // 2. Descontar del stock
+        // Descontar del stock
         for (Map<String, Object> producto : productos) {
-            Long productoId = ((Number) producto.get("id_producto")).longValue();
-            int cantidadVendida = ((Number) producto.get("cantidad")).intValue();
+            Object productoIdObj = producto.get("id_producto");
+            Long productoId;
+            if (productoIdObj == null) {
+                throw new RuntimeException("El campo 'id_producto' es requerido en cada producto");
+            }
+            if (productoIdObj instanceof Number) {
+                productoId = ((Number) productoIdObj).longValue();
+            } else if (productoIdObj instanceof String) {
+                try {
+                    productoId = Long.parseLong((String) productoIdObj);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("El campo 'id_producto' debe ser numérico");
+                }
+            } else {
+                throw new RuntimeException("El campo 'id_producto' debe ser numérico");
+            }
 
-            // Buscar registros del producto en el stock
+            Object cantidadObj = producto.get("cantidad");
+            int cantidadVendida;
+            if (cantidadObj == null) {
+                throw new RuntimeException("El campo 'cantidad' es requerido en cada producto");
+            }
+            if (cantidadObj instanceof Number) {
+                cantidadVendida = ((Number) cantidadObj).intValue();
+            } else if (cantidadObj instanceof String) {
+                try {
+                    cantidadVendida = Integer.parseInt((String) cantidadObj);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("El campo 'cantidad' debe ser numérico");
+                }
+            } else {
+                throw new RuntimeException("El campo 'cantidad' debe ser numérico");
+            }
+
             List<Stock> stockList = stockRepository.findByProducto_Id(productoId);
-
             if (stockList.isEmpty()) {
                 throw new RuntimeException("Producto no encontrado en stock para el ID: " + productoId);
             }
 
-            // Verificar y actualizar cada registro del stock
+            boolean descontado = false;
             for (Stock stock : stockList) {
-                if (stock.getCantidad() < cantidadVendida) {
-                    throw new RuntimeException("Stock insuficiente para el producto: " + productoId);
+                if (stock.getCantidad() >= cantidadVendida) {
+                    stock.setCantidad(stock.getCantidad() - cantidadVendida);
+                    stockRepository.save(stock);
+                    descontado = true;
+                    break;
                 }
-
-                // Actualizar el stock reduciendo la cantidad
-                stock.setCantidad(stock.getCantidad() - cantidadVendida);
-                stockRepository.save(stock);
-
-                // Salir del bucle si ya se descontó la cantidad requerida
-                cantidadVendida = 0;
-                break;
             }
-
-            // Si después de recorrer el stock queda cantidad sin descontar, hay un problema
-            if (cantidadVendida > 0) {
-                throw new RuntimeException("Stock insuficiente para completar la venta del producto: " + productoId);
+            if (!descontado) {
+                throw new RuntimeException("Stock insuficiente para el producto: " + productoId);
             }
         }
 
-        // Preparar la respuesta exitosa
-        response.put("message", "Venta registrada exitosamente y stock actualizado");
+        response.put("message", "Venta registrada exitosamente, cliente verificado y stock actualizado");
         response.put("status", "success");
         return ResponseEntity.ok(response);
 
     } catch (Exception e) {
-        // Loguear el error completo para más detalles
         e.printStackTrace();
-
-        // Preparar la respuesta de error
         response.put("message", "Error al registrar la venta: " + e.getMessage());
         response.put("status", "error");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }
 
+
+
+
+
+
+        // Abrir una caja para una sucursal (cerrando las anteriores activas)
+@PostMapping("/abrir")
+public ResponseEntity<?> abrirCaja(@RequestBody Map<String, Object> datos) {
+    try {
+        Object sucursalIdObj = datos.get("sucursalId");
+        Integer sucursalId = null;
+
+        if (sucursalIdObj instanceof Number) {
+            sucursalId = ((Number) sucursalIdObj).intValue();
+        } else if (sucursalIdObj instanceof String) {
+            sucursalId = Integer.parseInt((String) sucursalIdObj);
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("message", "sucursalId inválido"));
+        }
+
+        Sucursal sucursal = sucursalRepository.findById(sucursalId)
+                .orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
+
+        cajaRepository.findBySucursal_IdSucursalAndActivaTrue(sucursalId).ifPresent(caja -> {
+            caja.setActiva(false);
+            cajaRepository.save(caja);
+        });
+
+        Caja nuevaCaja = new Caja();
+        nuevaCaja.setFecha(LocalDate.now());
+        nuevaCaja.setMonto(BigDecimal.ZERO);
+        nuevaCaja.setActiva(true);
+        nuevaCaja.setSucursal(sucursal);
+
+        cajaRepository.save(nuevaCaja);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Caja abierta exitosamente",
+                "idCaja", nuevaCaja.getIdCaja()
+        ));
+    } catch (NumberFormatException nfe) {
+        return ResponseEntity.badRequest().body(Map.of("message", "sucursalId debe ser un número válido"));
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", "Error al abrir caja: " + e.getMessage()));
+    }
+}
+
+    
+
+
+@PostMapping("/crearCaja")
+public ResponseEntity<?> crearCaja(@RequestBody Map<String, Object> datosCaja) {
+    try {
+        Integer sucursalId = (Integer) datosCaja.get("sucursalId");  // o cast adecuado según tu frontend
+        Optional<Sucursal> sucursalOpt = sucursalRepository.findById(sucursalId);
+
+        if (!sucursalOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sucursal no encontrada");
+        }
+
+        Sucursal sucursal = sucursalOpt.get();
+
+        Caja nuevaCaja = new Caja();
+        nuevaCaja.setSucursal(sucursal);
+        nuevaCaja.setFecha(LocalDate.now());
+        nuevaCaja.setMonto(BigDecimal.ZERO);
+
+        cajaRepository.save(nuevaCaja);
+
+        return ResponseEntity.ok("Caja creada correctamente");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al crear la caja");
+    }
+}
 
     
 }

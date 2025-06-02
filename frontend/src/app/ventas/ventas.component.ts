@@ -9,6 +9,7 @@ import { Caja } from '../Caja.model';
 import { ClienteService } from '../cliente.service'; // Importa ClienteService
 import { ventas } from '../ventas.model';
 import { Cliente } from '../clientes.model';
+import { Observable, switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-ventas',
@@ -112,112 +113,114 @@ export class VentasComponent implements OnInit {
     );
   }
 
-  finalizarVenta(): void {
-    if (!this.sucursalSeleccionada) {
-      console.error('No se ha seleccionado una sucursal.');
-      return;
-    }
-
-    const venta: RegistroVenta = {
-      idSucursal: this.sucursalSeleccionada,
-      cajaId: 1, // Este valor debería ser dinámico
-      productos: this.carrito.map((item) => ({
-        id_producto: item.producto.id_producto,
-        cantidad: item.cantidad,
-      })),
-      total: this.total,
-    };
-
-    this.ventaService.registrarVenta(venta).subscribe({
-      next: (response: any) => {
-        if (response.status === 'success') {
-          console.log(response.message);
-
-          // Limpiar carrito y recalcular total
-          this.carrito = [];
-          this.calcularTotal();
-
-          // Mostrar SweetAlert de éxito
-          Swal.fire({
-            icon: 'success',
-            title: 'Venta Finalizada',
-            text: response.message,
-            confirmButtonText: 'Aceptar',
-          });
-        } else {
-          console.error('Error en la respuesta:', response.message);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: response.message,
-            confirmButtonText: 'Cerrar',
-          });
-        }
-      },
-      error: (err) => {
-        console.error('Error al registrar la venta:', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Hubo un error al procesar la venta.',
-          confirmButtonText: 'Cerrar',
-        });
-      },
+finalizarVenta(): void {
+  if (!this.sucursalSeleccionada) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Sucursal no seleccionada',
+      text: 'Por favor selecciona una sucursal antes de continuar.',
     });
+    return;
   }
 
-  insertarClienteACaja(ci: string, ruc: string): void {
-    this.clienteService.buscarCliente(ci, ruc).subscribe({
-      next: (cliente) => {
-        if (cliente) {
-          const venta: ventas = {
-            idCliente: cliente.idCliente,
-            idSucursal: this.sucursalSeleccionada ?? 0,
-            monto: this.total,
-            fecha: new Date().toISOString(),
-            detalles: []
+  if (this.carrito.length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Carrito vacío',
+      text: 'No hay productos en el carrito para realizar la venta.',
+    });
+    return;
+  }
+
+  // Suponiendo que tienes los datos de búsqueda del cliente en las variables ciBusqueda y rucBusqueda:
+  this.buscarOInsertarCliente(this.ciBusqueda, this.rucBusqueda).subscribe({
+    next: (cliente: Cliente) => {
+      // Guarda el cliente en tu variable para usarlo más adelante si lo necesitas
+      this.clienteSeleccionado = {
+        id: cliente.idCliente!,
+        nombre: cliente.nombre,
+        apellido: cliente.apellido,
+        ci: cliente.ci,
+        ruc: cliente.ruc || 'No disponible'
+      };
+
+      // Luego abres la caja y registras la venta, usando el id del cliente
+      this.ventaService.abrirCaja(this.sucursalSeleccionada!).subscribe({
+        next: (respuesta) => {
+          const idCaja = respuesta.idCaja;
+
+          const venta: RegistroVenta = {
+            idSucursal: this.sucursalSeleccionada!,
+            cajaId: idCaja,
+            productos: this.carrito.map((item) => ({
+              id_producto: item.producto.id_producto,
+              cantidad: item.cantidad,
+            })),
+            total: this.total,
+            clienteId: this.clienteSeleccionado!.id, // Usamos el id real del cliente
           };
-  
-          // Usa ventaService para registrar al cliente en la caja
-          this.ventaService.asociarClienteACaja(venta).subscribe({
-            next: () => {
-              Swal.fire({
-                icon: 'success',
-                title: 'Cliente Agregado',
-                text: 'El cliente se ha asociado a la caja correctamente.',
-                confirmButtonText: 'Aceptar',
-              });
+
+          this.ventaService.registrarVenta(venta).subscribe({
+            next: (response) => {
+              if (response.status === 'success') {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Venta Finalizada',
+                  text: response.message,
+                  confirmButtonText: 'Aceptar',
+                });
+                this.carrito = [];
+                this.calcularTotal();
+                this.clienteSeleccionado = null; // Opcional: reseteas para la próxima venta
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: response.message || 'Error al registrar la venta',
+                });
+              }
             },
             error: (err) => {
-              console.error('Error al asociar cliente a la caja:', err);
+              console.error('Error al registrar la venta:', err);
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'No se pudo asociar el cliente a la caja.',
-                confirmButtonText: 'Cerrar',
+                text: 'Hubo un error al procesar la venta.',
               });
             },
           });
-        } else {
+        },
+        error: (err) => {
+          console.error('Error al abrir caja:', err);
           Swal.fire({
-            icon: 'warning',
-            title: 'Cliente No Encontrado',
-            text: 'No se encontró un cliente con el CI o RUC proporcionado.',
-            confirmButtonText: 'Cerrar',
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo abrir la caja para la sucursal seleccionada.',
           });
-        }
-      },
-      error: (err) => {
-        console.error('Error al buscar cliente:', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Hubo un error al buscar el cliente.',
-          confirmButtonText: 'Cerrar',
-        });
-      },
-    });
-  }
+        },
+      });
+    },
+    error: (err: any) => {
+      console.error('Error al buscar o insertar cliente:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al procesar el cliente.',
+      });
+    }
+  });
+}
+
+
+private mostrarError(mensaje: string): void {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: mensaje,
+    confirmButtonText: 'Cerrar',
+  });
+}
+
 
   buscarCliente(): void {
     if (!this.ciBusqueda && !this.rucBusqueda) {
@@ -270,6 +273,28 @@ export class VentasComponent implements OnInit {
   }
   
   
-
+buscarOInsertarCliente(ci: string, ruc: string): Observable<Cliente> {
+  return this.clienteService.buscarCliente(ci, ruc).pipe(
+    switchMap((clienteEncontrado: Cliente | null) => {
+      if (clienteEncontrado) {
+        // Si lo encontró, retorna el cliente como observable.
+        return of(clienteEncontrado);
+      } else {
+        // Si no lo encontró, creamos un nuevo cliente.
+        // Puedes pedir al usuario que ingrese más datos o usar los que tengas disponibles.
+        const nuevoCliente: Cliente = {
+          nombre: 'Nombre por defecto', // o obtenelo de un formulario
+          apellido: 'Apellido por defecto',
+          ci: ci,
+          ruc: ruc,
+          idCliente: 0,
+          email: '',
+          telefono: ''
+        };
+        return this.clienteService.crearCliente(nuevoCliente);
+      } 
+    })
+  );
+}
 }
   

@@ -67,5 +67,8 @@ export class ClienteService {
     buscarClientePorCI(ci: string): Observable<Cliente> {
       return this.http.get<Cliente>(`http://localhost:8080/api/clientes/buscar2?ci=${ci}`);
     }
-    
+  crearCliente(cliente: Cliente): Observable<Cliente> {
+  return this.http.post<Cliente>('/api/clientes', cliente);
+}
+
 }

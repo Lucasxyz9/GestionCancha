@@ -4,6 +4,6 @@ export interface Caja {
     monto: number;
     fecha: Date;
     clienteId: number;  // ID del cliente asociado a la caja
-
+  
   }
   
