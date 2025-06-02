@@ -4,13 +4,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.lucasxyz.gestioncancha.Entities.Caja;
 import com.lucasxyz.gestioncancha.Entities.Cliente;
-import com.lucasxyz.gestioncancha.Entities.DetalleCaja;
-import com.lucasxyz.gestioncancha.Entities.RegistroVenta;
+
 import com.lucasxyz.gestioncancha.Entities.Stock;
 import com.lucasxyz.gestioncancha.Entities.Sucursal;
 import com.lucasxyz.gestioncancha.Repositories.CajaRepository;
 import com.lucasxyz.gestioncancha.Repositories.ClienteRepository;
-import com.lucasxyz.gestioncancha.Repositories.DetalleCajaRepository;
 import com.lucasxyz.gestioncancha.Repositories.StockRepository;
 import com.lucasxyz.gestioncancha.Repositories.SucursalRepository;
 
@@ -37,8 +35,7 @@ public class CajaController {
     @Autowired
     private StockRepository stockRepository;
 
-    @Autowired
-    private DetalleCajaRepository detalleCajaRepository;
+  
 
     @Autowired
     private SucursalRepository sucursalRepository;
