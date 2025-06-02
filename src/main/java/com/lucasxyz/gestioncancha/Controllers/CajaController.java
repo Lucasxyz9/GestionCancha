@@ -4,14 +4,10 @@ import org.springframework.web.bind.annotation.*;
 
 import com.lucasxyz.gestioncancha.Entities.Caja;
 import com.lucasxyz.gestioncancha.Entities.Cliente;
-
+import com.lucasxyz.gestioncancha.Entities.DetalleCaja;
 import com.lucasxyz.gestioncancha.Entities.Stock;
 import com.lucasxyz.gestioncancha.Entities.Sucursal;
-import com.lucasxyz.gestioncancha.Repositories.CajaRepository;
-import com.lucasxyz.gestioncancha.Repositories.ClienteRepository;
-import com.lucasxyz.gestioncancha.Repositories.StockRepository;
-import com.lucasxyz.gestioncancha.Repositories.SucursalRepository;
-
+import com.lucasxyz.gestioncancha.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +22,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/caja")
 public class CajaController {
+
     @Autowired
     private ClienteRepository clienteRepository ;
 
@@ -35,10 +32,12 @@ public class CajaController {
     @Autowired
     private StockRepository stockRepository;
 
-  
-
+    
     @Autowired
     private SucursalRepository sucursalRepository;
+
+    @Autowired
+    private DetalleCajaRepository detalleCajaRepository;
 
     //comentario salvaje
 
@@ -170,6 +169,16 @@ public ResponseEntity<Map<String, Object>> registrarVenta(@RequestBody Map<Strin
                 if (stock.getCantidad() >= cantidadVendida) {
                     stock.setCantidad(stock.getCantidad() - cantidadVendida);
                     stockRepository.save(stock);
+                    
+                                        // Guardar en detalle_caja
+                    DetalleCaja detalleCaja = new DetalleCaja();
+                    detalleCaja.setCantidad(cantidadVendida);
+                    detalleCaja.setFecha(LocalDate.now());
+                    detalleCaja.setCaja(caja);
+                    detalleCaja.setStock(stock);
+                    detalleCaja.setProducto(stock.getProducto());
+                    detalleCajaRepository.save(detalleCaja);
+
                     descontado = true;
                     break;
                 }
