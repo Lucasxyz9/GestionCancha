@@ -40,6 +40,8 @@ public class CajaController {
     @Autowired
     private SucursalRepository sucursalRepository;
 
+    //comentario salvaje
+
 
 @PostMapping("/registrarVenta")
 public ResponseEntity<Map<String, Object>> registrarVenta(@RequestBody Map<String, Object> datosVenta) {
